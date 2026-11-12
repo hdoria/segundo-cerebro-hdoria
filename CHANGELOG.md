@@ -1,5 +1,9 @@
 # Mudanças do Cérebro hdoria
 
+## v1.41.2 - 2026-11-12 · README com exemplos de conversa
+
+- README na paleta do Console (pedra e índigo) e com exemplos de conversa no Claude Code e no Codex.
+
 ## v1.41.1 - 2026-11-12 · README novo
 
 - README reescrito para quem chega pelo repositório público: prints do Tolaria e do Console com um vault de demonstração, instalação passo a passo e as skills do dia a dia.

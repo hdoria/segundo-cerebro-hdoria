@@ -1,17 +1,17 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:101010,100:F3A46C&height=210&section=header&text=Segundo%20C%C3%A9rebro&fontColor=F1EEC8&fontSize=58&fontAlignY=36&desc=o%20contexto%20do%20seu%20neg%C3%B3cio%2C%20num%20lugar%20que%20a%20IA%20l%C3%AA&descAlignY=58&descSize=18" width="100%" alt="Segundo Cérebro" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:1A1A19,100:4B5BD6&height=210&section=header&text=Segundo%20C%C3%A9rebro&fontColor=ECEAE5&fontSize=58&fontAlignY=36&desc=o%20contexto%20do%20seu%20neg%C3%B3cio%2C%20num%20lugar%20que%20a%20IA%20l%C3%AA&descAlignY=58&descSize=18" width="100%" alt="Segundo Cérebro" />
 
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&pause=1300&color=F3A46C&center=true&vCenter=true&width=760&lines=Suas+notas+em+Markdown%2C+no+seu+computador;Abre+no+Tolaria+ou+no+Obsidian;Claude+Code+e+Codex+trabalham+dentro;Calls+viram+decis%C3%B5es+e+a%C3%A7%C3%B5es;Rotinas+com+recibo+e+aprova%C3%A7%C3%A3o" alt="O que o Segundo Cérebro faz" />
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=20&pause=1300&color=8E9AF3&center=true&vCenter=true&width=760&lines=Suas+notas+em+Markdown%2C+no+seu+computador;Abre+no+Tolaria+ou+no+Obsidian;Claude+Code+e+Codex+trabalham+dentro;Calls+viram+decis%C3%B5es+e+a%C3%A7%C3%B5es;Rotinas+com+recibo+e+aprova%C3%A7%C3%A3o" alt="O que o Segundo Cérebro faz" />
 
 <br/>
 
-<a href="#-instalar"><img src="https://img.shields.io/badge/instalar-v1.41.1-F3A46C?style=for-the-badge&logo=github&logoColor=101010" alt="Instalar" /></a>
-<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/vers%C3%A3o-1.41.1-101010?style=for-the-badge" alt="Versão 1.41.1" /></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/motor-MIT-101010?style=for-the-badge" alt="Motor MIT" /></a>
-<a href="https://tolaria.md"><img src="https://img.shields.io/badge/Tolaria-101010?style=for-the-badge&logo=markdown&logoColor=F3A46C" alt="Tolaria" /></a>
-<a href="https://obsidian.md"><img src="https://img.shields.io/badge/Obsidian-101010?style=for-the-badge&logo=obsidian&logoColor=F3A46C" alt="Obsidian" /></a>
-<img src="https://img.shields.io/badge/Claude%20Code%20%C2%B7%20Codex%20%C2%B7%20Gemini-101010?style=for-the-badge&logo=anthropic&logoColor=F3A46C" alt="Claude Code, Codex e Gemini" />
+<a href="#-instalar"><img src="https://img.shields.io/badge/instalar-v1.41.2-4B5BD6?style=for-the-badge&logo=github&logoColor=ECEAE5" alt="Instalar" /></a>
+<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/vers%C3%A3o-1.41.2-1A1A19?style=for-the-badge" alt="Versão 1.41.2" /></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/motor-MIT-1A1A19?style=for-the-badge" alt="Motor MIT" /></a>
+<a href="https://tolaria.md"><img src="https://img.shields.io/badge/Tolaria-1A1A19?style=for-the-badge&logo=markdown&logoColor=8E9AF3" alt="Tolaria" /></a>
+<a href="https://obsidian.md"><img src="https://img.shields.io/badge/Obsidian-1A1A19?style=for-the-badge&logo=obsidian&logoColor=8E9AF3" alt="Obsidian" /></a>
+<img src="https://img.shields.io/badge/Claude%20Code%20%C2%B7%20Codex%20%C2%B7%20Gemini-1A1A19?style=for-the-badge&logo=anthropic&logoColor=8E9AF3" alt="Claude Code, Codex e Gemini" />
 
 <br/><br/>
 
@@ -66,6 +66,71 @@ Todo dia eu abria uma conversa nova com a IA e começava do zero. Quem é o clie
 
 <br/>
 
+## 💬 Como é conversar com ele
+
+A diferença aparece na conversa. Você não cola contexto, não explica quem é quem. O agente abre as notas, responde e mostra de onde tirou.
+
+<details open>
+<summary><b>🟠 Claude Code: uma pergunta qualquer</b></summary>
+
+<br/>
+
+```text
+você   o que eu combinei com a Beatriz sobre os pedidos por WhatsApp?
+
+claude Na call de 05/11 vocês fecharam duas coisas:
+       1. Toda mensagem automática passa pela Beatriz antes de ir pro cliente.
+       2. O piloto começa só na loja do Centro.
+       > "eu quero ver cada mensagem antes de sair, pelo menos no primeiro mês"
+         [[2026-11-05]]
+       Ficou aberto: quem cuida dos pedidos fora do horário. Quer que eu
+       guarde isso como pendência no projeto?
+```
+
+</details>
+
+<details>
+<summary><b>🟠 Claude Code: tratar uma call</b></summary>
+
+<br/>
+
+```text
+você   /call  (e cola a transcrição da reunião com a clínica)
+
+claude Li a transcrição inteira. Proponho guardar:
+       Decisões  piloto na segunda clínica a partir de 18/11
+       Ações     Marina manda o roteiro de treino da recepção até sexta
+       Dores     "metade das faltas é paciente que esqueceu"
+       Números   taxa de falta atual: 22%
+       Cada item vai com o trecho da fala e o minuto. Aprova assim
+       ou quer mudar algo?
+```
+
+</details>
+
+<details>
+<summary><b>🟢 Codex (ChatGPT): fechar o dia</b></summary>
+
+<br/>
+
+```text
+você   $daily
+
+codex  Fechando 12/11. Pelo que mudou hoje no vault:
+       a proposta da Rota 12 saiu, o piloto da clínica andou e
+       entraram 2 capturas novas na caixa de entrada.
+       Sugiro guardar 3 fatos (o maior é o prazo novo da Rota 12).
+       Quer revisar um por um?
+```
+
+</details>
+
+<sub>Exemplos com o vault de demonstração. No Codex as skills são chamadas com <code>$</code> em vez de <code>/</code>. No ChatGPT web, que não lê a pasta, use o <a href="PROTOTIPAR-PORTATIL.md"><code>PROTOTIPAR-PORTATIL.md</code></a>: um arquivo só pra colar na conversa.</sub>
+
+**Por que usar sempre?** Porque cada conversa deixa o cérebro um pouco mais completo. A call de hoje vira o contexto da proposta de amanhã, e a daily de sexta vira o resumo da semana. Quanto mais você usa, menos você explica.
+
+<br/>
+
 ## 🗂️ O hugo-os é só um exemplo
 
 Eu uso o Segundo Cérebro todo dia. O meu vault se chama `hugo-os` e às vezes ele aparece citado na documentação.
@@ -97,10 +162,10 @@ As notas seguem o formato do Tolaria e do Obsidian: frontmatter com `type`, `sta
 ## 📥 Instalar
 
 ```bash
-curl -L https://github.com/hdoria/segundo-cerebro-hdoria/archive/refs/tags/v1.41.1.tar.gz | tar -xz
-cd segundo-cerebro-hdoria-1.41.1
-node scripts/install.mjs --tag v1.41.1           # mostra o que vai criar
-node scripts/install.mjs --tag v1.41.1 --apply   # cria as duas pastas
+curl -L https://github.com/hdoria/segundo-cerebro-hdoria/archive/refs/tags/v1.41.2.tar.gz | tar -xz
+cd segundo-cerebro-hdoria-1.41.2
+node scripts/install.mjs --tag v1.41.2           # mostra o que vai criar
+node scripts/install.mjs --tag v1.41.2 --apply   # cria as duas pastas
 ```
 
 Depois abra o vault no agente e peça pra começar:
@@ -247,15 +312,15 @@ Tudo o que você escreve no seu vault é seu.
 
 <br/>
 
-<a href="https://github.com/hdoria"><img src="https://img.shields.io/badge/github.com%2Fhdoria-F3A46C?style=for-the-badge&logo=github&logoColor=101010" alt="GitHub" /></a>
-<a href="https://hdoria.me"><img src="https://img.shields.io/badge/hdoria.me-101010?style=for-the-badge&logo=googlechrome&logoColor=F3A46C" alt="Site" /></a>
-<a href="https://www.linkedin.com/in/hdoria/"><img src="https://img.shields.io/badge/LinkedIn-101010?style=for-the-badge&logo=linkedin&logoColor=F3A46C" alt="LinkedIn" /></a>
-<a href="https://www.instagram.com/hdoria/"><img src="https://img.shields.io/badge/Instagram-101010?style=for-the-badge&logo=instagram&logoColor=F3A46C" alt="Instagram" /></a>
+<a href="https://github.com/hdoria"><img src="https://img.shields.io/badge/github.com%2Fhdoria-4B5BD6?style=for-the-badge&logo=github&logoColor=ECEAE5" alt="GitHub" /></a>
+<a href="https://hdoria.me"><img src="https://img.shields.io/badge/hdoria.me-1A1A19?style=for-the-badge&logo=googlechrome&logoColor=8E9AF3" alt="Site" /></a>
+<a href="https://www.linkedin.com/in/hdoria/"><img src="https://img.shields.io/badge/LinkedIn-1A1A19?style=for-the-badge&logo=linkedin&logoColor=8E9AF3" alt="LinkedIn" /></a>
+<a href="https://www.instagram.com/hdoria/"><img src="https://img.shields.io/badge/Instagram-1A1A19?style=for-the-badge&logo=instagram&logoColor=8E9AF3" alt="Instagram" /></a>
 
 <br/><br/>
 
 <sub>Usa o Segundo Cérebro? Me conte.</sub>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:F3A46C,100:101010&height=110&section=footer" width="100%" alt="" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:4B5BD6,100:1A1A19&height=110&section=footer" width="100%" alt="" />
 
 </div>
