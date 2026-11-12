@@ -30,6 +30,13 @@ bloco gerenciado do `AGENTS.md` e `CLAUDE.md`/`GEMINI.md` de uma linha. Os teste
   renomeie `scripts/vault-sync.mjs` (a skill `cerebro` de lá o chama) e não mude o parsing em
   `scripts/vault-*.mjs` e `scripts/lib/vault-*.mjs`.
 
+## Publicar versão
+
+O desenvolvimento acontece aqui, no repo privado. O público `hdoria/segundo-cerebro-hdoria` recebe só
+releases, de onde o instalador e o `/atualizar` baixam. Para lançar: suba `VERSION`, abra a seção
+`## vX.Y.Z` no `CHANGELOG.md`, commit na main e rode `node scripts/publish-release.mjs` (prévia) e depois
+com `--apply`. O commit público tem a árvore do HEAD e só o público como pai: o histórico privado não sai.
+
 ## Verificação antes de entregar
 
 ```bash

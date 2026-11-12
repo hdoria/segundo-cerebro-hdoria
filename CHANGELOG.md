@@ -1,5 +1,10 @@
 # Mudanças do Cérebro hdoria
 
+## v1.41.1 - 2026-11-12 · README novo
+
+- README reescrito para quem chega pelo repositório público: prints do Tolaria e do Console com um vault de demonstração, instalação passo a passo e as skills do dia a dia.
+- `publish-release` recusa publicar quando o README cita outra versão.
+
 ## v1.41.0 - 2026-11-12 · instalação em duas pastas, notas Tolaria e repositório público
 
 - Instalação nova cria duas pastas: o vault (`~/Cerebro/notas`, só notas e instruções) e o motor (`~/Cerebro/motor`). O vault chama o motor pelo lançador `.cerebro/bin/cerebro.mjs`.
