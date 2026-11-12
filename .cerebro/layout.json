@@ -1,5 +1,6 @@
 {
   "version": 3,
+  "knowledgeRoot": ".",
   "companyMap": "meu-negocio/mapa.md",
   "sourceRegister": "meu-negocio/fontes/registro-ativacao.md",
   "activationBrief": "operacao/arquitetura/primeiro-sistema.md",

@@ -6,8 +6,8 @@
 
 <br/>
 
-<a href="#-instalar"><img src="https://img.shields.io/badge/instalar-v1.41.2-4B5BD6?style=for-the-badge&logo=github&logoColor=ECEAE5" alt="Instalar" /></a>
-<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/vers%C3%A3o-1.41.2-1A1A19?style=for-the-badge" alt="Versão 1.41.2" /></a>
+<a href="#-instalar"><img src="https://img.shields.io/badge/instalar-v1.42.0-4B5BD6?style=for-the-badge&logo=github&logoColor=ECEAE5" alt="Instalar" /></a>
+<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/vers%C3%A3o-1.42.0-1A1A19?style=for-the-badge" alt="Versão 1.42.0" /></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/motor-MIT-1A1A19?style=for-the-badge" alt="Motor MIT" /></a>
 <a href="https://tolaria.md"><img src="https://img.shields.io/badge/Tolaria-1A1A19?style=for-the-badge&logo=markdown&logoColor=8E9AF3" alt="Tolaria" /></a>
 <a href="https://obsidian.md"><img src="https://img.shields.io/badge/Obsidian-1A1A19?style=for-the-badge&logo=obsidian&logoColor=8E9AF3" alt="Obsidian" /></a>
@@ -60,6 +60,10 @@ Todo dia eu abria uma conversa nova com a IA e começava do zero. Quem é o clie
 <img src="docs/imagens/console-sistemas.webp" width="100%" alt="Console: Sistemas, com daily do dia, follow-up de clientes e revisão semanal" />
 <br/>
 <sub><b>Sistemas</b>: o que roda, quem é o dono, quantas fontes usa e quando rodou pela última vez.</sub>
+<br/><br/>
+<img src="docs/imagens/console-tarefas.webp" width="100%" alt="Console: Tarefas, com o bloco Hoje e as tarefas agrupadas por projeto" />
+<br/>
+<sub><b>Tarefas</b>: os checkboxes das notas, com o que vence hoje no topo. Marcar aqui grava na própria nota.</sub>
 <br/><br/>
 <sub>Os prints do Console usam um vault de demonstração: a empresa, as pessoas e os números são inventados.</sub>
 </div>
@@ -162,10 +166,10 @@ As notas seguem o formato do Tolaria e do Obsidian: frontmatter com `type`, `sta
 ## 📥 Instalar
 
 ```bash
-curl -L https://github.com/hdoria/segundo-cerebro-hdoria/archive/refs/tags/v1.41.2.tar.gz | tar -xz
-cd segundo-cerebro-hdoria-1.41.2
-node scripts/install.mjs --tag v1.41.2           # mostra o que vai criar
-node scripts/install.mjs --tag v1.41.2 --apply   # cria as duas pastas
+curl -L https://github.com/hdoria/segundo-cerebro-hdoria/archive/refs/tags/v1.42.0.tar.gz | tar -xz
+cd segundo-cerebro-hdoria-1.42.0
+node scripts/install.mjs --tag v1.42.0           # mostra o que vai criar
+node scripts/install.mjs --tag v1.42.0 --apply   # cria as duas pastas
 ```
 
 Depois abra o vault no agente e peça pra começar:
@@ -231,6 +235,7 @@ Abre em `http://127.0.0.1:4782`. Navegar não chama modelo nenhum. Rodar, pausar
 As principais telas:
 
 - **Hoje**: o foco, as prioridades da daily, projetos parados e a caixa de entrada.
+- **Tarefas**: os `- [ ]` das suas notas num lugar só, com o que é de hoje no topo. Marcar aqui grava na própria nota. Data de vencimento com `📅 2026-11-20`.
 - **Avisos e Julgamento**: o que falhou, o que pede atenção e as entregas e rotinas que esperam a sua decisão.
 - **Sistemas**: o que roda, quem é o dono, com quais fontes e o recibo de cada execução.
 - **Cérebro**: as notas do vault, com busca, leitura formatada e edição quando você pede.

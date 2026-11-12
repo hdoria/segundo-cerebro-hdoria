@@ -175,7 +175,7 @@ const required = [
   'scripts/lib/delivery-application.mjs', 'scripts/lib/routine-preflight.mjs',
   'scripts/test-delivery-application.mjs', 'scripts/test-routine-preflight.mjs',
   'scripts/test-delivery-application-ui.mjs', 'scripts/test-routine-preflight-ui.mjs',
-  'scripts/test-console-note-edit.mjs', 'scripts/test-local-note-edit.mjs',
+  'scripts/test-console-note-edit.mjs', 'scripts/test-console-tasks.mjs', 'scripts/test-local-note-edit.mjs',
   'scripts/test-local-library.mjs', 'scripts/test-library-session.mjs', 'scripts/test-library-workspace.mjs', 'scripts/test-library-layout.mjs', 'scripts/test-local-note-relations.mjs', 'scripts/test-note-related-session.mjs', 'scripts/test-console-note-explore.mjs', 'scripts/test-console-library-host.mjs', 'scripts/test-note-markdown.mjs', 'scripts/test-note-session.mjs', 'scripts/test-note-workspace.mjs',
   'scripts/test-console-delivery-application.mjs', 'scripts/test-judgment-drawer-request.mjs',
   'console/ui/delivery-application.js', 'console/ui/routine-preflight.js',

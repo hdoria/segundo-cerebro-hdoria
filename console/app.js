@@ -78,6 +78,7 @@ const state = {
   files: { directory: '', query: '', type: '', offset: 0, limit: 50, data: null, loading: false, loaded: false, error: false, request: 0 },
   areaFiles: { data: null, loading: false, loaded: false, error: false, request: 0, offset: 0, limit: 50 },
   metrics: { data: null, loading: false, loaded: false, error: false, request: 0, system: '', workflow: '' },
+  tasks: { data: null, loading: false, loaded: false, error: false, request: 0, pending: new Set(), notice: '', stale: false },
   inbox: { data: null, loading: false, loaded: false, error: false, request: 0, unread: false, offset: 0, limit: 50, mutation: null, mutationError: '' },
   localFileRequest: 0,
   selectedLocalFile: null,
@@ -2374,6 +2375,121 @@ function renderOperationalInbox() {
   return `${toolbar}${slot.mutationError ? `<p class="section-help" role="status">${escapeHtml(slot.mutationError)}</p>` : ''}${notices.length ? `<ul class="operational-inbox">${rows}</ul>${pagination}` : empty(slot.unread ? 'Nenhum aviso não lido' : 'Nenhum aviso nesta seleção', 'Os avisos aparecem a partir de falhas, bloqueios e decisões pendentes registrados. Ajuste a área ou o filtro para ampliar a seleção.')}${data?.issues?.length ? '<p class="section-help" role="status">Alguns registros não puderam ser lidos. Os avisos válidos disponíveis estão acima.</p>' : ''}`;
 }
 
+/* Tarefas: checkboxes `- [ ]` das notas. O Console só mostra e marca; a nota continua a
+   casa da verdade. Marcar grava um único caractere no Markdown, com hash conferido. */
+const TASK_CONFLICT = 'A nota mudou fora daqui. Recarregue para ver a versão nova.';
+const TASK_NOTE_TYPES = { project: 'Projeto', thread: 'Fio', daily: 'Daily' };
+
+function recountTasks(data) {
+  const counts = { open: 0, today_open: 0, today_done: 0, today_total: 0 };
+  for (const group of data.notes) for (const task of group.tasks) {
+    if (!task.done) counts.open += 1;
+    if (task.today) { counts.today_total += 1; counts[task.done ? 'today_done' : 'today_open'] += 1; }
+  }
+  data.counts = counts;
+}
+
+async function loadTasks() {
+  const slot = state.tasks;
+  if (slot.loading || slot.pending.size) return;
+  const request = ++slot.request;
+  slot.loading = true;
+  slot.error = false;
+  try {
+    const data = await getJson('/api/tasks');
+    if (slot.request !== request) return;
+    slot.data = data.available ? data : null;
+    slot.stale = false;
+  } catch {
+    if (slot.request !== request) return;
+    if (!slot.data) slot.error = true;
+    else slot.stale = true;
+  } finally {
+    if (slot.request === request) {
+      slot.loading = false;
+      slot.loaded = true;
+      renderTasksView();
+    }
+  }
+}
+
+function renderTasksView() {
+  const slot = state.tasks;
+  const active = document.activeElement;
+  if (active?.dataset?.taskToggle != null) slot.focusKey = [active.dataset.taskRef, active.dataset.taskLine];
+  render();
+  if (!slot.focusKey) return;
+  const again = [...document.querySelectorAll('[data-task-toggle]')].find((element) => element.dataset.taskRef === slot.focusKey[0] && element.dataset.taskLine === slot.focusKey[1]);
+  again?.focus();
+}
+
+async function toggleTask(ref, line, done) {
+  const slot = state.tasks;
+  const group = slot.data?.notes.find((item) => item.ref === ref);
+  const task = group?.tasks.find((item) => item.line === line);
+  if (!task) return;
+  slot.notice = '';
+  // Uma gravação por nota: o hash novo só existe depois da resposta.
+  if (slot.pending.has(ref)) { slot.notice = 'Aguarde a gravação anterior desta nota terminar.'; renderTasksView(); return; }
+  slot.pending.add(ref);
+  const previous = task.done;
+  task.done = done;
+  recountTasks(slot.data);
+  renderTasksView();
+  try {
+    const result = await mutate('/api/tasks/toggle', { ref, line, expected_sha256: group.sha256, done, text_check: task.text });
+    group.sha256 = result.sha256;
+  } catch (error) {
+    task.done = previous;
+    recountTasks(slot.data);
+    const conflict = ['task-stale', 'task-line-changed', 'local-note-conflict', 'local-note-busy'].includes(error.message);
+    slot.notice = conflict ? TASK_CONFLICT : 'Não foi possível gravar a tarefa na nota. Nada foi alterado. Tente novamente.';
+    slot.stale = slot.stale || conflict;
+  } finally {
+    slot.pending.delete(ref);
+    renderTasksView();
+    if (document.activeElement?.dataset?.taskToggle == null) slot.focusKey = null;
+  }
+}
+
+function taskDue(task) {
+  if (!task.due) return '';
+  const [, month, day] = task.due.split('-');
+  return task.overdue ? badge('atrasada', 'bad', `Atrasada desde ${day}/${month}`) : badge('data', 'neutral', `Vence ${day}/${month}`);
+}
+
+function taskRow(group, task, { showNote = false } = {}) {
+  const note = escapeHtml(group.title);
+  const attrs = `data-task-toggle data-task-ref="${escapeHtml(group.ref)}" data-task-line="${task.line}"`;
+  const depth = Math.min(Math.floor(task.indent / 2), 3);
+  return `<li class="task-row${task.done ? ' is-done' : ''}" data-depth="${depth}"><label><input type="checkbox" ${attrs}${task.done ? ' checked' : ''} aria-label="${escapeHtml(task.done ? 'Desmarcar' : 'Marcar')} tarefa: ${escapeHtml(task.text)}, na nota ${note}"><span class="task-text">${escapeHtml(task.text)}</span></label>${taskDue(task)}${showNote ? `<button type="button" class="task-note-link" data-open-local-file="${escapeHtml(group.ref)}">${note}</button>` : ''}</li>`;
+}
+
+function renderTasks() {
+  const slot = state.tasks;
+  if (!slot.loaded && !slot.loading) void loadTasks();
+  if (!slot.data && slot.error) return `<div class="local-read-status" role="status"><p>Não foi possível ler as tarefas das notas.</p><button type="button" class="action" data-tasks-retry>Tentar novamente</button></div>`;
+  if (!slot.data && !slot.loaded) return `<div class="inbox-loading" role="status"><p>Lendo tarefas das notas…</p><div></div><div></div><div></div></div>`;
+  const data = slot.data;
+  if (!data) return empty('Tarefas indisponíveis', 'As notas do cérebro não estão disponíveis para leitura. Atualize o Console para tentar novamente.');
+  const total = data.notes.reduce((sum, group) => sum + group.tasks.length, 0);
+  const banner = slot.notice || slot.stale
+    ? `<div class="task-notice" role="alert"><p>${escapeHtml(slot.notice || 'Não foi possível atualizar a lista. O que aparece pode estar desatualizado.')}</p><button type="button" class="action" data-tasks-retry>Recarregar</button></div>`
+    : '';
+  if (!total) return `${banner}${empty('Nenhuma tarefa nas suas notas', 'Escreva "- [ ] tarefa" em qualquer nota e acrescente "📅 AAAA-MM-DD" para dar uma data. A tarefa aparece aqui, e marcar aqui grava na própria nota.')}`;
+  const { today_done: done, today_total: all } = data.counts;
+  const todayRows = data.notes.flatMap((group) => group.tasks.filter((task) => task.today).map((task) => taskRow(group, task, { showNote: true })));
+  const hoje = `<section class="task-today dashboard-panel" aria-labelledby="tasks-today-title" data-identity="indigo"><div class="subheading"><h3 id="tasks-today-title">Hoje</h3><span>${all ? `${done} de ${all} feitas hoje` : 'Nada marcado para hoje'}</span></div><div class="panel-body">${all ? `<progress max="${all}" value="${done}" aria-label="${done} de ${all} tarefas de hoje feitas"></progress><ul class="task-list">${todayRows.join('')}</ul>` : '<p class="muted">Tarefas da daily de hoje, com data de hoje ou atrasadas aparecem aqui.</p>'}</div></section>`;
+  const groups = data.notes.map((group) => {
+    const rest = group.tasks.filter((task) => !task.today);
+    if (!rest.length) return '';
+    const open = rest.filter((task) => !task.done).length;
+    return `<section class="task-group dashboard-panel" aria-label="${escapeHtml(group.title)}"><div class="subheading"><h3><button type="button" class="task-note-link" data-open-local-file="${escapeHtml(group.ref)}">${escapeHtml(group.title)}</button></h3><span>${escapeHtml(TASK_NOTE_TYPES[String(group.type || '').toLowerCase()] || group.type || 'Nota')} · ${open} ${open === 1 ? 'aberta' : 'abertas'}</span></div><div class="panel-body"><ul class="task-list">${rest.map((task) => taskRow(group, task)).join('')}</ul></div></section>`;
+  }).join('');
+  const partial = data.complete === false ? '<p class="section-help" role="status">O cérebro é grande: parte das notas ficou fora desta leitura.</p>' : '';
+  return `${banner}<div class="tasks-view">${hoje}${groups}</div>${partial}`;
+}
+
 async function loadOperationalInbox() {
   const slot = state.inbox;
   const request = ++slot.request;
@@ -2450,6 +2566,7 @@ function syncLocalViewContext() {
   const context = `${state.view}:${state.operatingAreaFilter}`;
   if (state.localViewContext === context) return;
   state.localViewContext = context;
+  if (state.view === 'tasks') { state.tasks.loaded = false; state.tasks.notice = ''; }
   for (const slot of [state.files, state.areaFiles, state.metrics, state.inbox].filter(Boolean)) {
     slot.request++;
     slot.loading = false;
@@ -4168,6 +4285,8 @@ function submitHermesTarget() {
 }
 
 document.addEventListener('change', (event) => {
+  const taskBox = event.target.closest('[data-task-toggle]');
+  if (taskBox) { void toggleTask(taskBox.dataset.taskRef, Number(taskBox.dataset.taskLine), taskBox.checked); return; }
   const choice = event.target.closest('[data-hermes-target-choice]');
   if (choice && choice.checked) chooseHermesTarget(choice.value);
   const hostSelect = event.target.closest('[data-hermes-host-select]');
@@ -4209,11 +4328,12 @@ document.addEventListener('click', (event) => {
   if (event.target.closest('[data-hermes-hosts-refresh]')) void loadHermesTarget({ notify: true });
 });
 
-const renderers = { activation: renderActivation, compatibility: renderCompatibility, today: renderToday, anatomy: renderAnatomy, system: renderSystemWorkspace, canvas: renderCanvas, areas: renderAreas, area: renderAreaWorkspace, files: renderFiles, metrics: renderMetrics, notices: renderOperationalInbox, systems: renderSystems, skills: renderSkills, procedures: renderProcedures, sources: renderSources, experiments: renderExperiments, routines: renderRoutines, judgments: renderJudgments, cases: renderCases, runs: renderRuns, governance: renderGovernance, health: renderHealth, 'vibe-makers': renderVibeMakers, tools: renderTools, hermes: renderHermes };
+const renderers = { activation: renderActivation, compatibility: renderCompatibility, today: renderToday, tasks: renderTasks, anatomy: renderAnatomy, system: renderSystemWorkspace, canvas: renderCanvas, areas: renderAreas, area: renderAreaWorkspace, files: renderFiles, metrics: renderMetrics, notices: renderOperationalInbox, systems: renderSystems, skills: renderSkills, procedures: renderProcedures, sources: renderSources, experiments: renderExperiments, routines: renderRoutines, judgments: renderJudgments, cases: renderCases, runs: renderRuns, governance: renderGovernance, health: renderHealth, 'vibe-makers': renderVibeMakers, tools: renderTools, hermes: renderHermes };
 const titles = {
   activation: ['Primeira Missão', 'Ative o Cérebro pelo uso, começando com um trabalho real.'],
   compatibility: ['Compatibilidade do protocolo', 'Migração e aderência ao protocolo — não é um placar de saúde do cérebro.'],
   today: ['Hoje', 'O que pede julgamento e o que já está pronto para trabalhar.'],
+  tasks: ['Tarefas', 'Checkboxes das suas notas. Marcar aqui grava na própria nota.'],
   anatomy: ['Arquitetura', 'O que a empresa sabe, de onde vem e como continua vivo.'],
   system: ['Sistema', 'Como este sistema pensa, executa, é julgado e aprende.'],
   canvas: ['Canvas Operacional', 'Mapa do Cérebro, contrato do Sistema e Execution Trace do Run.'],
@@ -4360,9 +4480,9 @@ function render() {
     state.renderedPageContext = pageContext;
   }
   const journey = $('#journey');
-  if (journey) renderMarkup(journey, ['area', 'files', 'metrics', 'notices', 'skills'].includes(state.view) ? '' : renderJourneyCue(state.view, state.model));
+  if (journey) renderMarkup(journey, ['area', 'files', 'metrics', 'notices', 'skills', 'tasks'].includes(state.view) ? '' : renderJourneyCue(state.view, state.model));
   renderAreaSwitcher();
-  const hidesSummary = ['activation', 'canvas', 'system', 'systems', 'skills', 'vibe-makers', 'tools', 'hermes', 'area', 'areas', 'files', 'metrics', 'notices'].includes(state.view) || state.view === 'anatomy';
+  const hidesSummary = ['activation', 'canvas', 'system', 'systems', 'skills', 'vibe-makers', 'tools', 'hermes', 'area', 'areas', 'files', 'metrics', 'notices', 'tasks'].includes(state.view) || state.view === 'anatomy';
   renderMarkup($('#summary'), hidesSummary ? '' : state.vaultToday ? vaultSummaryCards(state.vaultToday) : summaryCards());
   if (replay.playing) stopTraceReplay(false);
   if (state.canvas.controller) { state.canvas.controller.destroy(); state.canvas.controller = null; }
@@ -4381,6 +4501,13 @@ function render() {
     element.textContent = value;
     element.dataset.zero = String(!value);
   });
+  const taskCount = $('[data-task-count]');
+  if (taskCount) {
+    const open = state.tasks.data?.counts?.open;
+    taskCount.hidden = open == null;
+    taskCount.textContent = open ?? '';
+    taskCount.dataset.zero = String(!open);
+  }
   const inboxCount = $('[data-inbox-count]');
   if (inboxCount) {
     inboxCount.hidden = !state.inbox.data || state.inbox.error;
@@ -5637,6 +5764,7 @@ document.addEventListener('click', (event) => {
   const inboxPage = event.target.closest('[data-inbox-page]');
   if (inboxPage) { state.inbox.offset = Number(inboxPage.dataset.inboxPage); state.inbox.loaded = false; state.inbox.loading = false; state.inbox.request++; renderLocalWorkspace(); return; }
   if (event.target.closest('[data-inbox-retry]')) { state.inbox.loaded = false; state.inbox.loading = false; state.inbox.request++; renderLocalWorkspace(); return; }
+  if (event.target.closest('[data-tasks-retry]')) { state.tasks.notice = ''; void loadTasks(); return; }
   const localFile = event.target.closest('[data-open-local-file]');
   if (localFile) { void openLocalFile(localFile.dataset.openLocalFile); return; }
   const directory = event.target.closest('[data-local-directory]');
@@ -5861,6 +5989,7 @@ $('#refresh').addEventListener('click', async () => {
     state.brain.updates.data = null;
     await loadModel();
     if (state.view === 'files') await state.library?.controller?.refresh();
+    void loadTasks();
     if (state.view === 'anatomy' && state.brain.mode === 'updates') await loadBrainUpdates();
     toast('Estado local recompilado.');
   } catch (error) { toast(label(error.message), 'bad'); }
@@ -6014,6 +6143,7 @@ try {
   $('#sys-line').textContent = `${window.location.host} · file-only · reference-only`;
   state.csrf = (await getJson('/api/session')).csrf_token;
   await loadModel();
+  void loadTasks();
 } catch (error) {
   renderMarkup($('#content'), empty('Console indisponível', `Não foi possível compilar o estado local: ${label(error.message)}.`));
   toast(label(error.message), 'bad');

@@ -334,6 +334,17 @@ export function listLocalFiles(root, value = {}) {
   } catch { fail(); }
 }
 
+// Notas legíveis com texto e hash, para leitores derivados (tarefas). Passa pelo mesmo
+// scan da biblioteca: nota privada, negada ou ilegível nunca entra.
+export function readableNotes(root) {
+  try {
+    const ctx = context(root);
+    if (!ctx.available) return { available: false, complete: true, notes: [] };
+    const { notes, complete } = scan(ctx);
+    return { available: true, complete, notes: notes.map(({ ref, title, type, text, sha256 }) => ({ ref, title, type, text, sha256 })) };
+  } catch { fail(); }
+}
+
 export function readLocalFile(root, ref) {
   try {
     const ctx = context(root);

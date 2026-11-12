@@ -13498,6 +13498,137 @@ body[data-current-view="files"] #content {
   height: 100%;
   min-height: 0;
 }
+.tasks-view {
+  display: grid;
+  gap: var(--s4);
+  max-width: var(--page-max);
+}
+.task-today progress {
+  width: 100%;
+  height: var(--s-1-5);
+  margin-bottom: var(--s3);
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  accent-color: var(--accent);
+}
+.task-today progress::-webkit-progress-bar {
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+}
+.task-today progress::-webkit-progress-value {
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+.task-today progress::-moz-progress-bar {
+  border-radius: var(--r-full);
+  background: var(--accent);
+}
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.task-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s3);
+  min-height: var(--s-10);
+  padding-block: var(--s1);
+  border-bottom: var(--stroke) solid var(--hairline);
+}
+.task-row:last-child {
+  border-bottom: 0;
+}
+.task-row[data-depth="1"] {
+  padding-left: var(--s-6);
+}
+.task-row[data-depth="2"] {
+  padding-left: var(--s-12);
+}
+.task-row[data-depth="3"] {
+  padding-left: var(--s-18);
+}
+.task-row label {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex: 1;
+  min-width: 0;
+  min-height: var(--s-10);
+  cursor: pointer;
+}
+.task-row [data-task-toggle] {
+  flex: none;
+}
+.task-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.task-row.is-done .task-text {
+  color: var(--text-3);
+  text-decoration: line-through;
+}
+.task-note-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-2);
+  font: inherit;
+  font-size: var(--fs-meta);
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: var(--s-half);
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.subheading .task-note-link {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+}
+.task-note-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.task-note-link:focus-visible {
+  outline: none;
+  border-radius: var(--r-xs);
+  box-shadow: var(--focus-ring);
+}
+.task-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin-bottom: var(--s4);
+  padding: var(--s3);
+  border-left: calc(var(--stroke) * 3) solid var(--warning);
+  border-radius: var(--r-md);
+  background: var(--warning);
+  @supports (color: color-mix(in lab, red, red)) {
+    background: color-mix(in srgb, var(--warning) 8%, transparent);
+  }
+}
+.task-notice p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 800px) {
+  .task-row {
+    align-items: flex-start;
+  }
+  .task-row .task-note-link {
+    flex-basis: 100%;
+    padding-left: var(--s-7);
+  }
+  .task-notice .action {
+    min-height: var(--s-10);
+  }
+}
 .note-workspace {
   min-width: 0;
   color: var(--text);

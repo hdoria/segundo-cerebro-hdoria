@@ -21,6 +21,7 @@ import { buildSkillReadModel } from './lib/skill-read-model.mjs';
 import { buildCommunityCatalogReadModel } from './lib/community-catalog-read-model.mjs';
 import { latestRunRecords, layout } from './lib/system-protocol.mjs';
 import { vaultToday } from './lib/vault-today.mjs';
+import { localDate, noteTasks, toggleNoteTask } from './lib/note-tasks.mjs';
 import { listLocalFiles, readLocalFile, saveLocalFile, resolveLocalFileLink, recoverLocalNoteEdits, listLocalFileBacklinks, listLocalNoteAttachments, readLocalNoteAttachment } from './lib/local-file-browser.mjs';
 import { businessMetrics } from './lib/business-metrics.mjs';
 import { operationalInbox, markOperationalNoticeRead } from './lib/operational-inbox.mjs';
@@ -1805,6 +1806,19 @@ export function createConsoleServer({
         send(response, 200, vaultToday(brainRoot, vaultConfig(brainRoot)));
         return;
       }
+      if (request.method === 'GET' && url.pathname === '/api/tasks') {
+        if (!exactEqual(cookies(request)[COOKIE_NAME], sessionToken)) throw new Error('session-required');
+        send(response, 200, noteTasks(brainRoot, { today: localDate(clock()), vault: vaultConfig(brainRoot) }));
+        return;
+      }
+      if (request.method === 'POST' && url.pathname === '/api/tasks/toggle') {
+        if (!originAllowed(request)) throw new Error('origin-not-allowed');
+        assertAuthenticatedPost(request, sessionToken, csrfToken);
+        const payload = await body(request);
+        assertMutation(request, sessionToken, csrfToken, payload);
+        send(response, 200, toggleNoteTask(brainRoot, payload));
+        return;
+      }
       if (request.method === 'GET' && url.pathname === '/api/vault-insights') {
         if (!exactEqual(cookies(request)[COOKIE_NAME], sessionToken)) throw new Error('session-required');
         send(response, 200, vaultInsights(brainRoot, vaultConfig(brainRoot)));
@@ -2260,7 +2274,7 @@ export function createConsoleServer({
     } catch (error) {
       const reasonCode = safeReason(error);
       const status = reasonCode === 'session-required' || reasonCode === 'csrf-invalid' || reasonCode === 'origin-not-allowed' ? 403
-        : reasonCode === 'not-found' ? 404 : ['inbox-notice-stale', 'local-note-conflict', 'local-note-busy', 'hermes-target-remote', 'hermes-target-local', 'hermes-action-running'].includes(reasonCode) ? 409
+        : reasonCode === 'not-found' ? 404 : ['inbox-notice-stale', 'task-stale', 'task-line-changed', 'local-note-conflict', 'local-note-busy', 'hermes-target-remote', 'hermes-target-local', 'hermes-action-running'].includes(reasonCode) ? 409
           : reasonCode === 'inbox-read-state-unavailable' || ['tools-probe-failed', 'hermes-remote-failed'].includes(reasonCode) ? 503 : 400;
       send(response, status, { reason_code: reasonCode });
     }

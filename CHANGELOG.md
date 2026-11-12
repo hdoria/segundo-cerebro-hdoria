@@ -1,5 +1,10 @@
 # Mudanças do Cérebro hdoria
 
+## v1.42.0 - 2026-11-12 · tela Tarefas
+
+- Nova tela Tarefas no Console: lê os checkboxes das notas (projetos, fios e dailies), mostra no topo o que é de hoje ou está atrasado (`📅 AAAA-MM-DD`) e grava a marcação na própria nota, trocando só o caractere do checkbox e recusando se a nota mudou por fora.
+- O `layout.json` semeado passa a declarar `knowledgeRoot: "."`. Sem isso, a Biblioteca e as Tarefas ficavam indisponíveis numa instalação nova.
+
 ## v1.41.2 - 2026-11-12 · README com exemplos de conversa
 
 - README na paleta do Console (pedra e índigo) e com exemplos de conversa no Claude Code e no Codex.
