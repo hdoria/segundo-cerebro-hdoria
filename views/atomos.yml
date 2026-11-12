@@ -1,0 +1,9 @@
+name: Átomos
+icon: atom
+color: teal
+sort: modified:desc
+filters:
+  all:
+    - field: type
+      op: equals
+      value: Atom

@@ -1,0 +1,77 @@
+Cérebro hdoria
+Fork de gabrielzucco/cerebro-inevita mantido por Hugo Doria.
+
+Este produto inclui material de terceiros:
+
+--------------------------------------------------------------------------------
+Base CRM (https://github.com/trycompai/crm)
+Uso histórico: origem dos tokens do design anterior do Console.
+A identidade atual segue task-manager, conforme DESIGN.md; esta atribuição
+e os termos originais são preservados.
+--------------------------------------------------------------------------------
+
+MIT License
+
+Copyright (c) 2026 Comp AI
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------------------
+Geist e Geist Mono (Vercel)
+Usado em: console/fonts/. Licença SIL Open Font License 1.1, texto completo em
+console/fonts/OFL-Geist.txt
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+task-manager / Gr8r (referência visual local do mesmo proprietário)
+Referência: ~/projects/task-manager, commit
+08a2a2ef9ce95391f8c31a072d319f71a10c63ee
+Usado em: identidade e valores de console/design/tokens.css; inventário adaptado
+em console/design/tokens.js. A referência não constitui uma licença pública
+adicional para o projeto task-manager.
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+shadcn/ui (https://github.com/shadcn-ui/ui)
+Usado em: componentes React adaptados em console/ui/components/.
+Originais do registry new-york-v4 e licença preservados em console/ui/upstream/.
+Proveniência e adaptações: console/ui/PROVENANCE.md.
+--------------------------------------------------------------------------------
+
+MIT License
+
+Copyright (c) 2023 shadcn
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

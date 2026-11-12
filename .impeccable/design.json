@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-21T03:13:41.242349+00:00",
+  "title": "Design System: Cérebro hdoria",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Índigo de ação"
+      },
+      "primary-dark": {
+        "role": "primary",
+        "displayName": "Índigo no tema escuro"
+      },
+      "warm-paper": {
+        "role": "neutral",
+        "displayName": "Papel quente"
+      },
+      "warm-sidebar": {
+        "role": "neutral",
+        "displayName": "Lateral quente"
+      },
+      "warm-ink": {
+        "role": "neutral",
+        "displayName": "Texto quente"
+      },
+      "warm-line": {
+        "role": "neutral",
+        "displayName": "Divisão quente"
+      },
+      "dark-paper": {
+        "role": "neutral",
+        "displayName": "Papel escuro"
+      },
+      "dark-ink": {
+        "role": "neutral",
+        "displayName": "Texto no tema escuro"
+      }
+    },
+    "typographyMeta": {
+      "title": {
+        "displayName": "Título",
+        "purpose": "Hierarquia operacional de páginas."
+      },
+      "body": {
+        "displayName": "Corpo",
+        "purpose": "Conteúdo e controles da interface."
+      },
+      "metadata": {
+        "displayName": "Metadados",
+        "purpose": "IDs, versões, recibos e medidas."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-sm",
+        "value": "var(--shadow-sm)",
+        "purpose": "Controles discretos."
+      },
+      {
+        "name": "nav-active-shadow",
+        "value": "var(--nav-active-shadow)",
+        "purpose": "Item atual de navegação."
+      },
+      {
+        "name": "shadow-pop",
+        "value": "var(--shadow-pop)",
+        "purpose": "Popover e diálogo."
+      },
+      {
+        "name": "shadow-drawer",
+        "value": "var(--shadow-drawer)",
+        "purpose": "Drawer lateral."
+      }
+    ],
+    "motion": [
+      {
+        "name": "dur-fast",
+        "value": "var(--dur-fast)",
+        "purpose": "Hover e estado de controles."
+      },
+      {
+        "name": "ease",
+        "value": "var(--ease)",
+        "purpose": "Curva de saída do sistema."
+      },
+      {
+        "name": "dur-drawer",
+        "value": "var(--dur-drawer)",
+        "purpose": "Transição de drawer."
+      },
+      {
+        "name": "canvas-motion-update",
+        "value": "var(--canvas-motion-update)",
+        "purpose": "Atualização do G6; redução de movimento desliga a transição."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "viewport-below-1200",
+        "value": "1200px"
+      },
+      {
+        "name": "viewport-below-720",
+        "value": "720px"
+      },
+      {
+        "name": "viewport-below-960",
+        "value": "960px"
+      },
+      {
+        "name": "viewport-below-620",
+        "value": "620px"
+      },
+      {
+        "name": "viewport-below-1280",
+        "value": "1280px"
+      },
+      {
+        "name": "viewport-below-1100",
+        "value": "1100px"
+      },
+      {
+        "name": "viewport-below-800",
+        "value": "800px"
+      },
+      {
+        "name": "viewport-below-520",
+        "value": "520px"
+      },
+      {
+        "name": "viewport-below-1000",
+        "value": "1000px"
+      },
+      {
+        "name": "viewport-below-760",
+        "value": "760px"
+      },
+      {
+        "name": "viewport-below-700",
+        "value": "700px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Ação principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Representação visual da variante default do Button compartilhado.",
+      "html": "<button class=\"ds-button-primary\">Ação principal</button>",
+      "css": ".ds-button-primary{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-1-5);min-height:var(--h-md);padding:var(--s-1) var(--s-3);border:var(--stroke) solid transparent;border-radius:var(--r-sm);font-family:var(--font);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:var(--lh-snug);cursor:pointer;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease);background:var(--accent);color:var(--on-accent);box-shadow:var(--shadow-button);}.ds-button-primary:hover{background:var(--accent-hover);}.ds-button-primary:active{background:var(--accent-active);}.ds-button-primary:focus-visible{outline:var(--stroke-strong) solid var(--accent);outline-offset:var(--focus-offset);box-shadow:var(--focus-ring);}.ds-button-primary:disabled{opacity:var(--opacity-disabled);pointer-events:none;box-shadow:none;}"
+    },
+    {
+      "name": "Ação secundária",
+      "kind": "button",
+      "description": "Representação visual da variante outline do Button compartilhado.",
+      "html": "<button class=\"ds-button-outline\">Ação secundária</button>",
+      "css": ".ds-button-outline{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-1-5);min-height:var(--h-md);padding:var(--s-1) var(--s-3);border:var(--stroke) solid transparent;border-radius:var(--r-sm);font-family:var(--font);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:var(--lh-snug);cursor:pointer;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease);background:var(--surface);color:var(--text);border-color:var(--border-strong);box-shadow:var(--shadow-sm);}.ds-button-outline:hover{background:var(--surface-2);}.ds-button-outline:active{background:var(--surface-2);}.ds-button-outline:focus-visible{outline:var(--stroke-strong) solid var(--accent);outline-offset:var(--focus-offset);box-shadow:var(--focus-ring);}.ds-button-outline:disabled{opacity:var(--opacity-disabled);pointer-events:none;box-shadow:none;}"
+    },
+    {
+      "name": "Ação discreta",
+      "kind": "button",
+      "description": "Representação visual da variante ghost do Button compartilhado.",
+      "html": "<button class=\"ds-button-ghost\">Ação discreta</button>",
+      "css": ".ds-button-ghost{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-1-5);min-height:var(--h-md);padding:var(--s-1) var(--s-3);border:var(--stroke) solid transparent;border-radius:var(--r-sm);font-family:var(--font);font-size:var(--fs-sm);font-weight:var(--fw-medium);line-height:var(--lh-snug);cursor:pointer;transition:background var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease),color var(--dur-fast) var(--ease);background:transparent;color:var(--text-2);box-shadow:none;}.ds-button-ghost:hover{background:var(--surface-3);color:var(--text);}.ds-button-ghost:active{background:var(--surface-3);color:var(--text);}.ds-button-ghost:focus-visible{outline:var(--stroke-strong) solid var(--accent);outline-offset:var(--focus-offset);box-shadow:var(--focus-ring);}.ds-button-ghost:disabled{opacity:var(--opacity-disabled);pointer-events:none;box-shadow:none;}"
+    },
+    {
+      "name": "Campo de texto",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo com borda quente, foco índigo e estados de validação.",
+      "html": "<input class=\"ds-input\" aria-label=\"Nome\" placeholder=\"Nome\" />",
+      "css": ".ds-input{min-height:var(--h-lg);padding:var(--s-1-5) var(--s-2-5);border:var(--stroke) solid var(--border-strong);border-radius:var(--r-sm);font:var(--fw-regular) var(--fs)/var(--lh-body) var(--font);color:var(--text);background:var(--surface);box-shadow:var(--shadow-sm);caret-color:var(--accent);transition:border-color var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease);}.ds-input::placeholder{color:var(--text-3);opacity:1}.ds-input:hover{border-color:var(--input-hover-border)}.ds-input:focus-visible{outline:var(--stroke-strong) solid var(--accent);outline-offset:var(--focus-offset);box-shadow:var(--focus-ring);}.ds-input[aria-invalid=\"true\"]{border-color:var(--danger);box-shadow:var(--error-ring)}.ds-input:disabled{opacity:var(--opacity-disabled);cursor:not-allowed}"
+    },
+    {
+      "name": "Navegação ativa",
+      "kind": "nav",
+      "description": "Seleção por superfície e borda discretas, com texto legível.",
+      "html": "<nav aria-label=\"Exemplo\"><button class=\"ds-nav\" aria-current=\"page\">Visão geral</button></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:var(--s-2);min-height:var(--side-row);padding:var(--s-1) var(--s-3);border:0;border-radius:var(--r-sm);font:var(--fw-medium) var(--fs)/var(--lh-snug) var(--font);color:var(--text);background:var(--nav-active-bg);box-shadow:var(--nav-active-shadow);cursor:pointer}.ds-nav:hover{background:var(--surface-2)}.ds-nav:active{background:var(--surface-3)}.ds-nav:focus-visible{outline:var(--stroke-strong) solid var(--accent);outline-offset:var(--focus-offset);box-shadow:var(--focus-ring);}"
+    },
+    {
+      "name": "Tabela operacional",
+      "kind": "custom",
+      "description": "Cabeçalho discreto, números tabulares e rolagem no próprio contêiner.",
+      "html": "<div class=\"ds-table-wrap\"><table class=\"ds-table\"><thead><tr><th>Indicador</th><th>Estado</th></tr></thead><tbody><tr><td>Exemplo sintético</td><td>Sem leitura</td></tr></tbody></table></div>",
+      "css": ".ds-table-wrap{width:100%;overflow-x:auto}.ds-table{width:100%;border-collapse:collapse;color:var(--text);font:var(--fw-regular) var(--fs)/var(--lh-body) var(--font);font-variant-numeric:tabular-nums}.ds-table th,.ds-table td{padding:var(--s-2) var(--s-3);text-align:left;vertical-align:middle}.ds-table th{height:var(--table-head-h);color:var(--text-2);font-weight:var(--fw-medium);white-space:nowrap}.ds-table tr{border-bottom:var(--stroke) solid var(--border)}.ds-table tbody tr:hover{background:var(--surface-2)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Console operacional local",
+    "overview": "Identidade do task-manager: superfícies quentes, ação índigo, Geist e navegação compacta. A interface deriva estados do cérebro local e mantém abertura de conteúdo privado e julgamento humano explícitos.",
+    "keyCharacteristics": [
+      "Paleta quente e ação índigo",
+      "Geist e Geist Mono locais",
+      "Tokens CSS e inventário compartilhados",
+      "React/shadcn com interação Radix",
+      "Canvas com estado sustentado por evidência"
+    ],
+    "rules": [
+      {
+        "name": "Valor canônico",
+        "body": "Valores executáveis vivem em console/design/tokens.css; o inventário JS lista nomes sem duplicar valores.",
+        "section": "colors"
+      },
+      {
+        "name": "Tipo e estado",
+        "body": "Ícone/rótulo identificam o objeto; texto e contorno distinguem o estado sem depender somente de cor.",
+        "section": "colors"
+      },
+      {
+        "name": "Profundidade operacional",
+        "body": "Bordas, superfícies e sombras funcionais criam hierarquia; evitar halos decorativos.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Usar os mesmos componentes nas workspaces e no catálogo.",
+      "Preservar mobile, foco, teclado e reduced motion.",
+      "Atualizar tokens e inventário no mesmo lote.",
+      "Consultar o registro da entrega para resultados de teste."
+    ],
+    "donts": [
+      "Não espalhar valores visuais literais em consumidores.",
+      "Não inventar estados ou medidas para completar uma tela.",
+      "Não copiar conteúdo privado para exemplos ou bundles.",
+      "Não editar artefatos compilados manualmente."
+    ]
+  }
+}

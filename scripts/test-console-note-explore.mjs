@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, dirname } from 'node:path';
+import { createConsoleServer } from './console-server.mjs';
+const root=mkdtempSync(join(realpathSync(tmpdir()),'fictional-note-explore-api-'));
+const put=(ref,value)=>{const p=join(root,ref);mkdirSync(dirname(p),{recursive:true});writeFileSync(p,value)};
+let instance;
+try {
+  put('VERSION','fixture');put('COMECE-AQUI.md','# Fixture');put('.cerebro/layout.json',JSON.stringify({knowledgeRoot:'.'}));
+  put('notes/target.md','# Target\n\nOnly here: Astronomia fictícia.\n\n[Picture](../assets/sample.png)\n');
+  put('notes/origin.md','# Origin\n\n[[target]]\n');put('privado/hidden.md','# Private\n\nAstronomia fictícia.\n[[target]]\n');
+  const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aZ1sAAAAASUVORK5CYII=','base64');put('assets/sample.png',png);put('assets/unlinked.png',png);
+  instance=createConsoleServer({root});await new Promise(done=>instance.server.listen(0,'127.0.0.1',done));
+  const base=`http://127.0.0.1:${instance.server.address().port}`,page=await fetch(base);await page.text();const Cookie=page.headers.get('set-cookie').split(';')[0];
+  const get=(path,opts={})=>fetch(base+path,{...opts,headers:{Cookie,...opts.headers}});
+  const paths=['/api/local-files?mode=library&search=content&q=astronomia','/api/local-files/backlinks?ref=notes/target.md','/api/local-files/attachments?from=notes/target.md','/api/local-files/attachment?from=notes/target.md&target=../assets/sample.png'];
+  for(const path of paths)assert.equal((await fetch(base+path)).status,403,'new read routes require session');
+  const search=await(await get(paths[0])).json();assert.equal(search.total,1);assert.equal(search.files[0].ref,'notes/target.md');assert.match(search.files[0].snippet,/Astronomia/);assert.doesNotMatch(JSON.stringify(search),/Private|hidden.md/);
+  const title=await(await get('/api/local-files?mode=library&search=title&q=astronomia')).json();assert.equal(title.total,0);
+  const index=await(await get('/api/local-files?mode=library')).json();assert.doesNotMatch(JSON.stringify(index),/Only here|snippet/,'unqueried metadata never exposes snippets');
+  const back=await(await get(paths[1])).json();assert.deepEqual(back.files.map(f=>f.ref),['notes/origin.md']);
+  const linked=await(await get(paths[2])).json();assert.equal(linked.attachments[0].name,'sample.png');assert.equal(linked.attachments[0].mime,'image/png');
+  const binary=await get(paths[3]);assert.equal(binary.status,200);assert.equal(binary.headers.get('content-type'),'image/png');assert.match(binary.headers.get('cache-control'),/no-store/);assert.equal(binary.headers.get('x-content-type-options'),'nosniff');assert.deepEqual(Buffer.from(await binary.arrayBuffer()),png);
+  const head=await get(paths[3],{method:'HEAD'});assert.equal(head.status,200);assert.equal(Number(head.headers.get('content-length')),png.length);assert.equal((await head.arrayBuffer()).byteLength,0);
+  const range=await get(paths[3],{headers:{Range:'bytes=0-7'}});assert.equal(range.status,206);assert.equal(range.headers.get('content-range'),`bytes 0-7/${png.length}`);assert.deepEqual(Buffer.from(await range.arrayBuffer()),png.subarray(0,8));
+  for(const Range of ['bytes=99999-','bytes=2-1','bytes=-0','bytes=0-2,4-7'])assert.equal((await get(paths[3],{headers:{Range}})).status,416);
+  assert.equal((await get('/api/local-files/attachment?from=notes/target.md&target=../assets/unlinked.png')).status,404);
+  put('notes/target.md','# Target\n\nLink removed.\n');assert.equal((await get(paths[3])).status,404,'binary read revalidates declaration in saved source');
+  const denied=await get('/api/local-files/attachments?from=privado/hidden.md');assert.equal(denied.status,404);assert.doesNotMatch(await denied.text(),new RegExp(root));
+  console.log('✓ explore API: authenticated content search, backlinks, explicit attachment reads/HEAD/ranges and current source authorization');
+} finally { if(instance)await new Promise(done=>instance.server.close(done));rmSync(root,{recursive:true,force:true}); }

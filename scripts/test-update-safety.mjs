@@ -1,0 +1,158 @@
+#!/usr/bin/env node
+// O contrato de atualização é cobrado dos DOIS atualizadores — o bash legado
+// (que segue instalado em cérebros antigos) e o update.mjs multiplataforma.
+// Um passar e o outro não é regressão silenciosa em quem já tem o produto.
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { join, resolve } from 'node:path';
+import { tmpdir } from 'node:os';
+
+const SOURCE = resolve(process.cwd());
+const sandbox = mkdtempSync(join(tmpdir(), 'cerebro-update-'));
+const sentinel = 'CONTEXTO-DO-DONO-NAO-TOCAR\n';
+const protectedFiles = [
+  'meu-negocio/mapa.md',
+  'operacao/_HOJE.md',
+  'operacao/arquitetura/mapa-do-dono.architect-spec.json',
+  'sistemas/cerebro-base/feedback.md',
+  'sistemas/calls/feedback.md',
+  'sistemas/outros-instalados/briefing-comercial-inteligente/configuracao.md',
+  'sistemas/outros-instalados/briefing-comercial-inteligente/feedback.md',
+  'conexoes/configuradas/minha-conexao.md',
+  'conexoes/configuradas/fontes.json',
+  'comunidade/minhas-contribuicoes/aprovadas/minha-contribuicao.md',
+];
+
+const RUNNERS = [
+  {
+    nome: 'update.sh (bash legado)',
+    instalar: (dir) => {
+      mkdirSync(join(dir, '.claude', 'scripts'), { recursive: true });
+      cpSync(join(SOURCE, '.claude', 'scripts', 'update.sh'), join(dir, '.claude', 'scripts', 'update.sh'));
+      mkdirSync(join(dir, 'scripts'), { recursive: true });
+      cpSync(join(SOURCE, 'scripts', 'update.mjs'), join(dir, 'scripts', 'update.mjs'));
+    },
+    rodar: (dir, args) => execFileSync('bash', [join(dir, '.claude', 'scripts', 'update.sh'), ...args], {
+      env: { ...process.env, CEREBRO_UPDATE_SOURCE_DIR: SOURCE, CEREBRO_TELEMETRY: 'off' },
+      stdio: 'pipe',
+    }),
+  },
+  {
+    nome: 'update.mjs (node, multiplataforma)',
+    instalar: (dir) => {
+      mkdirSync(join(dir, 'scripts'), { recursive: true });
+      cpSync(join(SOURCE, 'scripts', 'update.mjs'), join(dir, 'scripts', 'update.mjs'));
+    },
+    rodar: (dir, args) => execFileSync(process.execPath, [join(dir, 'scripts', 'update.mjs'), ...args], {
+      env: { ...process.env, CEREBRO_UPDATE_SOURCE_DIR: SOURCE, CEREBRO_TELEMETRY: 'off' },
+      stdio: 'pipe',
+    }),
+  },
+];
+
+try {
+  for (const runner of RUNNERS) {
+    const old = join(sandbox, runner.nome.replace(/[^a-z0-9]+/gi, '-'));
+    mkdirSync(join(old, '.cerebro'), { recursive: true });
+    runner.instalar(old);
+    writeFileSync(join(old, '.cerebro', 'source'), 'REPO=teste/teste\nBRANCH=main\n');
+    writeFileSync(join(old, '.cerebro', 'runtime'), 'codex\n', { mode: 0o600 });
+    writeFileSync(join(old, 'VERSION'), '1.8.0\n');
+    writeFileSync(join(old, '.gitignore'), '# regra do dono\n*.local-only\n');
+    for (const file of protectedFiles) {
+      mkdirSync(join(old, file, '..'), { recursive: true });
+      writeFileSync(join(old, file), sentinel);
+    }
+
+    const baseline = `${old}-baseline`;
+    cpSync(old, baseline, { recursive: true });
+    const args = ['--tag', `v${readFileSync(join(SOURCE, 'VERSION'), 'utf8').trim()}`, '--baseline-dir', baseline];
+    const preview = JSON.parse(runner.rodar(old, args).toString());
+    runner.rodar(old, [...args, '--apply', '--approve-plan', preview.plan_hash]);
+
+    if (readFileSync(join(old, '.cerebro', 'runtime'), 'utf8') !== 'codex\n') {
+      throw new Error('atualização alterou runtime privado fora do plano');
+    }
+
+    for (const file of protectedFiles) {
+      if (readFileSync(join(old, file), 'utf8') !== sentinel) {
+        throw new Error(`[${runner.nome}] sobrescreveu: ${file}`);
+      }
+    }
+    for (const seeded of ['operacao/execucoes/_LEIA.md', 'operacao/arquitetura/_LEIA.md', 'meu-negocio/fontes/_LEIA.md']) {
+      if (!existsSync(join(old, seeded))) throw new Error(`[${runner.nome}] seed não chegou: ${seeded}`);
+    }
+    for (const motorFile of [
+      'sistemas/_CATALOGO.md',
+      'sistemas/cerebro-base/manifest.md',
+      'sistemas/cerebro-base/pipeline.md',
+      'scripts/update.mjs',
+      'scripts/concierge-run.mjs',
+      'scripts/discover-context.mjs',
+      'scripts/register-source.mjs',
+      'scripts/install-system.mjs',
+      'scripts/system-state.mjs',
+      'scripts/system-run.mjs',
+      'scripts/generate-operating-brief.mjs',
+      'scripts/test-operating-brief.mjs',
+      '.claude/skills/briefing-comercial/SKILL.md',
+      '.claude/skills/arquiteto/SKILL.md',
+      '.claude/skills/arquiteto/scripts/render-map.mjs',
+      '.cerebro/private-ignore.manifest',
+      'comunidade/vibe-makers/_CATALOGO.md',
+    ]) {
+      if (!existsSync(join(old, motorFile))) throw new Error(`[${runner.nome}] motor novo não chegou: ${motorFile}`);
+    }
+    const gitignore = readFileSync(join(old, '.gitignore'), 'utf8');
+    for (const rule of [
+      '# regra do dono',
+      '*.local-only',
+      '.cerebro/sistemas/',
+      '.cerebro/operator-runtime',
+      'sistemas/outros-instalados/*/configuracao.md',
+      'sistemas/outros-instalados/*/feedback.md',
+      'operacao/arquitetura/*',
+    ]) {
+      if (!gitignore.includes(rule)) throw new Error(`[${runner.nome}] proteção local ausente: ${rule}`);
+    }
+    console.log(`  ✓ ${runner.nome}: ${protectedFiles.length} sentinelas preservadas, seeds instalados, motor atualizado`);
+  }
+
+  // Compatibilidade de primeira passagem: um atualizador antigo copia os scripts
+  // novos, mas só executa o código novo quando chama ping.sh no final.
+  const legacy = join(sandbox, 'legacy-first-pass');
+  mkdirSync(join(legacy, '.claude'), { recursive: true });
+  mkdirSync(join(legacy, '.cerebro'), { recursive: true });
+  cpSync(join(SOURCE, '.claude', 'scripts'), join(legacy, '.claude', 'scripts'), { recursive: true });
+  cpSync(
+    join(SOURCE, '.cerebro', 'private-ignore.manifest'),
+    join(legacy, '.cerebro', 'private-ignore.manifest'),
+  );
+  mkdirSync(join(legacy, 'scripts', 'lib'), { recursive: true });
+  cpSync(join(SOURCE, 'scripts', 'post-update.mjs'), join(legacy, 'scripts', 'post-update.mjs'));
+  cpSync(join(SOURCE, 'scripts', 'lib', 'runtime-storage.mjs'), join(legacy, 'scripts', 'lib', 'runtime-storage.mjs'));
+  writeFileSync(join(legacy, '.cerebro', 'runtime'), 'claude-code\n', { mode: 0o600 });
+  writeFileSync(join(legacy, '.gitignore'), '# regra legada do dono\n*.nao-enviar');
+  execFileSync('bash', [join(legacy, '.claude', 'scripts', 'ping.sh'), 'atualizou'], {
+    env: { ...process.env, CEREBRO_TELEMETRY: 'off' },
+    stdio: 'pipe',
+  });
+  const legacyIgnore = readFileSync(join(legacy, '.gitignore'), 'utf8');
+  for (const rule of ['# regra legada do dono', '*.nao-enviar', '.cerebro/sistemas/', '.cerebro/operator-runtime']) {
+    if (!legacyIgnore.includes(rule)) throw new Error(`migração na primeira passagem ausente: ${rule}`);
+  }
+  if (!statSync(join(legacy, '.cerebro', 'runtime')).isDirectory()
+      || readFileSync(join(legacy, '.cerebro', 'operator-runtime'), 'utf8').trim() !== 'claude-code') {
+    throw new Error('migração de runtime ausente na primeira passagem');
+  }
+  execFileSync('bash', [join(legacy, '.claude', 'scripts', 'ping.sh'), 'atualizou'], {
+    env: { ...process.env, CEREBRO_TELEMETRY: 'off' },
+    stdio: 'pipe',
+  });
+  if (readFileSync(join(legacy, '.gitignore'), 'utf8') !== legacyIgnore) {
+    throw new Error('migração de privacidade não é idempotente');
+  }
+  console.log('✓ contrato de atualização cumprido pelos dois atualizadores');
+} finally {
+  rmSync(sandbox, { recursive: true, force: true });
+}

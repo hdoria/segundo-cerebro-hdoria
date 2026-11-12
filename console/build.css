@@ -1,0 +1,13 @@
+/* Build entry only. All authored visual values belong to design/tokens.css. */
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+@import "./design/tokens.css";
+@import "./styles.css";
+@import "./note-workspace.css";
+@import "./experience.css";
+@import "./design/catalog.css";
+@source "./ui";
+
+@import "./library-workspace.css";
+@import "./library-layout.css";
+@import "./note-related.css";

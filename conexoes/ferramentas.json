@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "connect_url": "https://claude.ai/settings/connectors",
+  "tools": [
+    {
+      "id": "gmail",
+      "name": "Gmail",
+      "purpose": "Ler e rascunhar e-mails para montar o resumo do dia e preparar respostas.",
+      "mcp_names": ["Gmail"],
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Procure Gmail na lista.",
+        "Clique em Conectar e autorize com a sua própria conta.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    },
+    {
+      "id": "google-calendar",
+      "name": "Google Calendar",
+      "purpose": "Ver a agenda para planejar o dia e cruzar reuniões com o contexto.",
+      "mcp_names": ["Google Calendar"],
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Procure Google Calendar na lista.",
+        "Clique em Conectar e autorize com a sua própria conta.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    },
+    {
+      "id": "google-drive",
+      "name": "Google Drive",
+      "purpose": "Achar e ler documentos do Drive para usar como fonte.",
+      "mcp_names": ["Google Drive"],
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Procure Google Drive na lista.",
+        "Clique em Conectar e autorize com a sua própria conta.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    },
+    {
+      "id": "todoist",
+      "name": "Todoist",
+      "purpose": "Ler e criar tarefas a partir de decisões e ações.",
+      "mcp_names": ["Todoist"],
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Procure Todoist na lista.",
+        "Clique em Conectar e autorize com a sua própria conta.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    },
+    {
+      "id": "notion",
+      "name": "Notion",
+      "purpose": "Consultar páginas e bases do Notion como fonte de contexto.",
+      "mcp_names": ["Notion"],
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Procure Notion na lista.",
+        "Clique em Conectar e autorize com a sua própria conta.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    },
+    {
+      "id": "granola",
+      "name": "Granola",
+      "purpose": "Buscar notas e transcrições de reuniões para tratar calls.",
+      "mcp_names": ["Granola"],
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Procure Granola na lista.",
+        "Clique em Conectar e autorize com a sua própria conta.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    },
+    {
+      "id": "supabase",
+      "name": "Supabase",
+      "purpose": "Consultar bancos, tabelas e projetos do Supabase.",
+      "mcp_names": ["Supabase"],
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Procure Supabase na lista.",
+        "Clique em Conectar e autorize a sua organização do Supabase.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    },
+    {
+      "id": "heygen",
+      "name": "HeyGen",
+      "purpose": "Gerar vídeos com avatar a partir de um roteiro, usando os créditos da sua conta HeyGen.",
+      "mcp_names": ["HeyGen"],
+      "server_url": "https://mcp.heygen.com/mcp/v1/",
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Clique em Adicionar conector personalizado, dê o nome HeyGen, cole o endereço abaixo e clique em Adicionar.",
+        "Clique em Conectar e autorize com a sua conta HeyGen.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    },
+    {
+      "id": "higgsfield",
+      "name": "Higgsfield",
+      "purpose": "Gerar imagens e vídeos nos modelos da Higgsfield, usando os créditos da sua conta.",
+      "mcp_names": ["Higgsfield"],
+      "server_url": "https://mcp.higgsfield.ai/mcp",
+      "steps": [
+        "Abra a página de conectores do Claude.",
+        "Clique em Adicionar conector personalizado, dê o nome Higgsfield, cole o endereço abaixo e clique em Adicionar.",
+        "Clique em Conectar e autorize com a sua conta Higgsfield.",
+        "Volte aqui e clique em Verificar de novo."
+      ]
+    }
+  ]
+}

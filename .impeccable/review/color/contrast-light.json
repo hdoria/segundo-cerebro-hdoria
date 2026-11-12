@@ -1,0 +1,107 @@
+[
+  {
+    "kind": "icon",
+    "label": "Hoje 1",
+    "ratio": 3.51
+  },
+  {
+    "kind": "icon",
+    "label": "Avisos",
+    "ratio": 3.22
+  },
+  {
+    "kind": "icon",
+    "label": "Julgamento 0",
+    "ratio": 3.22
+  },
+  {
+    "kind": "icon",
+    "label": "Sistemas 7",
+    "ratio": 4.18
+  },
+  {
+    "kind": "icon",
+    "label": "Skills 0",
+    "ratio": 3.78
+  },
+  {
+    "kind": "icon",
+    "label": "Canvas",
+    "ratio": 3.72
+  },
+  {
+    "kind": "icon",
+    "label": "Cérebro",
+    "ratio": 4.17
+  },
+  {
+    "kind": "icon",
+    "label": "Estrutura",
+    "ratio": 3.72
+  },
+  {
+    "kind": "icon",
+    "label": "Arquivos",
+    "ratio": 3.39
+  },
+  {
+    "kind": "icon",
+    "label": "Indicadores",
+    "ratio": 4.22
+  },
+  {
+    "kind": "icon",
+    "label": "Vibe Makers",
+    "ratio": 4.18
+  },
+  {
+    "kind": "icon",
+    "label": "Telegram",
+    "ratio": 3.72
+  },
+  {
+    "kind": "icon",
+    "label": "Confiança",
+    "ratio": 3.39
+  },
+  {
+    "kind": "number",
+    "label": "Projetos ativos6status Active no fr",
+    "ratio": 5.58
+  },
+  {
+    "kind": "number",
+    "label": "Parados6sem update há 7+ dias",
+    "ratio": 5.56
+  },
+  {
+    "kind": "number",
+    "label": "Áreas7notas type Area",
+    "ratio": 4.92
+  },
+  {
+    "kind": "number",
+    "label": "Inbox1capturas esperando triagem",
+    "ratio": 5.56
+  },
+  {
+    "kind": "icon",
+    "label": "Focohot.md1Revisar o material do pr",
+    "ratio": 4.59
+  },
+  {
+    "kind": "icon",
+    "label": "Prioridades de hojejournal/2026-10-",
+    "ratio": 4.61
+  },
+  {
+    "kind": "icon",
+    "label": "Projetos parados6 de 6 ativos sem u",
+    "ratio": 3.54
+  },
+  {
+    "kind": "icon",
+    "label": "Inboxinbox1 captura(s) esperando tr",
+    "ratio": 3.73
+  }
+]

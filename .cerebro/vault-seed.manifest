@@ -1,0 +1,23 @@
+# Estrutura inicial que o /atualizar projeta no VAULT somente se o caminho não existir.
+# Depois da primeira cópia, tudo abaixo pertence ao dono e nunca é sobrescrito.
+# Linha `destino=origem` copia a origem do pacote para outro caminho do vault.
+meu-negocio
+type
+views
+capturas
+privado
+sistemas/cerebro-base/feedback.md
+sistemas/calls/feedback.md
+sistemas/outros-instalados/_LEIA.md
+conexoes/configuradas/_LEIA.md
+operacao/_LEIA.md
+operacao/_HOJE.md
+operacao/execucoes/_LEIA.md
+operacao/decisoes-pendentes/_LEIA.md
+operacao/erros/_LEIA.md
+operacao/escalacoes/_LEIA.md
+operacao/o-que-melhorou/_LEIA.md
+operacao/arquitetura/_LEIA.md
+comunidade/minhas-contribuicoes
+.cerebro/layout.json
+.cerebro/manifest.json=templates/vault/.cerebro/manifest.json

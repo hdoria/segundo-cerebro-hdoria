@@ -1,0 +1,9 @@
+name: Pessoas
+icon: users
+color: green
+sort: modified:desc
+filters:
+  all:
+    - field: type
+      op: equals
+      value: Person

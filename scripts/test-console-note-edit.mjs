@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, realpathSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { createConsoleServer } from './console-server.mjs';
+const root=mkdtempSync(join(realpathSync(tmpdir()),'fictional-note-api-'));
+const put=(ref,text)=>{const path=join(root,ref);mkdirSync(join(path,'..'),{recursive:true});writeFileSync(path,text);};
+let instance;
+try {
+ put('VERSION','fixture');put('COMECE-AQUI.md','# Fixture');put('.cerebro/layout.json',JSON.stringify({knowledgeRoot:'.'}));
+ const ref='notes/demo.md';const before='---\ntype: Note\ntags: [demo]\n---\n\n# Fictional note\n\nOriginal paragraph.\n';put(ref,before);
+ put('notes/linked.md','# Linked note\n');put('privado/hidden.md','# Hidden');
+ instance=createConsoleServer({root});await new Promise(r=>instance.server.listen(0,'127.0.0.1',r));
+ const base=`http://127.0.0.1:${instance.server.address().port}`;const page=await fetch(base);await page.text();const cookie=page.headers.get('set-cookie').split(';')[0];
+ const session=await(await fetch(base+'/api/session',{headers:{Cookie:cookie}})).json();
+ const headers={Cookie:cookie,Origin:base,'Content-Type':'application/json','X-Cerebro-CSRF':session.csrf_token};
+ const get=path=>fetch(base+path,{headers:{Cookie:cookie}});
+ const post=(payload,overrides={})=>fetch(base+'/api/local-files/content',{method:'POST',headers:{...headers,...overrides},body:JSON.stringify(payload)});
+ const libraryResponse=await get('/api/local-files?mode=library&type=Note&tag=demo&sort=modified');
+ assert.equal(libraryResponse.status,200);
+ const library=await libraryResponse.json();
+ assert.equal(library.files.length,1,'library metadata filtering reaches nested Markdown notes');
+ assert.equal(library.files[0].ref,ref);assert.deepEqual(library.files[0].tags,['demo']);
+ assert.equal(library.facets.types.find(item=>item.value==='Note').count,1);
+ assert.ok(library.files[0].modified_at);assert.equal(typeof library.complete,'boolean');
+ assert.doesNotMatch(JSON.stringify(library),/Original paragraph|Hidden/,'index never includes note bodies or denied notes');
+ assert.equal((await fetch(base+'/api/local-files?mode=library')).status,403);
+ const file=await(await get('/api/local-files/content?ref='+ref)).json();
+ const payload={ref,expected_sha256:file.sha256,text:before.replace('Original paragraph.','Updated paragraph.'),confirm:true};
+ assert.equal((await post(payload,{'X-Cerebro-CSRF':''})).status,403,'saving requires CSRF');
+ assert.equal((await post(payload,{Cookie:''})).status,403,'saving requires session');
+ assert.equal((await post(payload,{Origin:'https://example.invalid'})).status,403);
+ assert.equal((await post(payload,{Origin:''})).status,403);
+ assert.equal((await post({...payload,confirm:false})).status,400);
+ assert.equal(readFileSync(join(root,ref),'utf8'),before);
+ const save=await post(payload);assert.equal(save.status,200);const saved=await save.json();assert.match(saved.sha256,/^[a-f0-9]{64}$/);assert.equal(saved.text,payload.text);
+ assert.equal((await post({...payload,text:before+'Stale edit'})).status,409,'stale writes must be distinct conflicts');
+ assert.equal(readFileSync(join(root,ref),'utf8'),payload.text);
+ const linked=await get('/api/local-files/resolve?from='+ref+'&target=linked');assert.equal(linked.status,200);assert.equal((await linked.json()).ref,'notes/linked.md');
+ assert.equal((await fetch(base+'/api/local-files/resolve?from='+ref+'&target=linked')).status,403);
+ assert.notEqual((await get('/api/local-files/resolve?from='+ref+'&target=../privado/hidden')).status,200);
+ const largeRef='notes/large.md';const large='# Large fictional note\n\n'+'Line of fictional text.\n'.repeat(3000);put(largeRef,large);
+ const big=await(await get('/api/local-files/content?ref='+largeRef)).json();
+ assert.equal((await post({ref:largeRef,expected_sha256:big.sha256,text:large+'One more line.\n',confirm:true})).status,200,'note endpoint supports valid notes over generic mutation body bound');
+ assert.equal((await post({...payload,ref:'privado/hidden.md'})).status,404);
+ console.log('✓ note API authenticates explicit saves, preserves source on conflict, resolves local links and handles bounded long notes');
+} finally {if(instance)await new Promise(r=>instance.server.close(r));rmSync(root,{recursive:true,force:true});}

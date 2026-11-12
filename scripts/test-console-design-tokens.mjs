@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { auditConsoleTokenSources, readConsoleTokenSources } from './check-console-tokens.mjs';
+import { TOKEN_GROUPS, readDesignToken, readDesignNumber } from '../console/design/tokens.js';
+const canonical = {path:'console/design/tokens.css',source:':root { --text: #1d1c1a; --space: 4px; }'};
+const inventory = [{title:'test',tokens:['--text','--space']}];
+const inspect = source => auditConsoleTokenSources([canonical,{path:'console/styles.css',source}],{groups:inventory});
+assert.deepEqual(inspect('.test { color:var(--text); padding:var(--space); }'),[]);
+assert.ok(inspect('.test { color:var(--missing); }').some(x=>x.includes('undefined')));
+assert.ok(inspect('.test { color:#abcdef; }').some(x=>x.includes('color')));
+assert.ok(inspect('.test { padding:13px; }').some(x=>x.includes('literal')));
+assert.ok(inspect('.test { font-weight:580; }').some(x=>x.includes('literal')));
+assert.ok(inspect('.test { transition:opacity 120ms ease; }').some(x=>x.includes('literal')));
+assert.ok(inspect('.test { --custom: 13px; padding:var(--custom); }').some(x=>x.includes('canonical')));
+assert.ok(auditConsoleTokenSources([canonical],{groups:[{title:'test',tokens:['--text']}]}).some(x=>x.includes('inventory')));
+assert.ok(auditConsoleTokenSources([canonical],{groups:[{title:'test',tokens:['--text','--space','--ghost']}]}).some(x=>x.includes('inventory')));
+assert.ok(auditConsoleTokenSources([canonical,{path:'console/ui/test.jsx',source:'const style = { color: "#abcdef", padding: "13px" };'}],{groups:inventory}).some(x=>x.includes('literal')));
+assert.deepEqual(inspect('.test { width:100%; margin:0; grid-template-columns:repeat(2,1fr); transform:translateX(50%); }'),[]);
+for (const source of ['const style={fontSize:14};','const style={gap:8};','const style={borderRadius:6};','const style={opacity:0.4};','const ui="p-[13px] bg-[#abc]";']) {
+  assert.ok(auditConsoleTokenSources([canonical,{path:'console/ui/control.jsx',source}],{groups:inventory}).some(x=>x.includes('literal')),source);
+}
+assert.ok(auditConsoleTokenSources([canonical,{path:'console/app.js',source:'const color="#ABCDEF"; context.strokeStyle="rgba(0,0,0,.5)";'}],{groups:inventory}).length>=2);
+assert.ok(auditConsoleTokenSources([canonical,{path:'console/app.js',source:'readDesignNumber("--missing");'}],{groups:inventory}).some(x=>x.includes('undefined')));
+assert.ok(inspect('.test {color:white;font-family:Arial;}').length>=2);
+const computed={getPropertyValue:name=>name==='--text'?' #1d1c1a ':name==='--space'?'4px':name==='--computed'?'calc(4px * 2)':''};
+assert.equal(readDesignToken('--text',computed),'#1d1c1a');
+assert.equal(readDesignNumber('--space',computed),4);
+assert.throws(()=>readDesignNumber('--computed',computed));
+assert.throws(()=>readDesignNumber('--missing',computed));
+const sources=await readConsoleTokenSources();
+const failures=auditConsoleTokenSources(sources);
+assert.deepEqual(failures,[],failures.join('\n'));
+const css=await readFile(new URL('../console/design/tokens.css',import.meta.url),'utf8');
+assert.match(css,/#fbfaf8/i); assert.match(css,/#4b5bd6/i); assert.match(css,/#8e9af3/i);
+assert.ok(TOKEN_GROUPS.flatMap(g=>g.tokens).includes('--background'));
+const canonicalValues=new Map([...css.matchAll(/(--[\w-]+)\s*:\s*([^;{}]+);/g)].map(([,name,value])=>[name,value.trim()]));
+function canonicalNumber(name) {
+  const value=canonicalValues.get(name);
+  const alias=value?.match(/^var\((--[\w-]+)\)$/);
+  return alias?canonicalNumber(alias[1]):readDesignNumber(name,{getPropertyValue:token=>canonicalValues.get(token)||''});
+}
+assert.ok(canonicalNumber('--layer-drawer')>canonicalNumber('--z-modal-scrim'),'the actual Radix drawer must sit above its shared modal overlay');
+assert.equal(canonicalNumber('--layer-backdrop'),canonicalNumber('--z-modal-scrim'),'legacy overlay compatibility must share the modal overlay layer');
+const authoredStyles=await readFile(new URL('../console/styles.css',import.meta.url),'utf8');
+const openDrawerRule=authoredStyles.match(/([^{}]*\.drawer\[data-state="open"\][^{}]*)\{([^}]+)\}/);
+assert.ok(openDrawerRule,'Radix open state must make the drawer visible without the legacy .open class');
+assert.match(openDrawerRule[2],/transform:\s*translateX\(0\)/,'the open drawer must enter the viewport');
+const compiledCss=await readFile(new URL('../console/styles.bundle.css',import.meta.url),'utf8');
+const compiledTokens=new Set([...compiledCss.matchAll(/(--[\w-]+)\s*:/g)].map(match=>match[1]));
+const missingCompiledTokens=TOKEN_GROUPS.flatMap(group=>group.tokens).filter(name=>!compiledTokens.has(name));
+assert.deepEqual(missingCompiledTokens,[],'every inventoried token must be emitted in the installed stylesheet');
+console.log('Console token contracts, mutation controls and authored-source audit passed.');

@@ -1,0 +1,9 @@
+name: Notas superadas
+icon: archive
+color: blue
+sort: modified:desc
+filters:
+  all:
+    - field: status
+      op: equals
+      value: Superseded

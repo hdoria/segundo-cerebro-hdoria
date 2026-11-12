@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cérebro hdoria</title>
+  <link rel="icon" type="image/png" href="/brand-logo.png">
+  <link rel="stylesheet" href="/styles.bundle.css?v=28">
+</head>
+<body>
+  <!-- Ícones (Lucide, ISC) usados pela nav, topbar e command palette. -->
+  <svg hidden aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <g id="i-today"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g>
+      <g id="i-judgments"><path d="m14 13-8.5 8.5a2.12 2.12 0 0 1-3-3L11 10"/><path d="m16 16 6-6"/><path d="m8 8 6-6"/><path d="m9 7 8 8"/><path d="m21 11-8-8"/></g>
+      <g id="i-routines"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></g>
+      <g id="i-runs"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></g>
+      <g id="i-canvas"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98"/></g>
+      <g id="i-areas"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15M9 3.236v15"/></g>
+      <g id="i-systems"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></g>
+      <g id="i-skills"><path d="m9.5 4.5 2.5-2 2.5 2M12 2.5v6M4.5 9.5l-2 2.5 2 2.5M2.5 12h6M19.5 9.5l2 2.5-2 2.5M21.5 12h-6M9.5 19.5l2.5 2 2.5-2M12 21.5v-6"/><circle cx="12" cy="12" r="3.5"/></g>
+      <g id="i-procedures"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></g>
+      <g id="i-sources"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></g>
+      <g id="i-experiments"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7M7 16h10"/></g>
+      <g id="i-compatibility"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1 1 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></g>
+      <g id="i-governance"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5"/></g>
+      <g id="i-health"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></g>
+      <g id="i-vibe-makers"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></g>
+      <g id="i-clock"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></g>
+      <g id="i-inbox"><path d="M4 4h16l2 10v6H2v-6L4 4Z"/><path d="M2 14h6l2 3h4l2-3h6"/></g>
+      <g id="i-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></g>
+      <g id="i-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></g>
+      <g id="i-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></g>
+      <g id="i-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></g>
+      <g id="i-chevron-left"><path d="m15 18-6-6 6-6"/></g>
+      <g id="i-chevron-right"><path d="m9 18 6-6-6-6"/></g>
+      <g id="i-chevron-down"><path d="m6 9 6 6 6-6"/></g>
+      <g id="i-chevron-up"><path d="m18 15-6-6-6 6"/></g>
+      <g id="i-check"><path d="M20 6 9 17l-5-5"/></g>
+      <g id="i-arrow-up"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></g>
+      <g id="i-arrow-down"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></g>
+      <g id="i-play"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></g>
+      <g id="i-square"><rect width="18" height="18" x="3" y="3" rx="2"/></g>
+      <g id="i-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></g>
+    </defs>
+  </svg>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="/brand-logo.png" alt="" aria-hidden="true">
+        <div><strong>Cérebro hdoria</strong></div>
+      </div>
+      <div class="sidebar-scroll">
+      <nav id="navigation" aria-label="Navegação principal">
+        <div class="nav-section" role="group" aria-labelledby="nav-daily"><p id="nav-daily" class="nav-group">Dia a dia</p>
+          <button aria-label="Hoje" data-view="today" data-identity="indigo"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-today"/></svg></span>Hoje <b data-count="attention">0</b></button>
+          <button aria-label="Avisos" data-view="notices" data-identity="orange"><span class="nav-glyph"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></span>Avisos <b data-inbox-count hidden></b></button>
+          <button aria-label="Julgamento" data-view="judgments" data-views="judgments,cases,routines,runs" data-identity="orange"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-judgments"/></svg></span>Julgamento <b data-count="judgments">0</b></button>
+        </div>
+        <div class="nav-section" role="group" aria-labelledby="nav-operation"><p id="nav-operation" class="nav-group">Operação</p>
+          <button aria-label="Sistemas" data-view="systems" data-views="systems,system" data-identity="violet"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-systems"/></svg></span>Sistemas <b data-count="systems">0</b></button>
+          <button aria-label="Skills" data-view="skills" data-identity="rose"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-skills"/></svg></span>Skills <b data-count="skills">0</b></button>
+          <button aria-label="Procedimentos" data-view="procedures" hidden data-identity="teal"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-procedures"/></svg></span>Procedimentos</button>
+          <button aria-label="Canvas" data-view="canvas" data-identity="blue"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-canvas"/></svg></span>Canvas</button>
+          <button aria-label="Confiança" data-view="compatibility" data-views="compatibility,governance,health" data-identity="teal"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-compatibility"/></svg></span>Confiança</button>
+        </div>
+        <div class="nav-section" role="group" aria-labelledby="nav-knowledge"><p id="nav-knowledge" class="nav-group">Conhecimento</p>
+          <button aria-label="Arquitetura" data-view="anatomy" data-identity="indigo"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="17" r="2"/><circle cx="19" cy="17" r="2"/><path d="M12 7v3.5M6.4 15.4l3.6-3M17.6 15.4l-3.6-3M7 17h10"/></svg></span>Arquitetura</button>
+          <button aria-label="Estrutura" data-view="areas" data-views="areas,area,sources,experiments" data-identity="blue"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-areas"/></svg></span>Estrutura</button>
+          <button aria-label="Cérebro" data-view="files" data-identity="teal"><span class="nav-glyph"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span>Cérebro</button>
+          <button aria-label="Indicadores" data-view="metrics" data-identity="green"><span class="nav-glyph"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M8 16v-5M13 16V7M18 16v-8"/></svg></span>Indicadores</button>
+        </div>
+        <div class="nav-section" role="group" aria-labelledby="nav-connections"><p id="nav-connections" class="nav-group">Conexões</p>
+          <button aria-label="Vibe Makers" data-view="vibe-makers" hidden data-identity="violet"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-vibe-makers"/></svg></span>Vibe Makers</button>
+          <button data-view="tools" aria-label="Ferramentas" data-identity="green"><span class="nav-glyph"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6"/><path d="M15 2v6"/><path d="M6 8h12v4a6 6 0 0 1-12 0V8Z"/><path d="M12 18v4"/></svg></span>Ferramentas</button>
+          <button data-view="hermes" aria-label="Telegram" data-identity="blue"><span class="nav-glyph"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg></span>Telegram</button>
+        </div>
+      </nav>
+      <div id="area-switcher" aria-label="Contexto de área"></div>
+      </div>
+      <div class="sidebar-footer">
+      <button id="collapse-nav" class="collapse-nav" type="button" aria-label="Encolher menu" aria-expanded="true" title="Encolher menu ( [ )"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></span><span>Encolher</span><kbd>[</kbd></button>
+      <div class="local-boundary"><i></i><div><strong>Leitura local</strong><span>Sem envio automático de contexto</span></div></div>
+      <p class="sys-line" id="sys-line">localhost · file-only · reference-only</p>
+      </div>
+    </aside>
+
+    <main class="console-main">
+      <header class="topbar">
+        <nav class="shell-breadcrumb" aria-label="Localização"><details id="breadcrumb-navigation"><summary id="breadcrumb-section" aria-label="Navegar nesta seção">Dia a dia</summary><div id="breadcrumb-pages" class="breadcrumb-pages"></div></details><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#i-chevron-right"/></svg><strong id="breadcrumb-title" aria-current="page">Hoje</strong></nav>
+        <div class="top-actions"><button id="open-palette" class="shell-search" type="button" aria-label="Buscar e navegar"><span class="nav-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><use href="#i-search"/></svg></span><span>Buscar e navegar</span><kbd>⌘K</kbd></button><div id="theme-control"></div><button id="refresh" class="icon-button" aria-label="Atualizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><use href="#i-routines"/></svg></button></div>
+      </header>
+      <div id="page-scroll" class="page-scroll" tabindex="0" role="region" aria-label="Conteúdo da página">
+      <div class="page-container">
+      <header class="page-heading"><div><h1 id="page-title">Hoje</h1><p id="page-subtitle">O que pede julgamento e o que já está pronto para trabalhar.</p></div><span id="updated-at" class="updated-at">Lendo estado local…</span></header>
+      <div id="mobile-area-switcher" class="mobile-area-switcher"></div>
+      <div id="journey"></div>
+      <section id="summary" class="summary-grid" aria-label="Resumo operacional"></section>
+      <section id="content" class="content" aria-live="polite">
+        <div class="loading"><i></i><span>Compilando contratos e recibos locais…</span></div>
+      </section>
+      </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+  <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="Detalhes" aria-hidden="true" hidden inert>
+    <button id="close-drawer" class="drawer-close" aria-label="Fechar"><svg class="ui-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
+    <div id="drawer-content"></div>
+  </aside>
+
+  <div id="palette-backdrop" class="palette-backdrop" hidden></div>
+  <div id="palette" class="palette" role="dialog" aria-label="Buscar e navegar" hidden>
+    <input id="palette-input" type="text" placeholder="Ir para… view, rotina, sistema ou experimento" autocomplete="off" spellcheck="false">
+    <ul id="palette-list" role="listbox"></ul>
+    <div class="palette-foot"><span><kbd>↑↓</kbd> navegar</span><span><kbd>↵</kbd> abrir</span><span><kbd>esc</kbd> fechar</span></div>
+  </div>
+
+  <div id="confirm-dialog"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/app.js?v=24"></script>
+</body>
+</html>

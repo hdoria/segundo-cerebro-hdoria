@@ -1,0 +1,106 @@
+/* Button identity survives a Radix asChild trigger changing data-slot. */
+/* Shared shadcn primitives and their live catalog use the same semantic roles.
+   Legacy workspace classes provide composition; these slots own control appearance. */
+:where(:is([data-slot="button"], .ui-button-base)) {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--s-1-5); min-height: var(--h-md); padding: var(--s-1) var(--s-3);
+  border: var(--stroke) solid transparent; border-radius: var(--r-sm);
+  font-family: var(--font); font-size: var(--fs-sm); font-weight: var(--fw-medium);
+  line-height: var(--lh-snug); white-space: nowrap; cursor: pointer;
+  background: var(--accent); color: var(--on-accent); box-shadow: var(--shadow-button);
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+:is([data-slot="button"], .ui-button-base)[data-variant="default"] { color: var(--on-accent); }
+:where(:is([data-slot="button"], .ui-button-base):hover) { background: var(--accent-hover); }
+:where(:is([data-slot="button"], .ui-button-base):active) { background: var(--accent-active); }
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="outline"]),
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="secondary"]) {
+  color: var(--text); background: var(--surface); border-color: var(--border-strong); box-shadow: var(--shadow-sm);
+}
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="outline"]:hover),
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="secondary"]:hover) { background: var(--surface-2); }
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="ghost"]),
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="link"]) { color: var(--text-2); background: transparent; border-color: transparent; box-shadow: none; }
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="ghost"]:hover) { color: var(--text); background: var(--surface-3); }
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="link"]) { text-decoration: underline; text-underline-offset: var(--s-1); }
+:is([data-slot="button"], .ui-button-base)[data-variant="destructive"] { color: var(--on-danger); background: var(--danger); }
+:where(:is([data-slot="button"], .ui-button-base)[data-variant="destructive"]:hover) { background: var(--danger-hover); }
+:where(:is([data-slot="button"], .ui-button-base)[data-size="sm"]), :where(:is([data-slot="button"], .ui-button-base)[data-size="xs"]) { min-height: var(--h-sm); padding: var(--s-half) var(--s-2); font-size: var(--fs-xs); }
+:where(:is([data-slot="button"], .ui-button-base)[data-size="lg"]) { min-height: var(--h-lg); padding: var(--s-2) var(--s-4); }
+:where(:is([data-slot="button"], .ui-button-base)[data-size="icon"]), :where(:is([data-slot="button"], .ui-button-base)[data-size="icon-sm"]) { width: var(--h-md); height: var(--h-md); padding: 0; }
+:where(:is([data-slot="button"], .ui-button-base):disabled), :where(:is([data-slot="button"], .ui-button-base)[aria-disabled="true"]) { opacity: var(--opacity-disabled); pointer-events: none; box-shadow: none; }
+:where(:is([data-slot="button"], .ui-button-base) svg) { width: var(--s-4); height: var(--s-4); flex-shrink: 0; }
+:where([data-slot="input"]), :where([data-slot="textarea"]), :where([data-slot="native-select"]) {
+  min-height: var(--h-lg); width: 100%; min-width: 0; padding: var(--s-1-5) var(--s-2-5);
+  border: var(--stroke) solid var(--border-strong); border-radius: var(--r-sm);
+  font: var(--fw-regular) var(--fs)/var(--lh-body) var(--font);
+  color: var(--text); background: var(--surface); box-shadow: var(--shadow-sm);
+  caret-color: var(--accent); transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+:where([data-slot="input"]::placeholder), :where([data-slot="textarea"]::placeholder) { color: var(--text-3); opacity: 1; }
+:where([data-slot="input"]:hover), :where([data-slot="textarea"]:hover), :where([data-slot="native-select"]:hover) { border-color: var(--input-hover-border); }
+:where([data-slot="input"]:focus-visible), :where([data-slot="textarea"]:focus-visible), :where([data-slot="native-select"]:focus-visible), :where(:is([data-slot="button"], .ui-button-base):focus-visible), :where([data-slot="checkbox"]:focus-visible), :where([data-slot="tabs-trigger"]:focus-visible) {
+  outline: var(--stroke-strong) solid var(--accent); outline-offset: var(--focus-offset); box-shadow: var(--focus-ring);
+}
+:where([data-slot="input"][aria-invalid="true"]), :where([data-slot="textarea"][aria-invalid="true"]) { border-color: var(--danger); box-shadow: var(--error-ring); }
+:where([data-slot="input"]:disabled), :where([data-slot="textarea"]:disabled), :where([data-slot="native-select"]:disabled) { opacity: var(--opacity-disabled); cursor: not-allowed; }
+:where([data-slot="textarea"]) { min-height: var(--measure-illustration-small); resize: vertical; }
+:where([data-slot="native-select-wrapper"]) { position: relative; display: inline-flex; align-items: center; min-width: 0; max-width: 100%; }
+:where([data-slot="native-select"]) { padding-right: var(--s-8); appearance: none; cursor: pointer; }
+:where([data-slot="native-select-icon"]) { pointer-events: none; position: absolute; right: var(--s-2); width: var(--s-4); height: var(--s-4); color: var(--text-3); }
+:where([data-slot="checkbox"]) {
+  display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center;
+  width: var(--s-4); height: var(--s-4); padding: 0;
+  border: var(--stroke) solid var(--border-strong); border-radius: var(--r-xs);
+  background: var(--surface); color: var(--on-accent); cursor: pointer; box-shadow: var(--shadow-sm);
+}
+:where([data-slot="checkbox"][data-state="checked"]) { background: var(--accent); border-color: var(--accent); }
+:where([data-slot="checkbox-indicator"]) { display: flex; align-items: center; justify-content: center; }
+:where([data-slot="checkbox-indicator"] svg) { width: var(--s-3); height: var(--s-3); }
+:where([data-slot="label"]) { display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); font-weight: var(--fw-medium); line-height: var(--lh-snug); }
+:where([data-slot="separator"]) { background: var(--border); flex-shrink: 0; height: var(--stroke); width: 100%; }
+:where([data-slot="separator"][data-orientation="vertical"]) { width: var(--stroke); height: 100%; }
+:where([data-slot="table-container"]) { width: 100%; overflow-x: auto; }
+:where([data-slot="table"]) { width: 100%; border-collapse: collapse; color: var(--text); font-size: var(--fs); font-variant-numeric: tabular-nums; }
+:where([data-slot="table-head"]) { height: var(--table-head-h); color: var(--text-2); font-weight: var(--fw-medium); text-align: left; white-space: nowrap; }
+:where([data-slot="table-cell"]), :where([data-slot="table-head"]) { padding: var(--s-2) var(--s-3); vertical-align: middle; }
+:where([data-slot="table-row"]) { border-bottom: var(--stroke) solid var(--border); transition: background var(--dur-fast) var(--ease); }
+:where([data-slot="table-row"]:hover), :where([data-slot="table-row"][data-state="selected"]) { background: var(--surface-2); }
+:where([data-slot="table-caption"]) { padding: var(--s-3); color: var(--text-3); font-size: var(--fs-sm); text-align: left; }
+:where([data-slot="tabs"]) { display: flex; flex-direction: column; gap: var(--s-3); min-width: 0; }
+:where([data-slot="tabs-list"]) { display: inline-flex; align-items: center; gap: var(--s-half); width: fit-content; max-width: 100%; min-height: var(--h-lg); padding: var(--s-half); overflow-x: auto; background: var(--surface-3); border-radius: var(--r); }
+:where([data-slot="tabs-trigger"]) { display: inline-flex; align-items: center; justify-content: center; gap: var(--s-1-5); min-height: var(--h-md); padding: var(--s-1) var(--s-3); border: 0; border-radius: var(--r-sm); background: transparent; color: var(--text-2); font-size: var(--fs-sm); font-weight: var(--fw-medium); cursor: pointer; white-space: nowrap; }
+:where([data-slot="tabs-trigger"][data-state="active"]) { color: var(--text); background: var(--surface); box-shadow: var(--shadow-segment); }
+:where([data-slot="tabs-content"]) { min-width: 0; outline: none; }
+:where([data-slot="dialog-overlay"]), :where([data-slot="sheet-overlay"]) { position: fixed; inset: 0; z-index: var(--z-modal-scrim); background: var(--overlay); }
+:where([data-slot="dialog-content"]) {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: var(--z-modal);
+  display: grid; gap: var(--s-4); width: min(var(--modal-md),var(--viewport-modal-width));
+  max-height: var(--viewport-dialog-height); overflow-y: auto; padding: var(--s-6);
+  color: var(--text); background: var(--surface); border: var(--stroke) solid var(--border); border-radius: var(--r-xl); box-shadow: var(--shadow-pop);
+}
+:where([data-slot="sheet-content"]) { position: fixed; inset: 0 0 0 auto; z-index: var(--z-modal); width: min(var(--drawer-w),var(--viewport-width)); padding: var(--s-6); overflow-y: auto; color: var(--text); background: var(--surface); border-left: var(--stroke) solid var(--border); box-shadow: var(--shadow-drawer); }
+:where([data-slot="dialog-title"]), :where([data-slot="sheet-title"]) { margin: 0; color: var(--text); font-size: var(--fs-xl); font-weight: var(--fw-semibold); line-height: var(--lh-heading); letter-spacing: var(--tracking-heading); }
+:where([data-slot="dialog-description"]), :where([data-slot="sheet-description"]) { margin: 0; color: var(--text-2); font-size: var(--fs); line-height: var(--lh-body); }
+:where([data-slot="dialog-content"] [data-slot="dialog-close"]), :where([data-slot="sheet-content"] [data-slot="sheet-close"]) { position: absolute; top: var(--s-3); right: var(--s-3); }
+.ds-catalog { display: grid; gap: var(--s-8); max-width: var(--page-max); margin: 0 auto; }
+.ds-header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--s-4); }
+.ds-header h2, .ds-section h3 { margin: 0 0 var(--s-2); font-size: var(--fs-xl); font-weight: var(--fw-semibold); line-height: var(--lh-heading); }
+.ds-header p, .ds-section > p { margin: 0; max-width: var(--measure-copy); color: var(--text-2); font-size: var(--fs); }
+.ds-section { display: grid; gap: var(--s-3); }
+.ds-components, .ds-theme-control { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-3); }
+:where(.ds-components > [data-slot="input"]), :where(.ds-components > [data-slot="native-select-wrapper"]) { max-width: var(--measure-card-small); }
+.ds-token-list { display: grid; grid-template-columns: repeat(auto-fill,minmax(var(--measure-card-min),1fr)); gap: 0 var(--s-6); margin: 0; }
+.ds-token-list > * { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); min-height: var(--row-h); padding: var(--s-2) 0; border-bottom: var(--stroke) solid var(--border); overflow-wrap: anywhere; }
+.ds-token-list dt { color: var(--text); font: var(--fw-regular) var(--fs-xs)/var(--lh-body) var(--mono); }
+.ds-token-list dd { margin: 0; max-width: var(--measure-card-small); color: var(--text-2); font: var(--fw-regular) var(--fs-xs)/var(--lh-body) var(--mono); }
+@media (--viewport-below-700) {
+  :where(:is([data-slot="button"], .ui-button-base)), :where([data-slot="input"]), :where([data-slot="native-select"]) { min-height: var(--touch-target); }
+  :where([data-slot="dialog-content"]) { padding: var(--s-4); }
+  .ds-token-list { grid-template-columns: minmax(0,1fr); }
+}
+.ui-dialog-header, .ui-sheet-header { display: grid; gap: var(--s-2); }
+.ui-dialog-footer, .ui-sheet-footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--s-2); }
+.ui-dialog-close, .ui-sheet-close { position: absolute; top: var(--s-3); right: var(--s-3); display: grid; place-items: center; width: var(--h-md); height: var(--h-md); padding: 0; color: var(--text-2); background: transparent; border: 0; border-radius: var(--r-sm); cursor: pointer; }
+.ui-dialog-close:hover, .ui-sheet-close:hover { color: var(--text); background: var(--surface-3); }
+.ui-dialog-close svg, .ui-sheet-close svg { width: var(--s-4); height: var(--s-4); }

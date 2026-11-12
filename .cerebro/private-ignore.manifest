@@ -1,0 +1,53 @@
+# Estado privado que toda instalação precisa manter fora do Git.
+# O atualizador adiciona somente regras ausentes; nunca reescreve o .gitignore do dono.
+.cerebro/id
+.cerebro/sem-telemetria
+.cerebro/acesso-email
+.cerebro/acesso-dispensado
+.cerebro/member-id
+.cerebro/runtime
+.cerebro/operator-runtime
+.cerebro/operator-runtime.legacy-*
+.cerebro/install-credential
+.cerebro/install-activation-outbox.json
+.cerebro/concierge-runs/
+.cerebro/sistemas/
+.cerebro/contracts/
+.cerebro/ledger/
+.cerebro/learning/
+.cerebro/metrics/
+operacao/execucoes/*
+!operacao/execucoes/_LEIA.md
+operacao/decisoes-pendentes/*
+!operacao/decisoes-pendentes/_LEIA.md
+operacao/erros/*
+!operacao/erros/_LEIA.md
+operacao/escalacoes/*
+!operacao/escalacoes/_LEIA.md
+operacao/o-que-melhorou/*
+!operacao/o-que-melhorou/_LEIA.md
+operacao/arquitetura/*
+!operacao/arquitetura/_LEIA.md
+conexoes/configuradas/*
+!conexoes/configuradas/_LEIA.md
+sistemas/outros-instalados/*/configuracao.md
+sistemas/outros-instalados/*/feedback.md
+sistemas/outros-instalados/*/experimento.md
+sistemas/outros-instalados/*/experimentos/
+comunidade/minhas-contribuicoes/propostas/*
+!comunidade/minhas-contribuicoes/propostas/_LEIA.md
+comunidade/minhas-contribuicoes/aprovadas/*
+!comunidade/minhas-contribuicoes/aprovadas/_LEIA.md
+comunidade/minhas-contribuicoes/enviadas/*
+!comunidade/minhas-contribuicoes/enviadas/_LEIA.md
+
+# Recibos e backups de atualização permanecem locais.
+.cerebro/update-state.json
+.cerebro/update-backups/
+.cerebro/update.lock
+
+# Instalações de comunidade ficam locais até a revisão.
+sistemas/outros-instalados/*/workspace/
+sistemas/outros-instalados/*/releases/
+sistemas/outros-instalados/.community-stage-*/
+sistemas/outros-instalados/.*.install.lock

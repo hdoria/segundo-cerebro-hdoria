@@ -1,0 +1,22 @@
+.note-related { max-width: var(--measure-copy); margin: var(--s-6) auto; padding-top: var(--s-4); border-top: var(--stroke) solid var(--hairline); }
+.note-related-hint { color: var(--text-3); font-size: var(--fs-meta); line-height: var(--lh-reading); }
+.note-related-group { margin-top: var(--s-3); }
+.note-related-group > summary { display: flex; align-items: center; gap: var(--s-2); padding-block: var(--s-3); color: var(--text-2); font-size: var(--fs-body); cursor: pointer; }
+.note-related-group summary svg { width: var(--s-4); height: var(--s-4); color: var(--accent-teal); }
+.note-related-group summary span { margin-inline-start: auto; color: var(--text-3); font-size: var(--fs-meta); }
+.note-related-group p { color: var(--text-2); font-size: var(--fs-body-sm); line-height: var(--lh-reading); }
+.note-related-group ul { margin: 0; padding: 0; list-style: none; }
+.note-related-group li button { width: 100%; height: auto; min-height: var(--measure-touch); justify-content: start; padding: var(--s-3); text-align: start; white-space: normal; overflow-wrap: anywhere; }
+.note-related-group li span { display: block; min-width: 0; }
+.note-related-group small { display: block; margin-top: var(--s-1); color: var(--text-3); font-size: var(--fs-meta); }
+.note-attachment-dialog { width: min(var(--measure-page-wide), calc(var(--viewport-width) - var(--s-8))); max-width: none; max-height: calc(var(--viewport-height) - var(--s-8)); overflow-y: auto; }
+.note-attachment-heading { display: flex; justify-content: space-between; align-items: start; gap: var(--s-4); }
+.note-attachment-heading > div { min-width: 0; overflow-wrap: anywhere; }
+.note-attachment-view { display: flex; align-items: center; justify-content: center; min-height: var(--measure-card-min); background: var(--sunken); border: var(--stroke) solid var(--hairline); border-radius: var(--r-sm); overflow: auto; }
+.note-attachment-view img { display: block; max-width: 100%; max-height: calc(var(--viewport-height) - (var(--s-24) * 2)); object-fit: contain; }
+.note-attachment-view iframe { display: block; width: 100%; height: calc(var(--viewport-height) - (var(--s-24) * 2)); min-height: var(--measure-card-min); border: 0; }
+.note-attachment-external { display: inline-flex; gap: var(--s-2); align-items: center; color: var(--accent); font-size: var(--fs-body-sm); }
+.note-attachment-external svg { width: var(--s-4); height: var(--s-4); }
+@media (--viewport-below-720) {
+  .note-attachment-dialog { width: calc(var(--viewport-width) - var(--s-4)); max-height: calc(var(--viewport-height) - var(--s-4)); padding: var(--s-4); }
+}

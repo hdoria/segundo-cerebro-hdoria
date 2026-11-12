@@ -1,0 +1,12 @@
+name: Fios ativos
+icon: flame
+color: orange
+sort: modified:desc
+filters:
+  all:
+    - field: type
+      op: equals
+      value: Thread
+    - field: status
+      op: equals
+      value: Active

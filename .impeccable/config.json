@@ -1,0 +1,65 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          "console/index.html"
+        ],
+        "createdAt": "2026-10-20T21:33:05.894Z",
+        "reason": "Agent: DESIGN.md fixes micro metadata at 11px and 12px meta; body is 13px. Footer metadata raised to 12px; preserve remaining compact technical labels."
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "console/index.html"
+        ],
+        "createdAt": "2026-10-20T21:33:05.924Z",
+        "reason": "Agent: DESIGN.md explicitly requires state halos for observed Canvas nodes and focused execution; sidebar decorative glow removed."
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-10-20T21:33:05.954Z",
+        "reason": "Agent: DESIGN.md explicitly specifies locally hosted Geist interface font."
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-10-20T21:33:05.981Z",
+        "reason": "Agent: DESIGN.md explicitly specifies locally hosted Geist Mono for IDs, versions and receipts."
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "console/styles.css"
+        ],
+        "createdAt": "2026-10-20T21:33:06.009Z",
+        "reason": "Agent: DESIGN.md explicitly specifies side rule and icon for type and separate state color. Remaining rules mark gaps and quoted judgment notes."
+      },
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "console/styles.css"
+        ],
+        "createdAt": "2026-10-20T21:33:06.037Z",
+        "reason": "Agent: grid belongs to the operational Canvas stage as required by DESIGN.md, not a decorative page background."
+      },
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "console/index.html"
+        ],
+        "createdAt": "2026-10-20T21:33:06.064Z",
+        "reason": "Agent: indexed grid is the operational Canvas stage; DESIGN.md requires a map surface."
+      }
+    ]
+  }
+}

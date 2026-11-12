@@ -1,0 +1,9 @@
+{
+ "$schema":"https://ui.shadcn.com/schema.json",
+ "style":"new-york",
+ "rsc":false,
+ "tsx":false,
+ "tailwind":{"config":"","css":"console/design/tokens.css","baseColor":"stone","cssVariables":true},
+ "aliases":{"components":"./console/ui","ui":"./console/ui/components","utils":"./console/ui/utils.js"},
+ "iconLibrary":"lucide"
+}

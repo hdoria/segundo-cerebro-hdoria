@@ -1,0 +1,5 @@
+#!/bin/sh
+# Git supplies every local/remote ref pair on stdin. The checker must inspect
+# those commits, since the active branch and worktree may be unrelated.
+root=$(git rev-parse --show-toplevel) || exit 2
+exec node "$root/scripts/check-sensitive-data.mjs" --pre-push "$1"

@@ -1,0 +1,99 @@
+name: motor
+
+# A suíte é descoberta por glob nos três sistemas; novos testes entram automaticamente.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Dependências para os testes do editor
+        run: npm ci --ignore-scripts
+
+      - name: Tracked files contain no customer identifiers or secrets
+        run: |
+          npm run check:sensitive-data
+          npm run check:sensitive-data -- --history HEAD
+
+      - name: Protocolo, superfícies e skills sincronizadas
+        run: node scripts/validate-product.mjs
+
+      - name: Suíte do motor
+        run: |
+          falhou=0
+          for teste in scripts/test-*.mjs; do
+            if node "$teste"; then
+              echo "✓ $teste"
+            else
+              echo "✗ $teste"; falhou=1
+            fi
+          done
+          exit $falhou
+
+      - name: Telemetria não vaza com o desligamento ligado
+        env:
+          CEREBRO_TELEMETRY: 'off'
+        run: node .agents/scripts/ping.mjs --diagnose | grep -q 'desativado'
+
+  # A mesma suíte roda em Windows nativo, com UTF-8 explícito.
+  windows:
+    runs-on: windows-latest
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Dependências para os testes do editor
+        run: npm ci --ignore-scripts
+      - name: Sintaxe do motor em Windows
+        shell: pwsh
+        run: |
+          Get-ChildItem -Recurse -Filter *.mjs -Path scripts, .agents/scripts |
+            ForEach-Object { node --check $_.FullName }
+
+      - name: Suíte completa em Windows
+        shell: pwsh
+        run: |
+          node scripts/validate-product.mjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $falhou = 0
+          Get-ChildItem scripts/test-*.mjs | ForEach-Object {
+            node $_.FullName
+            if ($LASTEXITCODE -ne 0) { $falhou = 1 }
+          }
+          exit $falhou
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Dependências para os testes do editor
+        run: npm ci --ignore-scripts
+      - name: Protocolo, superfícies e skills sincronizadas
+        run: node scripts/validate-product.mjs
+      - name: Suíte completa em macOS
+        run: |
+          falhou=0
+          for teste in scripts/test-*.mjs; do
+            if node "$teste"; then
+              echo "✓ $teste"
+            else
+              echo "✗ $teste"; falhou=1
+            fi
+          done
+          exit $falhou

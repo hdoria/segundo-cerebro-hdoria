@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "repo": "hdoria/cerebro-hdoria-clean",
+  "tag": "v1.40.0",
+  "commit": "4524e1ba65f9377ebc61d61594476e8a8bc31225",
+  "integration": "selective",
+  "included": [
+    "community",
+    "safe-updater",
+    "install-security",
+    "activation-resumption",
+    "activation-lifecycle",
+    "update-guidance",
+    "stable-proxy-endpoints",
+    "portable-paths-and-crlf",
+    "local-file-navigation",
+    "business-metrics-registry",
+    "operational-notices",
+    "installed-console-proof",
+    "business-metric-detail"
+  ],
+  "excluded": [
+    "member-panel",
+    "cockpit-launcher",
+    "metrics-ui"
+  ]
+}

@@ -1,0 +1,9 @@
+name: Decisões
+icon: gavel
+color: purple
+sort: modified:desc
+filters:
+  all:
+    - field: type
+      op: equals
+      value: Decision

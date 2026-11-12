@@ -1,0 +1,79 @@
+# Pacotes gated são entregues no comissionamento e nunca commitados.
+# Trava contra `git add -A` acidental.
+comunidade/vibe-makers/sistemas-disponiveis/geracao-demanda/
+# conteúdo da comunidade baixado por membro: nunca entra no Git da cópia
+comunidade/vibe-makers/conteudo/
+
+
+# PII e material BRUTO nunca entram no git — ficam só na tua máquina.
+# As pastas existem no pacote (com _LEIA.md), mas o que VOCÊ colocar nelas fica de fora do git.
+privado/*
+!privado/_LEIA.md
+capturas/*
+!capturas/_LEIA.md
+
+# ruído de SO / editor
+.DS_Store
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+node_modules/
+
+# telemetria anônima — o id desta instalação e o opt-out ficam SÓ na tua máquina
+.cerebro/id
+.cerebro/sem-telemetria
+.cerebro/acesso-email
+.cerebro/acesso-dispensado
+.cerebro/member-id
+.cerebro/runtime
+.cerebro/operator-runtime
+.cerebro/operator-runtime.legacy-*
+.cerebro/install-credential
+.cerebro/install-activation-outbox.json
+.cerebro/concierge-runs/
+.cerebro/sistemas/
+.cerebro/contracts/
+.cerebro/ledger/
+.cerebro/learning/
+.cerebro/metrics/
+
+# rastros privados de operação e contribuição — templates ficam no pacote
+operacao/execucoes/*
+!operacao/execucoes/_LEIA.md
+operacao/decisoes-pendentes/*
+!operacao/decisoes-pendentes/_LEIA.md
+operacao/erros/*
+!operacao/erros/_LEIA.md
+operacao/escalacoes/*
+!operacao/escalacoes/_LEIA.md
+operacao/o-que-melhorou/*
+!operacao/o-que-melhorou/_LEIA.md
+operacao/arquitetura/*
+!operacao/arquitetura/_LEIA.md
+conexoes/configuradas/*
+!conexoes/configuradas/_LEIA.md
+sistemas/outros-instalados/*/configuracao.md
+sistemas/outros-instalados/*/feedback.md
+sistemas/outros-instalados/*/experimento.md
+sistemas/outros-instalados/*/experimentos/
+comunidade/minhas-contribuicoes/propostas/*
+!comunidade/minhas-contribuicoes/propostas/_LEIA.md
+comunidade/minhas-contribuicoes/aprovadas/*
+!comunidade/minhas-contribuicoes/aprovadas/_LEIA.md
+comunidade/minhas-contribuicoes/enviadas/*
+!comunidade/minhas-contribuicoes/enviadas/_LEIA.md
+
+# artefatos de execução de skills em Python
+__pycache__/
+*.pyc
+
+# Recibos e backups de atualização permanecem locais.
+.cerebro/update-state.json
+.cerebro/update-backups/
+.cerebro/update.lock
+
+# Instalações de comunidade ficam locais até a revisão.
+sistemas/outros-instalados/*/workspace/
+sistemas/outros-instalados/*/releases/
+sistemas/outros-instalados/.community-stage-*/
+sistemas/outros-instalados/.*.install.lock

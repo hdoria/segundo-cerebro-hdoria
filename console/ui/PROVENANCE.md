@@ -1,0 +1,5 @@
+# Shared shadcn/ui components
+
+The components in `components/` are adapted from the official shadcn/ui `new-york-v4` registry, retrieved 2026-10-21 from `https://ui.shadcn.com/r/styles/new-york-v4/<name>.json`. The complete upstream registry files and MIT license are retained in `upstream/` as provenance. React component structure, Radix primitives and public props are preserved. TypeScript is transpiled to local JSX/ES modules; upstream visual utility strings are replaced by semantic component classes and the centralized Console token stylesheet. Button variants, size props and data-slot hooks remain available. Local import paths target utils and companion components.
+
+Components: button, input, textarea, native-select, checkbox, table, tabs, dialog, sheet, label, separator. The imported Radix dialog, checkbox and tabs implement interaction/focus; they are not CSS imitations. No runtime network dependency or CDN is used. The engine still supplies escaped markup through a registry adapter so existing canonical models and explicitly authorized actions remain unchanged.

@@ -1,0 +1,12 @@
+name = "cerebro-vibemakers"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+account_id = "94b67459294982a84cdea205e12fb906"
+workers_dev = true
+
+routes = [{ pattern = "cerebro.vibemakers.com.br", custom_domain = true }]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cerebro-telemetry"
+database_id = "bd73026f-d26c-42fe-8c79-0cbd1f06654d"
