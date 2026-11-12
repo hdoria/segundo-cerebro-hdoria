@@ -1,6 +1,6 @@
 # Cérebro hdoria
 
-Motor e Console do segundo cérebro do Hugo Doria. Repositório público (`hdoria/segundo-cerebro-hdoria`), que começou de um snapshot revisado de um projeto open source (MIT) sem importar o histórico Git anterior.
+Motor e Console do segundo cérebro do Hugo Doria. Repositório público (`hdoria/segundo-cerebro-hdoria`).
 
 Este repositório guarda só código, skills e o seed fictício. O contexto real fica no vault `hugo-os`, que o Console lê pelo `--root`. As pastas `meu-negocio/` e `operacao/` daqui são exemplo e nunca recebem dado do vault.
 
