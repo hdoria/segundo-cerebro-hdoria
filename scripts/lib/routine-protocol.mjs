@@ -582,10 +582,13 @@ export function safeRoutineDestination(root, value) {
   if (!existsSync(manifestPath)) throw new Error('destination-private-manifest-missing');
   let isDirectory = false;
   try { isDirectory = lstatSync(join(root, ref)).isDirectory(); } catch {}
-  const protectedByManifest = readFileSync(manifestPath, 'utf8').split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith('#') && !line.startsWith('!'))
-    .some((rule) => manifestRuleMatches(rule, ref, isDirectory));
+  // Como no git, vence a última regra que casar: `!caminho` devolve o caminho ao que é versionado.
+  let protectedByManifest = false;
+  for (const line of readFileSync(manifestPath, 'utf8').split('\n').map((item) => item.trim())) {
+    if (!line || line.startsWith('#')) continue;
+    const negated = line.startsWith('!');
+    if (manifestRuleMatches(negated ? line.slice(1) : line, ref, isDirectory)) protectedByManifest = !negated;
+  }
   if (!protectedByManifest) throw new Error('destination-not-private');
   const components = ref.split('/');
   let current = resolve(root);

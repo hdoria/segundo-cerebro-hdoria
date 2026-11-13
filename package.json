@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build:console": "node scripts/build-console.mjs",
+    "check:bundles": "node scripts/build-console.mjs --check",
     "diagnose": "node scripts/compatibility-diagnostic.mjs --root=.",
     "test": "node scripts/validate-product.mjs",
     "vault:compile": "node scripts/vault-compile.mjs",

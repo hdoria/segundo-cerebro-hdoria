@@ -1,5 +1,10 @@
 # Mudanças do Cérebro hdoria
 
+## v1.42.2 - 2026-11-13 · exceções do manifesto e bundles conferidos
+
+- Privacidade: o manifesto passa a respeitar as exceções com `!`, como o git. Um arquivo versionado como `operacao/execucoes/_LEIA.md` deixa de contar como destino privado de Rotina.
+- `npm run check:bundles` compila o Console em memória e acusa bundle desatualizado. O build recusa gravar bundle com caminho de fora do checkout, que vazaria o caminho da máquina no pacote público.
+
 ## v1.42.1 - 2026-11-12 · correções do Canvas, privacidade e telemetria
 
 - Canvas: o mapa ficava branco, com imagem quebrada e rótulos apagados em telas de alta densidade (2x). A camada de partículas crescia a cada quadro até o navegador desistir de pintar.

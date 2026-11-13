@@ -595,6 +595,11 @@ try {
     assert.equal(safeRoutineDestination(folderRuleRoot, 'journal/2026-11-12.md'), 'journal/2026-11-12.md', `${rule} protege o conteúdo`);
     assert.throws(() => safeRoutineDestination(folderRuleRoot, 'journalismo/nota.md'), { message: 'destination-not-private' }, `${rule} não protege journalismo/`);
   }
+  write(join(folderRuleRoot, '.cerebro', 'private-ignore.manifest'), 'operacao/execucoes/*\n!operacao/execucoes/_LEIA.md\n');
+  assert.throws(() => safeRoutineDestination(folderRuleRoot, 'operacao/execucoes/_LEIA.md'), { message: 'destination-not-private' }, 'exceção ! devolve o arquivo ao que é versionado');
+  assert.equal(safeRoutineDestination(folderRuleRoot, 'operacao/execucoes/run.md'), 'operacao/execucoes/run.md', 'vizinho da exceção continua privado');
+  write(join(folderRuleRoot, '.cerebro', 'private-ignore.manifest'), '!operacao/execucoes/_LEIA.md\noperacao/execucoes/*\n');
+  assert.equal(safeRoutineDestination(folderRuleRoot, 'operacao/execucoes/_LEIA.md'), 'operacao/execucoes/_LEIA.md', 'regra posterior vence a exceção anterior');
   rmSync(folderRuleRoot, { recursive: true, force: true });
 
   const managedAccessRoutine = contract({
