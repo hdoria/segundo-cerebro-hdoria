@@ -12,7 +12,7 @@ import { readOperatorRuntime } from '../../scripts/lib/runtime-storage.mjs';
 const ROOTS = resolveRootsOrExit({ scriptRoot: resolve(dirname(fileURLToPath(import.meta.url)), '..', '..') });
 const ROOT = ROOTS.vault;
 const EVENTOS = new Set([
-  'instalou', 'sessao', 'comecou', 'teste', 'atualizou', 'guardou', 'daily',
+  'instalou', 'sessao', 'comecou', 'teste', 'atualizou', 'guardou', 'daily', 'fonte', 'transcrever',
   'operou', 'proof_delivered', 'first_value_confirmed', 'contribution_prepared',
   'contribution_approved', 'system_installed', 'system_commissioning', 'system_activated',
   'system_first_run', 'system_needs_attention', 'system_run_started',

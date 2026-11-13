@@ -1,5 +1,12 @@
 # Mudanças do Cérebro hdoria
 
+## v1.42.1 - 2026-11-12 · correções do Canvas, privacidade e telemetria
+
+- Canvas: o mapa ficava branco, com imagem quebrada e rótulos apagados em telas de alta densidade (2x). A camada de partículas crescia a cada quadro até o navegador desistir de pintar.
+- Canvas: Áreas sem Sistema não caem mais em cima de outra Área; ocupam o maior vão livre do anel.
+- Privacidade: no manifesto, `pasta/` e `pasta/*` também reconhecem a própria pasta, seguindo a regra do `.gitignore` (nunca um arquivo comum com o mesmo nome).
+- Telemetria: os pings de `/fonte` e `/transcrever` deixam de ser descartados.
+
 ## v1.42.0 - 2026-11-12 · tela Tarefas
 
 - Nova tela Tarefas no Console: lê os checkboxes das notas (projetos, fios e dailies), mostra no topo o que é de hoje ou está atrasado (`📅 AAAA-MM-DD`) e grava a marcação na própria nota, trocando só o caractere do checkbox e recusando se a nota mudou por fora.

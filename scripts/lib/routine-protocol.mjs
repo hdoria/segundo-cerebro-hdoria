@@ -560,11 +560,13 @@ export function routineOutputDirectory(root) {
     join('.cerebro', 'runtime', 'outputs', 'routines'), join('.cerebro', 'runtime'));
 }
 
-function manifestRuleMatches(rule, value) {
+// Mesma semântica do .gitignore, para onde o manifesto é copiado: `pasta/` e `pasta/*`
+// cobrem o conteúdo e a própria pasta, mas nunca um arquivo comum chamado `pasta`.
+function manifestRuleMatches(rule, value, isDirectory) {
   const normalized = rule.replaceAll('\\', '/');
-  if (normalized.endsWith('/*')) return value.startsWith(normalized.slice(0, -1));
-  if (normalized.endsWith('/')) return value.startsWith(normalized);
-  return value === normalized || value.startsWith(`${normalized}/`);
+  const folder = normalized.replace(/\/\*?$/, '');
+  if (value.startsWith(`${folder}/`)) return true;
+  return value === folder && (folder === normalized || isDirectory);
 }
 
 export const DESTINATION_REASON_CODES = new Set([
@@ -578,10 +580,12 @@ export function safeRoutineDestination(root, value) {
   try { ref = safeRelativePath(root, value); } catch { throw new Error('destination-path-invalid'); }
   const manifestPath = join(root, '.cerebro', 'private-ignore.manifest');
   if (!existsSync(manifestPath)) throw new Error('destination-private-manifest-missing');
+  let isDirectory = false;
+  try { isDirectory = lstatSync(join(root, ref)).isDirectory(); } catch {}
   const protectedByManifest = readFileSync(manifestPath, 'utf8').split('\n')
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith('#') && !line.startsWith('!'))
-    .some((rule) => manifestRuleMatches(rule, ref));
+    .some((rule) => manifestRuleMatches(rule, ref, isDirectory));
   if (!protectedByManifest) throw new Error('destination-not-private');
   const components = ref.split('/');
   let current = resolve(root);

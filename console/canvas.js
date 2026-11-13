@@ -199,11 +199,28 @@ function brainPositions(model) {
     positions[system.id] = at(radius('system'), angle);
   });
 
-  areas.forEach((area, index) => {
+  const areaAngles = [];
+  const emptyAreas = [];
+  areas.forEach((area) => {
     const owned = grouped.filter((system) => areaBySystem.get(system.id) === area.id);
-    const angle = owned.length
-      ? owned.reduce((sum, system) => sum + systemAngle.get(system.id), 0) / owned.length
-      : -Math.PI / 2 + (index / Math.max(1, areas.length)) * TAU;
+    if (!owned.length) return emptyAreas.push(area);
+    const angle = owned.reduce((sum, system) => sum + systemAngle.get(system.id), 0) / owned.length;
+    areaAngles.push(angle);
+    positions[area.id] = at(radius('area'), angle);
+  });
+  // Área sem Sistema não tem ângulo próprio: ocupa o meio do maior vão livre do anel,
+  // para nunca cair em cima de outra Área.
+  emptyAreas.forEach((area) => {
+    const taken = areaAngles.map((angle) => ((angle % TAU) + TAU) % TAU).sort((a, b) => a - b);
+    let angle = -Math.PI / 2;
+    if (taken.length) {
+      let widest = -1;
+      taken.forEach((start, index) => {
+        const gap = (index + 1 < taken.length ? taken[index + 1] : taken[0] + TAU) - start;
+        if (gap > widest) { widest = gap; angle = start + gap / 2; }
+      });
+    }
+    areaAngles.push(angle);
     positions[area.id] = at(radius('area'), angle);
   });
 

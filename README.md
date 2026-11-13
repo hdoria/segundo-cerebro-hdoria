@@ -6,8 +6,8 @@
 
 <br/>
 
-<a href="#-instalar"><img src="https://img.shields.io/badge/instalar-v1.42.0-4B5BD6?style=for-the-badge&logo=github&logoColor=ECEAE5" alt="Instalar" /></a>
-<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/vers%C3%A3o-1.42.0-1A1A19?style=for-the-badge" alt="Versão 1.42.0" /></a>
+<a href="#-instalar"><img src="https://img.shields.io/badge/instalar-v1.42.1-4B5BD6?style=for-the-badge&logo=github&logoColor=ECEAE5" alt="Instalar" /></a>
+<a href="CHANGELOG.md"><img src="https://img.shields.io/badge/vers%C3%A3o-1.42.1-1A1A19?style=for-the-badge" alt="Versão 1.42.1" /></a>
 <a href="LICENSE"><img src="https://img.shields.io/badge/motor-MIT-1A1A19?style=for-the-badge" alt="Motor MIT" /></a>
 <a href="https://tolaria.md"><img src="https://img.shields.io/badge/Tolaria-1A1A19?style=for-the-badge&logo=markdown&logoColor=8E9AF3" alt="Tolaria" /></a>
 <a href="https://obsidian.md"><img src="https://img.shields.io/badge/Obsidian-1A1A19?style=for-the-badge&logo=obsidian&logoColor=8E9AF3" alt="Obsidian" /></a>
@@ -166,10 +166,10 @@ As notas seguem o formato do Tolaria e do Obsidian: frontmatter com `type`, `sta
 ## 📥 Instalar
 
 ```bash
-curl -L https://github.com/hdoria/segundo-cerebro-hdoria/archive/refs/tags/v1.42.0.tar.gz | tar -xz
-cd segundo-cerebro-hdoria-1.42.0
-node scripts/install.mjs --tag v1.42.0           # mostra o que vai criar
-node scripts/install.mjs --tag v1.42.0 --apply   # cria as duas pastas
+curl -L https://github.com/hdoria/segundo-cerebro-hdoria/archive/refs/tags/v1.42.1.tar.gz | tar -xz
+cd segundo-cerebro-hdoria-1.42.1
+node scripts/install.mjs --tag v1.42.1           # mostra o que vai criar
+node scripts/install.mjs --tag v1.42.1 --apply   # cria as duas pastas
 ```
 
 Depois abra o vault no agente e peça pra começar:

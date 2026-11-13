@@ -584,6 +584,19 @@ try {
     `${privateDestinationBase}/new/subdir/result.md`,
   ]) assert.equal(safeRoutineDestination(root, ref), ref);
 
+  const folderRuleRoot = mkdtempSync(join(tmpdir(), 'cerebro-folder-rule-'));
+  for (const rule of ['journal', 'journal/', 'journal/*']) {
+    write(join(folderRuleRoot, '.cerebro', 'private-ignore.manifest'), `${rule}\n`);
+    rmSync(join(folderRuleRoot, 'journal'), { recursive: true, force: true });
+    if (rule === 'journal') assert.equal(safeRoutineDestination(folderRuleRoot, 'journal'), 'journal', 'regra sem barra protege o caminho exato');
+    else assert.throws(() => safeRoutineDestination(folderRuleRoot, 'journal'), { message: 'destination-not-private' }, `${rule} não protege um arquivo comum chamado journal`);
+    mkdirSync(join(folderRuleRoot, 'journal'));
+    assert.throws(() => safeRoutineDestination(folderRuleRoot, 'journal'), { message: 'destination-is-directory' }, `${rule} reconhece a própria pasta como privada`);
+    assert.equal(safeRoutineDestination(folderRuleRoot, 'journal/2026-11-12.md'), 'journal/2026-11-12.md', `${rule} protege o conteúdo`);
+    assert.throws(() => safeRoutineDestination(folderRuleRoot, 'journalismo/nota.md'), { message: 'destination-not-private' }, `${rule} não protege journalismo/`);
+  }
+  rmSync(folderRuleRoot, { recursive: true, force: true });
+
   const managedAccessRoutine = contract({
     routine_id: 'funil-managed-access',
     trigger: { type: 'manual', schedule: null },

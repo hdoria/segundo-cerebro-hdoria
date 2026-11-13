@@ -108,7 +108,7 @@ try {
   // Exercise the package manifest through the real updater planner without mutating the product.
   const product = fileURLToPath(new URL('../', import.meta.url));
   const version = readFileSync(join(product, 'VERSION'), 'utf8').trim();
-  assert.equal(version, '1.42.0');
+  assert.equal(version, '1.42.1');
   const actual = buildBrainUpdateCenter(privateRoot, { engineRoot: product });
   assert.equal(actual.motor.fork_version, version);
   assert.equal(actual.communication.brain_releases[0]?.version, version, 'current fork changelog must appear in Updates history');

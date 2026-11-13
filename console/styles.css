@@ -2075,7 +2075,7 @@ span.knowledge-note { cursor: default; }
 .knowledge-reveal:hover { color: var(--text); border-style: solid; background: var(--surface-2); }
 
 /* Enxame de partículas — o núcleo vivo do cérebro */
-.canvas-particles { position: absolute; inset: 0; z-index: var(--layer-base); pointer-events: none; }
+.canvas-particles { position: absolute; inset: 0; width: 100%; height: 100%; z-index: var(--layer-base); pointer-events: none; }
 
 .canvas-origin {
   position: absolute; z-index: var(--layer-controls);

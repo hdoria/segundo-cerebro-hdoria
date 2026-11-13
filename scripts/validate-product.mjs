@@ -404,9 +404,9 @@ for (const event of [
   'system_installed', 'system_commissioning', 'system_first_run', 'system_activated',
   'system_needs_attention',
   'system_run_started', 'system_run_completed', 'system_value_confirmed',
-  'architect_map_generated',
+  'architect_map_generated', 'fonte', 'transcrever',
 ]) {
-  if (!ping.includes(event)) errors.push(`ping sem evento: ${event}`);
+  if (!ping.includes(`'${event}'`)) errors.push(`ping sem evento: ${event}`);
 }
 
 const comecar = readFileSync(join(ROOT, '.claude', 'skills', 'comecar', 'SKILL.md'), 'utf8');
