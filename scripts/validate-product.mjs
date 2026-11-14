@@ -163,6 +163,7 @@ const required = [
   'scripts/test-system-protocol.mjs', 'scripts/test-company-brain-protocol-v2.mjs',
   'scripts/test-access-runtime.mjs',
   'scripts/test-routine-runtime.mjs',
+  'scripts/lib/local-scheduler.mjs', 'scripts/test-local-scheduler.mjs',
   'scripts/test-context-snapshot-runtime.mjs',
   'scripts/test-execution-trace.mjs', 'scripts/test-evaluation-runtime.mjs',
   'scripts/migrate-execution-traces.mjs', 'scripts/test-migrate-execution-traces.mjs',

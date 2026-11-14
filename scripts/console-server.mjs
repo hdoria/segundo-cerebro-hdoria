@@ -25,6 +25,7 @@ import { localDate, noteTasks, toggleNoteTask } from './lib/note-tasks.mjs';
 import { listLocalFiles, readLocalFile, saveLocalFile, resolveLocalFileLink, recoverLocalNoteEdits, listLocalFileBacklinks, listLocalNoteAttachments, readLocalNoteAttachment } from './lib/local-file-browser.mjs';
 import { businessMetrics } from './lib/business-metrics.mjs';
 import { operationalInbox, markOperationalNoticeRead } from './lib/operational-inbox.mjs';
+import { createAutoImporter, readAutoImportStatus } from './lib/auto-import.mjs';
 import { isPrivateNote, knowledgeNotes, vaultMemoryLifecycle } from './lib/vault-read-model.mjs';
 import { vaultProcedures } from './lib/procedure-read-model.mjs';
 import { vaultInsights } from './lib/vault-insights.mjs';
@@ -790,72 +791,64 @@ export function brainControlCenterModel(root, { sources = [], retrievalHealth = 
   };
 }
 
+// Catálogo padrão para vault sem `companyMapDomains` no layout. Aponta só para pastas que
+// o próprio produto cria (meu-negocio, sistemas, operacao...) e para as pastas comuns de
+// um vault Tolaria ou Obsidian. Entrada sem nada no vault some do mapa.
 const COMPANY_MAP_SPEC = [
   {
     id: 'business', name: 'Estratégia & negócio',
     purpose: 'O que a empresa decidiu vender, medir e construir.',
     entries: [
-      { id: 'offers', name: 'Ofertas', refs: ['meu-negocio/oferta.md', '01-nucleo-privado/operacao-comunidade/_OFERTAS.md'] },
-      { id: 'funnel', name: 'Funil', refs: ['01-nucleo-privado/operacao-comunidade/_FUNIL-DIARIO.md'] },
-      { id: 'decisions', name: 'Decisões', refs: ['meu-negocio/decisoes', '01-nucleo-privado/decisoes', '01-nucleo-privado/meu-negocio/decisoes'] },
+      { id: 'offers', name: 'Oferta & posicionamento', refs: ['meu-negocio/oferta.md', 'meu-negocio/posicionamento.md', 'meu-negocio/icp.md'] },
+      { id: 'decisions', name: 'Decisões', refs: ['meu-negocio/decisoes', 'decisions'] },
       { id: 'experiments', name: 'Experimentos', refs: ['.cerebro/contracts/experiments', '.cerebro/runtime/experiments'] },
-      { id: 'projects', name: 'Projetos', refs: ['01-nucleo-privado/projetos'] },
+      { id: 'projects', name: 'Projetos', refs: ['projects', 'projetos'] },
+      { id: 'threads', name: 'Fios', refs: ['meu-negocio/fios'] },
     ],
   },
   {
-    id: 'marketing-sales', name: 'Marketing & vendas',
-    purpose: 'O que a empresa publica, testa e aprende para gerar demanda.',
+    id: 'relationships', name: 'Clientes & pessoas',
+    purpose: 'Com quem a empresa trabalha e o que se sabe de cada um.',
     entries: [
-      { id: 'content', name: 'Produção por autor', refs: ['01-nucleo-privado/producao-conteudo/gabriel', '01-nucleo-privado/producao-conteudo/turra', '01-nucleo-privado/producao-conteudo/vini'] },
-      { id: 'ads', name: 'Biblioteca de Ads', refs: ['01-nucleo-privado/producao-conteudo/ads/entregues', '01-nucleo-privado/producao-conteudo/ads/vini', '01-nucleo-privado/producao-conteudo/ads/zucco'] },
-      { id: 'ads-inbox', name: 'Ads para classificar', refs: ['01-nucleo-privado/producao-conteudo/ads/_a-classificar'] },
-      { id: 'ideas', name: 'Ideias', refs: ['01-nucleo-privado/producao-conteudo/ads/ideias', '01-nucleo-privado/producao-conteudo/Banco de ideias — conteudo da viagem (voz do Gabriel).md'] },
-      { id: 'content-map', name: 'Mapa de conteúdo', refs: ['01-nucleo-privado/producao-conteudo/_MAPA-CONTEUDO.md'] },
-      { id: 'voice-atoms', name: 'Átomos de voz', refs: ['01-nucleo-privado/producao-conteudo/atomos-voz'] },
+      { id: 'people', name: 'Pessoas', refs: ['meu-negocio/gente', 'people', 'pessoas'] },
+      { id: 'companies', name: 'Empresas', refs: ['companies', 'empresas'] },
+      { id: 'areas', name: 'Áreas', refs: ['areas'] },
     ],
   },
   {
     id: 'product-delivery', name: 'Produto & entrega',
     purpose: 'O que transforma conhecimento em experiência, capacidade e resultado.',
     entries: [
-      { id: 'systems', name: 'Sistemas', refs: ['sistemas', '01-nucleo-privado/sistemas', '.cerebro/contracts/systems'], view: 'systems' },
-      { id: 'skills', name: 'Skills', refs: ['skills', '01-nucleo-privado/skills', '.agents/skills'] },
-      { id: 'delivery', name: 'Entregas em construção', refs: ['01-nucleo-privado/projetos/implementacao-cerebro-servico', '01-nucleo-privado/projetos/produto-lancamento-2026-07'] },
-      { id: 'cases', name: 'Cases & resultados', refs: ['01-nucleo-privado/operacao/o-que-melhorou', '01-nucleo-privado/sistemas/_MELHORIAS.md'] },
-      { id: 'releases', name: 'Produto & releases', refs: ['VERSION', '.cerebro/version', '01-nucleo-privado/sistemas/produto-cerebro'] },
+      { id: 'systems', name: 'Sistemas', refs: ['sistemas', '.cerebro/contracts/systems'], view: 'systems' },
+      { id: 'skills', name: 'Skills', refs: ['skills', '.agents/skills'] },
+      { id: 'cases', name: 'O que melhorou', refs: ['operacao/o-que-melhorou', 'meu-negocio/o-que-funciona.md'] },
     ],
   },
   {
     id: 'community', name: 'Comunidade',
-    purpose: 'Quem participa, quais encontros acontecem e como a experiência é operada.',
+    purpose: 'O que a empresa compartilha e recebe de quem usa o mesmo método.',
     entries: [
-      { id: 'founders', name: 'Founders', refs: ['01-nucleo-privado/founders'] },
-      { id: 'community-ops', name: 'Operação da comunidade', refs: ['01-nucleo-privado/operacao-comunidade'] },
-      { id: 'dispatches', name: 'Disparos', refs: ['01-nucleo-privado/operacao-comunidade/disparos'] },
-      { id: 'meetings', name: 'Encontros da comunidade', refs: ['01-nucleo-privado/operacao-comunidade/encontros'] },
-      { id: 'community-memory', name: 'Memória compartilhável', refs: ['comunidade', '01-nucleo-privado/comunidade'] },
+      { id: 'community-memory', name: 'Minhas contribuições', refs: ['comunidade/minhas-contribuicoes'] },
     ],
   },
   {
     id: 'research', name: 'Pesquisa & referências',
     purpose: 'Evidência de campo, repertório externo e linguagem própria da empresa.',
     entries: [
-      { id: 'third-party', name: 'Dados de terceiros', refs: ['02-dados-terceiros'], sealed: true },
-      { id: 'references', name: 'Referências', refs: ['conhecimento', '01-nucleo-privado/referencias'] },
-      { id: 'concepts', name: 'Conceitos', refs: ['01-nucleo-privado/conceitos'] },
-      { id: 'founder-voice', name: 'Falas dos founders', refs: ['01-nucleo-privado/founders/falas'] },
-      { id: 'notes', name: 'Notas de trabalho', refs: ['01-nucleo-privado/notas'] },
+      { id: 'sources-notes', name: 'Fontes', refs: ['meu-negocio/fontes'] },
+      { id: 'references', name: 'Referências', refs: ['resources', 'conhecimento', 'referencias'] },
+      { id: 'captures', name: 'Capturas', refs: ['capturas'] },
+      { id: 'private', name: 'Notas privadas', refs: ['privado'], sealed: true },
     ],
   },
   {
     id: 'operations-technology', name: 'Operação & tecnologia',
     purpose: 'Como o Cérebro roda, deixa recibos e continua confiável.',
     entries: [
-      { id: 'operations', name: 'Operação', refs: ['operacao', '01-nucleo-privado/operacao'] },
-      { id: 'dailies', name: 'Dailies', refs: ['meu-negocio/dailies', '01-nucleo-privado/founders/dailies'] },
+      { id: 'operations', name: 'Operação', refs: ['operacao'] },
+      { id: 'dailies', name: 'Dailies', refs: ['meu-negocio/dailies', 'journal'] },
       { id: 'routines', name: 'Rotinas do Cérebro', refs: ['.cerebro/contracts/routines'], view: 'routines' },
       { id: 'sources', name: 'Contratos de Fontes', refs: ['.cerebro/contracts/sources'], view: 'sources' },
-      { id: 'receipts', name: 'Painel & recibos', refs: ['01-nucleo-privado/painel'] },
     ],
   },
 ];
@@ -936,7 +929,7 @@ export function companyMapModel(root, { model, sources, round, contextGaps = 0 }
   const routines = [
     ...(daily ? [{
       routine_id: 'daily-humana',
-      name: 'Daily dos founders',
+      name: 'Daily',
       state: 'human-capture',
       schedule: 'Ritual humano',
       output: `${daily.count} registros de mudança, decisão e aprendizado`,
@@ -1538,7 +1531,7 @@ function operationalInboxInputs(root, now) {
   let decisions;
   try { decisions = listDecisionCases(root); }
   catch { decisions = { unavailable: true }; }
-  return { model, decisions };
+  return { model, decisions, autoImport: readAutoImportStatus(root) };
 }
 
 const TOOLS_CACHE_MS = 300_000;
@@ -1577,6 +1570,7 @@ function createToolConnectionsCache({ root, probe, clock }) {
 
 export function createConsoleServer({
   root,
+  autoImport = false,
   spawn,
   spawnCollector,
   executorObserver,
@@ -2279,6 +2273,11 @@ export function createConsoleServer({
       send(response, status, { reason_code: reasonCode });
     }
   });
+  if (autoImport) {
+    const importer = createAutoImporter({ root: brainRoot });
+    server.on('listening', () => importer.start());
+    server.on('close', () => importer.stop());
+  }
   return { server, sessionToken, csrfToken, root: brainRoot };
 }
 
@@ -2294,7 +2293,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(1);
   }
   try {
-    const instance = createConsoleServer({ root: option('root') || process.env.CEREBRO_INSTALL_ROOT || process.cwd() });
+    const instance = createConsoleServer({ root: option('root') || process.env.CEREBRO_INSTALL_ROOT || process.cwd(), autoImport: true });
     instance.server.listen(port, '127.0.0.1', () => {
       const address = instance.server.address();
       console.log(`Cérebro hdoria · http://127.0.0.1:${address.port}`);

@@ -47,6 +47,23 @@ function missingParents(folder) {
   return missing;
 }
 
+/** Pasta de notas alheia acima do destino: aviso na prévia, porque o caminho foi escolha explícita. */
+export function foreignNotesAncestor(destination) {
+  for (let dir = resolve(destination, '..'); dirname(dir) !== dir && dir !== homedir(); dir = dirname(dir)) {
+    if (!existsSync(dir)) continue;
+    const notes = existsSync(join(dir, '.obsidian'))
+      || (existsSync(join(dir, 'type')) && existsSync(join(dir, 'views')))
+      || existsSync(join(dir, 'AGENTS.md'));
+    if (notes) return dir;
+  }
+  return null;
+}
+
+function installWarnings(folders) {
+  const found = [...new Set([folders.vault, folders.motor].map(foreignNotesAncestor).filter(Boolean))];
+  return found.map(dir => `o destino fica dentro de ${dir}, que parece outra pasta de notas. O Cérebro vai criar as pastas lá dentro; se não era isso, escolha outro --vault.`);
+}
+
 function nested(a, b) {
   return a === b || a.startsWith(b + sep) || b.startsWith(a + sep);
 }
@@ -71,7 +88,8 @@ export function installPackage({ vault, motor }, source, tag, { apply = false, w
     if (!existsSync(safePath(source, required))) throw new Error('installation-package-incomplete');
   }
   const plan = planSplit({ motor: folders.motor, vault: folders.vault, source, tag, fresh: true });
-  if (!apply) return { status: 'preview', tag, vault: folders.vault, motor: folders.motor, written: false, files: plan.summary };
+  const warnings = installWarnings(folders);
+  if (!apply) return { status: 'preview', tag, vault: folders.vault, motor: folders.motor, written: false, files: plan.summary, warnings };
   // Exclusivas: não reutiliza pasta criada entre prévia e aplicação.
   const createdParents = [...new Set([...missingParents(folders.motor), ...missingParents(folders.vault)])];
   // As pastas e os pais que esta execução criou voltam a não existir se a instalação falhar.
@@ -92,7 +110,7 @@ export function installPackage({ vault, motor }, source, tag, { apply = false, w
     made.vault = true;
     applySplit(folders, plan, { write });
     return { status: 'installed', tag, version: readFileSync(join(folders.motor, 'VERSION'), 'utf8').trim(),
-      vault: folders.vault, motor: folders.motor, written: true };
+      vault: folders.vault, motor: folders.motor, written: true, warnings };
   } catch (error) {
     rollback();
     throw new Error(`installation-failed: ${error.message}`);

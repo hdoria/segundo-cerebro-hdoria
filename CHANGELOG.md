@@ -1,5 +1,13 @@
 # Mudanças do Cérebro hdoria
 
+## v1.43.0 - 2026-11-14 · agendador local e importação automática
+
+- O Console importa sozinho o histórico de sessões e o journal (dailies e weekly reviews) logo depois de subir e a cada 30 minutos. `CEREBRO_AUTO_IMPORT_MINUTES` muda o intervalo e `0` desliga. Falha aparece em Avisos.
+- Agendador local para Rotinas que rodam pelo motor: `routine-runtime scheduler-install` mostra a prévia e só grava com `--confirm` (launchd no macOS, Agendador de Tarefas no Windows, systemd ou cron no Linux). `scheduler-status` mostra a última execução e avisa quando ela atrasou; `scheduler-remove --confirm` apaga só o que foi criado.
+- Mapa da empresa: o catálogo padrão passa a usar só pastas que o produto cria e as pastas comuns de Tolaria e Obsidian.
+- Instalação em duas pastas: o `update` recusa `CEREBRO_MOTOR_DIR` diferente do ponteiro do vault; a prévia avisa quando o destino fica dentro de outra pasta de notas; `LICENSE` volta a acompanhar a versão na pasta única.
+- `publish-release` recusa publicar sobre um commit do repositório público que não seja release.
+
 ## v1.42.2 - 2026-11-13 · exceções do manifesto e bundles conferidos
 
 - Privacidade: o manifesto passa a respeitar as exceções com `!`, como o git. Um arquivo versionado como `operacao/execucoes/_LEIA.md` deixa de contar como destino privado de Rotina.

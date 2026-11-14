@@ -43,7 +43,7 @@ export async function openConsoleBrowser(url, { platform = process.platform, spa
 export async function launchConsole({ root, port = 4782, open = true }, { opener = openConsoleBrowser } = {}) {
   if (!root) throw Error('console-root-required');
   if (!Number.isInteger(port) || port < 0 || port > 65535) throw Error('console-arguments-invalid');
-  const instance = createConsoleServer({ root: resolve(root) });
+  const instance = createConsoleServer({ root: resolve(root), autoImport: true });
   await new Promise((done, reject) => {
     instance.server.once('error', reject);
     instance.server.listen(port, '127.0.0.1', done);

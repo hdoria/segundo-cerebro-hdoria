@@ -79,6 +79,13 @@ if (!COMMAND_RE.test(command) || !ALLOWED.has(command)) {
 const pointer = readPointer();
 const motor = resolveMotor(pointer);
 
+// O update grava no motor do ponteiro; rodá-lo com o código de outro motor mostraria uma prévia
+// de um e executaria o outro.
+if (command === 'update' && pointer?.MOTOR_DIR && existsSync(pointer.MOTOR_DIR)
+  && realpathSync(pointer.MOTOR_DIR) !== motor) {
+  die(`CEREBRO_MOTOR_DIR aponta para ${motor}, mas este vault usa o motor ${realpathSync(pointer.MOTOR_DIR)}. Para atualizar, rode sem a variável; para trocar de motor, use update.mjs --link.`);
+}
+
 if (command === 'motor-path') {
   console.log(motor);
   process.exit(0);

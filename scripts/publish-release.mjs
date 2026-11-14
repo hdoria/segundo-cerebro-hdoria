@@ -24,6 +24,13 @@ if (!readme.includes(tag) || staleTags.length) fail(`README.md precisa instalar 
 
 git('fetch', '-q', PUBLIC_URL, 'main');
 const publicHead = git('rev-parse', 'FETCH_HEAD');
+// O commit novo usa só a árvore do privado: uma edição feita direto no público (pelo site do
+// GitHub, por exemplo) sumiria sem aviso. Só segue sobre um release deste script, ou com
+// --sobrescrever-publico depois de levar a edição para o privado.
+const publicSubject = git('log', '-1', '--format=%s', publicHead);
+if (!/^chore\(release\): v\d+\.\d+\.\d+$/.test(publicSubject) && !process.argv.includes('--sobrescrever-publico')) {
+  fail(`O main público termina em "${publicSubject}" (${publicHead.slice(0, 7)}), que não é um release. Traga a edição para o privado e rode de novo com --sobrescrever-publico.`);
+}
 const tree = git('rev-parse', 'HEAD^{tree}');
 if (git('rev-parse', `${publicHead}^{tree}`) === tree) fail('O público já tem esta árvore. Nada a publicar.');
 

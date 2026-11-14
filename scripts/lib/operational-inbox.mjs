@@ -73,7 +73,7 @@ function traceMode(root, runId, budget, issues) {
   } finally { if (fd !== undefined) closeSync(fd); }
 }
 
-function derive(root, model, decisions) {
+function derive(root, model, decisions, autoImport) {
   const systems = new Map([...array(model?.systems), ...array(model?.native_systems)].flatMap((item) => [[item.system_id, item], [item.contract_id, item]]));
   const records = new Map(array(model?.run_records).filter((record) => token(record.run_id)).map((record) => [record.run_id, record]));
   const issues = new Set(), budget = { files: 0, bytes: 0 }, modes = new Map();
@@ -121,6 +121,11 @@ function derive(root, model, decisions) {
   for (const item of array(decisions?.cases)) {
     if (item.state?.status !== 'pending' || !token(item.case_id) || simulation(item)) continue;
     add({ kind: 'decision', status: 'pending', target: { kind: 'decision-case', ref: item.case_id }, evidence: `decision-case:${item.case_id}`, system: item.system_ref, occurred: item.first_seen, revision: date(item.last_seen), title: 'Decisão aguarda análise', severity: 'warning' });
+  }
+  const IMPORT_TITLES = { history: 'Importação automática do histórico falhou', journal: 'Importação automática do journal falhou' };
+  for (const [step, outcome] of Object.entries(autoImport?.steps || {})) {
+    if (!IMPORT_TITLES[step] || outcome?.ok !== false) continue;
+    add({ kind: 'import', status: token(outcome.error_code) || 'import-failed', target: { kind: 'auto-import', ref: step }, evidence: `auto-import:${step}`, occurred: autoImport.completed_at, title: IMPORT_TITLES[step], severity: 'error' });
   }
   const notices = [...result.values()].sort((a, b) => (a.severity === 'error' ? 0 : 1) - (b.severity === 'error' ? 0 : 1) || (b.occurred_at || '').localeCompare(a.occurred_at || '') || a.id.localeCompare(b.id));
   return { notices, issues: [...issues] };
@@ -199,10 +204,10 @@ function writeMarks(root, marks) {
   finally { if (temporary) { try { unlinkSync(temporary); } catch {} } }
 }
 
-export function operationalInbox(root, { model, decisions, area = '', unread = false, offset = 0, limit = 50 } = {}) {
+export function operationalInbox(root, { model, decisions, autoImport = null, area = '', unread = false, offset = 0, limit = 50 } = {}) {
   if (typeof area !== 'string' || (area && !token(area)) || typeof unread !== 'boolean' || !Number.isInteger(offset) || offset < 0 || offset > 1_000_000 || !Number.isInteger(limit) || limit < 1 || limit > 100) throw new Error('inbox-filter-invalid');
   const { marks, issue } = readMarks(root);
-  const derived = derive(root, model, decisions);
+  const derived = derive(root, model, decisions, autoImport);
   const notices = derived.notices.filter((notice) => !area || notice.area_ref === area).map((notice) => ({ ...notice, read: marks.get(notice.id)?.fingerprint === notice.fingerprint }));
   const counts = { total: notices.length, unread: notices.filter((notice) => !notice.read).length };
   const visible = unread ? notices.filter((notice) => !notice.read) : notices;
@@ -210,9 +215,9 @@ export function operationalInbox(root, { model, decisions, area = '', unread = f
   return { available: Boolean(model), notices: visible.slice(offset, offset + limit), counts, total: visible.length, offset, limit, issues };
 }
 
-export function markOperationalNoticeRead(root, { model, decisions, id, fingerprint, read } = {}) {
+export function markOperationalNoticeRead(root, { model, decisions, autoImport = null, id, fingerprint, read } = {}) {
   if (!NOTICE.test(id) || !DIGEST.test(fingerprint) || typeof read !== 'boolean') throw new Error('inbox-request-invalid');
-  const notice = derive(root, model, decisions).notices.find((item) => item.id === id);
+  const notice = derive(root, model, decisions, autoImport).notices.find((item) => item.id === id);
   if (!notice) throw new Error('not-found');
   if (notice.fingerprint !== fingerprint) throw new Error('inbox-notice-stale');
   const { marks, issue } = readMarks(root);

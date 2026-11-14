@@ -11,6 +11,7 @@ export const MOTOR_ROLE = '.cerebro/motor-install.json';
 const BRAIN_MANIFEST = '.cerebro/manifest.json';
 const PROJECTION_RECEIPT = '.cerebro/projection-state.json';
 const MANAGED_BEGIN = '<!-- CEREBRO:MANAGED:BEGIN -->';
+const MANAGED_END = '<!-- CEREBRO:MANAGED:END -->';
 
 /** Caminho absoluto em qualquer plataforma (o ponteiro pode ter sido escrito em Windows). */
 export function isAbsolutePath(value) {
@@ -166,7 +167,11 @@ export function isProjectedVault(vault) {
     // Sem manifesto legível, vale o bloco do AGENTS.md.
   }
   try {
-    return readFileSync(join(vault, 'AGENTS.md'), 'utf8').includes(MANAGED_BEGIN);
+    // Só vale o bloco de verdade: BEGIN e END sozinhos na linha, nessa ordem. Um AGENTS.md que
+    // apenas cita os marcadores em documentação não é vault projetado.
+    const lines = readFileSync(join(vault, 'AGENTS.md'), 'utf8').split(/\r?\n/).map(line => line.trim());
+    const begin = lines.indexOf(MANAGED_BEGIN);
+    return begin !== -1 && lines.indexOf(MANAGED_END, begin + 1) !== -1;
   } catch {
     return false;
   }

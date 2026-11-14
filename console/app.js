@@ -1125,7 +1125,7 @@ function renderCompanyMap(anatomy) {
   return `<div class="company-map-home">
     <section class="company-map-search">
       <div><h2>Encontre o que existe na empresa.</h2><p>Áreas, conhecimento, Fontes e rotinas — sem transformar o Cérebro em outro ClickUp.</p></div>
-      <label><span>Buscar no mapa da empresa</span><input type="search" data-brain-map-search value="${escapeHtml(state.brain.query)}" placeholder="Ofertas, Ads, founders, decisões…" autocomplete="off"><small>Busca local nos nomes e áreas já mapeados. Não chama modelo.</small></label>
+      <label><span>Buscar no mapa da empresa</span><input type="search" data-brain-map-search value="${escapeHtml(state.brain.query)}" placeholder="Projetos, pessoas, decisões…" autocomplete="off"><small>Busca local nos nomes e áreas já mapeados. Não chama modelo.</small></label>
     </section>
 
     <div class="company-map-layout">
@@ -1134,7 +1134,7 @@ function renderCompanyMap(anatomy) {
         ${domains.length ? `<div class="company-domain-list">${domains.map((domain, index) => `<section class="company-domain">
           <div class="company-domain-heading"><span>${String(index + 1).padStart(2, '0')}</span><div><h3>${escapeHtml(domain.name)}</h3><p>${escapeHtml(domain.purpose)}</p></div></div>
           <ul>${domain.entries.map(brainHouseRow).join('')}</ul>
-        </section>`).join('')}</div>` : `<div class="company-map-empty"><strong>Nada no mapa corresponde a “${escapeHtml(state.brain.query)}”.</strong><span>Tente uma casa real, como ofertas, Ads, founders, decisões ou Sistemas.</span></div>`}
+        </section>`).join('')}</div>` : `<div class="company-map-empty"><strong>Nada no mapa corresponde a “${escapeHtml(state.brain.query)}”.</strong><span>Tente uma casa real, como projetos, pessoas, decisões ou Sistemas.</span></div>`}
       </section>
 
       <aside class="company-map-rail">
@@ -2552,6 +2552,7 @@ function openOperationalNotice(id) {
   if (target.kind === 'receipt') { void openJudgment(target.ref); return; }
   if (target.kind === 'routine') { openDrawer(target.ref); return; }
   if (target.kind === 'decision-case') { void openCase(target.ref); return; }
+  if (target.kind === 'auto-import') { toast('Para ver o erro completo, rode node .cerebro/bin/cerebro.mjs vault-sync --confirm no vault.'); return; }
   if (target.kind === 'run-record') {
     state.canvas.scope = 'run';
     state.canvas.ref = target.ref.startsWith('run-record:') ? target.ref : `run-record:${target.ref}`;

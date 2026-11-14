@@ -22,7 +22,8 @@ assert.match(app, /state\.brain\.mode === 'architecture'.*void loadBrainGraph\(\
 const loadAnatomy = app.match(/async function loadAnatomy\(\) \{([\s\S]*?)\n\}\n\nasync function loadBrainGraph/)?.[1] || '';
 assert.doesNotMatch(loadAnatomy, /api\/graphs\/brain/, 'modo novo não pode baixar o grafo no primeiro carregamento');
 assert.match(server, /Estratégia & negócio/);
-assert.match(server, /Marketing & vendas/);
+assert.match(server, /Clientes & pessoas/);
+assert.doesNotMatch(server, /01-nucleo-privado\/(?:producao-conteudo|founders|operacao-comunidade)|gabriel|zucco|turra|\bvini\b/i, 'catálogo padrão não pode carregar pasta nem nome do vault original');
 assert.match(server, /Produto & entrega/);
 assert.match(server, /Comunidade/);
 assert.match(server, /Pesquisa & referências/);
@@ -41,11 +42,10 @@ const put = (relative, content = 'x') => {
 };
 
 try {
-  put('01-nucleo-privado/operacao-comunidade/_OFERTAS.md');
-  put('01-nucleo-privado/producao-conteudo/ads/_a-classificar/ad.md');
-  put('01-nucleo-privado/founders/dailies/2026-08-27.md');
-  put('01-nucleo-privado/sistemas/demo/sistema.md');
-  put('02-dados-terceiros/calls-raw/call.md', 'conteúdo que o read model não deve devolver');
+  put('meu-negocio/oferta.md');
+  put('journal/2026-08-27.md');
+  put('sistemas/demo/sistema.md');
+  put('privado/call.md', 'conteúdo que o read model não deve devolver');
   put('.cerebro/contracts/systems/demo.json', '{}');
   put('.cerebro/contracts/experiments/exp.json', '{}');
   put('.cerebro/contracts/routines/daily.json', '{}');
@@ -67,11 +67,14 @@ try {
 
   assert.equal(byId.get('systems').count, 1, 'Sistemas deve contar objetos sem somar arquivos e contratos');
   assert.equal(byId.get('experiments').count, 1, 'Experimentos deve contar objetos sem duplicar estado e contrato');
-  assert.equal(byId.get('third-party').sealed, true);
+  assert.equal(byId.get('private').sealed, true);
+  assert.equal(byId.get('offers').count, 1);
+  assert.equal(byId.has('companies'), false, 'entrada sem nada no vault some do mapa');
+  assert.equal(map.domains.some((domain) => domain.id === 'community'), false, 'domínio vazio some do mapa');
   assert.equal(map.privacy.content_exposed, false);
   assert.equal(map.privacy.third_party_aggregate_only, true);
   assert.equal(map.care.context_gaps, 2);
-  assert.equal(map.routines[0].name, 'Daily dos founders');
+  assert.equal(map.routines[0].name, 'Daily');
   assert.equal(map.routines.at(-1).last_observed, '2026-08-27T10:00:00Z', 'rotina deve usar o recibo mais recente');
   assert.deepEqual(map.memory_flow.map((step) => step.name), ['Fonte', 'Bruto', 'Processado', 'Destilado', 'Contexto vigente', 'Sistema', 'Julgamento', 'Aprendizado']);
   assert.doesNotMatch(JSON.stringify(map), /conteúdo que o read model não deve devolver/);

@@ -24,6 +24,14 @@ import {
   tickRoutines,
 } from './lib/routine-runtime.mjs';
 import { recognizeConsoleBrain } from './lib/console-read-model.mjs';
+import {
+  installScheduler,
+  removeScheduler,
+  resolvePlan,
+  runTickAndRecord,
+  schedulerStatus,
+} from './lib/local-scheduler.mjs';
+import { isSplitMotor } from './lib/installation.mjs';
 import { readJson } from './lib/system-protocol.mjs';
 
 function fail(message, code = 1) {
@@ -49,6 +57,9 @@ const positional = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
 const [action = 'status', target = ''] = positional;
 
 try {
+  if (action.startsWith('scheduler-') && isSplitMotor(root)) {
+    fail(`esta pasta é o motor de uma instalação dividida; rode pelo lançador do vault: node .cerebro/bin/cerebro.mjs routine-runtime ${action}`);
+  }
   recognizeConsoleBrain(root);
   if (action === 'install') {
     confirm('instalação');
@@ -167,8 +178,43 @@ try {
     })));
     process.exit(0);
   }
+  if (action === 'scheduler-status') {
+    present(schedulerStatus(root));
+    process.exit(0);
+  }
+  if (action === 'scheduler-install') {
+    const plan = resolvePlan({ root, intervalMinutes: option('interval') || undefined });
+    if (!process.argv.includes('--confirm')) {
+      present({
+        status: 'preview',
+        message: 'nada foi gravado; rode de novo com --confirm para criar o agendador',
+        kind: plan.kind,
+        label: plan.label,
+        interval_minutes: plan.intervalMinutes,
+        command: plan.command,
+        node: plan.nodePath,
+        warnings: plan.warnings,
+        files: plan.files.map((file) => ({ path: file.path, content: file.content })),
+        cron_line: plan.cronLine,
+        schtasks_run: plan.taskRun,
+      });
+      process.exit(0);
+    }
+    present({ status: 'installed', ...installScheduler(plan) });
+    process.exit(0);
+  }
+  if (action === 'scheduler-remove') {
+    confirm('remoção do agendador');
+    const plan = resolvePlan({ root });
+    // No Linux o modo pode ter mudado desde a instalação: limpa os dois, sempre só o que tem a nossa label.
+    const other = plan.kind === 'systemd' ? resolvePlan({ root, linuxMode: 'cron' })
+      : plan.kind === 'cron' ? resolvePlan({ root, linuxMode: 'systemd' }) : null;
+    if (other) removeScheduler(other);
+    present({ status: 'removed', ...removeScheduler(plan) });
+    process.exit(0);
+  }
   if (action === 'tick') {
-    const results = await tickRoutines(root);
+    const results = await runTickAndRecord(root, tickRoutines);
     present(results.map((result) => ({
       status: result.status,
       receipt_ref: result.receipt_ref,
@@ -177,7 +223,7 @@ try {
     if (results.some((result) => !['completed', 'no-change'].includes(result.status))) process.exitCode = 2;
     process.exit();
   }
-  fail('ação válida: install, migration-install, migration-pause-confirm, collector-install, binding, binding-refresh, show, status, run, activate, pause, resume, due ou tick');
+  fail('ação válida: install, migration-install, migration-pause-confirm, collector-install, binding, binding-refresh, show, status, run, activate, pause, resume, due, tick, scheduler-status, scheduler-install ou scheduler-remove');
 } catch (error) {
   fail(error instanceof Error ? error.message : String(error));
 }

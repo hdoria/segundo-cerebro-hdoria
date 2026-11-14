@@ -19,7 +19,8 @@ try {
 
   // Sem layout: mantém o padrão do Cérebro e não enxerga as pastas do vault.
   assert.equal(knowledgeIndex(root).total_notes, 0, 'sem layout, a memória lê só 01-nucleo-privado');
-  assert.equal(companyMapModel(root).domains.length, 0, 'sem layout, nenhum caminho padrão existe aqui');
+  const defaultEntries = companyMapModel(root).domains.flatMap((domain) => domain.entries.map((entry) => `${entry.id}:${entry.count}`));
+  assert.deepEqual(defaultEntries, ['projects:2', 'people:1'], 'sem layout, o mapa padrão mostra só as pastas comuns que existem no vault');
 
   write('.cerebro/layout.json', {
     version: 3,
@@ -49,7 +50,8 @@ try {
     companyMapDomains: [{ id: 'x', name: 'X', entries: [{ id: 'y', name: 'Y', refs: ['../../etc'] }] }],
   });
   assert.equal(knowledgeIndex(root).total_notes, 0, 'knowledgeRoot fora do Cérebro é ignorado');
-  assert.equal(companyMapModel(root).domains.length, 0, 'mapa com ref fora do Cérebro é ignorado');
+  const fallback = companyMapModel(root).domains.flatMap((domain) => domain.entries.map((entry) => entry.id));
+  assert.deepEqual(fallback, ['projects', 'people'], 'mapa com ref fora do Cérebro é ignorado e o padrão volta');
 
   console.log('✓ console lê mapa e memória pelos caminhos do layout, recusando caminho fora do Cérebro');
 } finally {
