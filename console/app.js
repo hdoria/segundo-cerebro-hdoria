@@ -26,6 +26,10 @@ function loadLibraryWorkspace() {
   return libraryWorkspaceModulePromise;
 }
 
+function storedChoice(key, allowed, fallback) {
+  try { const value = localStorage.getItem(key); return allowed.includes(value) ? value : fallback; } catch { return fallback; }
+}
+
 const state = {
   model: null,
   csrf: '',
@@ -78,7 +82,7 @@ const state = {
   files: { directory: '', query: '', type: '', offset: 0, limit: 50, data: null, loading: false, loaded: false, error: false, request: 0 },
   areaFiles: { data: null, loading: false, loaded: false, error: false, request: 0, offset: 0, limit: 50 },
   metrics: { data: null, loading: false, loaded: false, error: false, request: 0, system: '', workflow: '' },
-  tasks: { data: null, loading: false, loaded: false, error: false, request: 0, pending: new Set(), notice: '', stale: false },
+  tasks: { data: null, loading: false, loaded: false, error: false, request: 0, pending: new Set(), notice: '', stale: false, filter: storedChoice('cb-tasks-filter', ['open', 'all', 'done'], 'open'), sort: storedChoice('cb-tasks-sort', ['project', 'due', 'updated', 'name'], 'project') },
   inbox: { data: null, loading: false, loaded: false, error: false, request: 0, unread: false, offset: 0, limit: 50, mutation: null, mutationError: '' },
   localFileRequest: 0,
   selectedLocalFile: null,
@@ -2458,11 +2462,16 @@ function taskDue(task) {
   return task.overdue ? badge('atrasada', 'bad', `Atrasada desde ${day}/${month}`) : badge('data', 'neutral', `Vence ${day}/${month}`);
 }
 
+// [[nota|Nome]] vira Nome e [[nota]] vira nota: o texto da tarefa lê como frase.
+function taskPlainText(text) {
+  return String(text).replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2').replace(/\[\[([^\]]+)\]\]/g, '$1');
+}
+
 function taskRow(group, task, { showNote = false } = {}) {
   const note = escapeHtml(group.title);
   const attrs = `data-task-toggle data-task-ref="${escapeHtml(group.ref)}" data-task-line="${task.line}"`;
   const depth = Math.min(Math.floor(task.indent / 2), 3);
-  return `<li class="task-row${task.done ? ' is-done' : ''}" data-depth="${depth}"><label><input type="checkbox" ${attrs}${task.done ? ' checked' : ''} aria-label="${escapeHtml(task.done ? 'Desmarcar' : 'Marcar')} tarefa: ${escapeHtml(task.text)}, na nota ${note}"><span class="task-text">${escapeHtml(task.text)}</span></label>${taskDue(task)}${showNote ? `<button type="button" class="task-note-link" data-open-local-file="${escapeHtml(group.ref)}">${note}</button>` : ''}</li>`;
+  return `<li class="task-row${task.done ? ' is-done' : ''}" data-depth="${depth}"><label><input type="checkbox" ${attrs}${task.done ? ' checked' : ''} aria-label="${escapeHtml(task.done ? 'Desmarcar' : 'Marcar')} tarefa: ${escapeHtml(taskPlainText(task.text))}, na nota ${note}"><span class="task-text">${escapeHtml(taskPlainText(task.text))}</span></label>${taskDue(task)}${showNote ? `<button type="button" class="task-note-link" data-open-local-file="${escapeHtml(group.ref)}">${note}</button>` : ''}</li>`;
 }
 
 function renderTasks() {
@@ -2480,14 +2489,30 @@ function renderTasks() {
   const { today_done: done, today_total: all } = data.counts;
   const todayRows = data.notes.flatMap((group) => group.tasks.filter((task) => task.today).map((task) => taskRow(group, task, { showNote: true })));
   const hoje = `<section class="task-today dashboard-panel" aria-labelledby="tasks-today-title" data-identity="indigo"><div class="subheading"><h3 id="tasks-today-title">Hoje</h3><span>${all ? `${done} de ${all} feitas hoje` : 'Nada marcado para hoje'}</span></div><div class="panel-body">${all ? `<progress max="${all}" value="${done}" aria-label="${done} de ${all} tarefas de hoje feitas"></progress><ul class="task-list">${todayRows.join('')}</ul>` : '<p class="muted">Tarefas da daily de hoje, com data de hoje ou atrasadas aparecem aqui.</p>'}</div></section>`;
-  const groups = data.notes.map((group) => {
-    const rest = group.tasks.filter((task) => !task.today);
-    if (!rest.length) return '';
-    const open = rest.filter((task) => !task.done).length;
-    return `<section class="task-group dashboard-panel" aria-label="${escapeHtml(group.title)}"><div class="subheading"><h3><button type="button" class="task-note-link" data-open-local-file="${escapeHtml(group.ref)}">${escapeHtml(group.title)}</button></h3><span>${escapeHtml(TASK_NOTE_TYPES[String(group.type || '').toLowerCase()] || group.type || 'Nota')} · ${open} ${open === 1 ? 'aberta' : 'abertas'}</span></div><div class="panel-body"><ul class="task-list">${rest.map((task) => taskRow(group, task)).join('')}</ul></div></section>`;
-  }).join('');
+  const keep = (task) => !task.today && (slot.filter === 'all' || (slot.filter === 'done' ? task.done : !task.done));
+  const toolbar = `<div class="tasks-toolbar"><label><span>Mostrar</span><select data-tasks-filter>${[['open', 'Abertas'], ['all', 'Todas'], ['done', 'Concluídas']].map(([value, text]) => `<option value="${value}"${slot.filter === value ? ' selected' : ''}>${text}</option>`).join('')}</select></label><label><span>Ordenar por</span><select data-tasks-sort>${[['project', 'Projeto'], ['due', 'Vencimento'], ['updated', 'Nota atualizada recentemente'], ['name', 'Nome da nota']].map(([value, text]) => `<option value="${value}"${slot.sort === value ? ' selected' : ''}>${text}</option>`).join('')}</select></label></div>`;
+  let groups;
+  if (slot.sort === 'due') {
+    const rows = data.notes.flatMap((group) => group.tasks.filter(keep).map((task) => ({ group, task })))
+      .sort((a, b) => (a.task.due || '9999').localeCompare(b.task.due || '9999') || a.group.title.localeCompare(b.group.title) || a.task.line - b.task.line);
+    groups = rows.length
+      ? `<section class="task-group dashboard-panel" aria-labelledby="tasks-due-title"><div class="subheading"><h3 id="tasks-due-title">Por vencimento</h3><span>${rows.length} ${rows.length === 1 ? 'tarefa' : 'tarefas'} · sem data no fim</span></div><div class="panel-body"><ul class="task-list">${rows.map(({ group, task }) => taskRow(group, task, { showNote: true })).join('')}</ul></div></section>`
+      : '';
+  } else {
+    const ordered = [...data.notes];
+    if (slot.sort === 'name') ordered.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
+    if (slot.sort === 'updated') ordered.sort((a, b) => (b.updated || '').localeCompare(a.updated || ''));
+    groups = ordered.map((group) => {
+      const rest = group.tasks.filter(keep);
+      if (!rest.length) return '';
+      const open = group.tasks.filter((task) => !task.today && !task.done).length;
+      const updated = slot.sort === 'updated' && group.updated ? ` · atualizada em ${fmtDate(group.updated, false)}` : '';
+      return `<section class="task-group dashboard-panel" aria-label="${escapeHtml(group.title)}"><div class="subheading"><h3><button type="button" class="task-note-link" data-open-local-file="${escapeHtml(group.ref)}">${escapeHtml(group.title)}</button></h3><span>${escapeHtml(TASK_NOTE_TYPES[String(group.type || '').toLowerCase()] || group.type || 'Nota')} · ${open} ${open === 1 ? 'aberta' : 'abertas'}${updated}</span></div><div class="panel-body"><ul class="task-list">${rest.map((task) => taskRow(group, task)).join('')}</ul></div></section>`;
+    }).join('');
+  }
+  if (!groups) groups = `<p class="section-help">${slot.filter === 'done' ? 'Nenhuma tarefa concluída fora do bloco Hoje.' : slot.filter === 'open' ? 'Nenhuma tarefa aberta fora do bloco Hoje.' : 'Nenhuma tarefa fora do bloco Hoje.'}</p>`;
   const partial = data.complete === false ? '<p class="section-help" role="status">O cérebro é grande: parte das notas ficou fora desta leitura.</p>' : '';
-  return `${banner}<div class="tasks-view">${hoje}${groups}</div>${partial}`;
+  return `${banner}<div class="tasks-view">${hoje}${toolbar}${groups}</div>${partial}`;
 }
 
 async function loadOperationalInbox() {
@@ -6146,6 +6171,16 @@ function renderAutoImport(value) {
 async function loadAutoImport() {
   try { renderAutoImport(await getJson('/api/auto-import')); } catch { /* rodapé opcional */ }
 }
+
+document.addEventListener('change', (event) => {
+  const filter = event.target.closest?.('[data-tasks-filter]');
+  const sort = event.target.closest?.('[data-tasks-sort]');
+  if (!filter && !sort) return;
+  const key = filter ? 'filter' : 'sort';
+  state.tasks[key] = event.target.value;
+  try { localStorage.setItem(`cb-tasks-${key}`, event.target.value); } catch { /* preferência só nesta sessão */ }
+  renderTasksView();
+});
 
 document.addEventListener('change', async (event) => {
   const select = event.target.closest?.('[data-auto-import]');

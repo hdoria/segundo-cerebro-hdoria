@@ -95,7 +95,7 @@ export function noteTasks(root, { today, vault = null } = {}) {
       if (!task.done) counts.open += 1;
       if (task.today) { counts.today_total += 1; counts[task.done ? 'today_done' : 'today_open'] += 1; }
     }
-    groups.push({ ref: note.ref, title: note.title, type: note.type, sha256: note.sha256, daily, project: PROJECT_TYPES.has(String(note.type || '').toLowerCase()), tasks });
+    groups.push({ ref: note.ref, title: note.title, type: note.type, updated: note.updated || null, sha256: note.sha256, daily, project: PROJECT_TYPES.has(String(note.type || '').toLowerCase()), tasks });
   }
   // Notas com tarefas abertas fora do bloco Hoje vêm antes das que só têm tarefas feitas.
   const hasOpen = (group) => Number(group.tasks.some((task) => !task.done && !task.today));

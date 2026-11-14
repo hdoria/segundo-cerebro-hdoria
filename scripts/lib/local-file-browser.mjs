@@ -341,7 +341,7 @@ export function readableNotes(root) {
     const ctx = context(root);
     if (!ctx.available) return { available: false, complete: true, notes: [] };
     const { notes, complete } = scan(ctx);
-    return { available: true, complete, notes: notes.map(({ ref, title, type, text, sha256 }) => ({ ref, title, type, text, sha256 })) };
+    return { available: true, complete, notes: notes.map(({ ref, title, type, text, sha256, updated }) => ({ ref, title, type, text, sha256, updated })) };
   } catch { fail(); }
 }
 

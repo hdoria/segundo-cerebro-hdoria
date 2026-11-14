@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import { runInNewContext } from 'node:vm';
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, realpathSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -13,6 +14,7 @@ try {
   put('VERSION', 'fixture'); put('COMECE-AQUI.md', '# Fixture'); put('.cerebro/layout.json', JSON.stringify({ knowledgeRoot: '.' }));
   const project = '---\ntype: Project\n---\n\n# Projeto Aurora\n\n- [ ] Escrever briefing\n- [x] Reunir referências\n  - [ ] Subtarefa aninhada\n* [ ] Enviar proposta 📅 2026-11-10\n- [ ] Revisão futura 📅 2027-01-05\n- [ ] Data impossível 📅 2026-02-31\n\n```md\n- [ ] Exemplo dentro de código\n```\n\n~~~\n- [ ] Exemplo em bloco til\n~~~\n\nTexto solto - [ ] sem início de linha\n- [ ] Último item\n';
   put('projetos/aurora.md', project);
+  put('projetos/datado.md', '---\ntype: Project\nupdated: 2026-11-10\n---\n\n# Projeto Datado\n\n- [ ] Tarefa datada\n');
   put('journal/2026-11-12.md', '# 2026-11-12\n\n- [ ] Ligar para o fornecedor\n- [x] Pagar boleto fictício\n');
   put('journal/2026-11-11.md', '# 2026-11-11\n\n- [ ] Tarefa de ontem sem data\n');
   put('notes/solta.md', '# Nota solta\n\n- [x] Já resolvida 📅 2026-11-01\n- [x] Concluída hoje 📅 2026-11-12\n');
@@ -40,6 +42,12 @@ try {
   assert.deepEqual(refs.filter(r => /templates|type|privado|oculta/.test(r)), [], 'templates, type, private folders and private notes are skipped');
   assert.equal(refs[0], 'projetos/aurora.md', 'project notes come first');
   const aurora = data.notes.find(n => n.ref === 'projetos/aurora.md');
+  assert.equal(data.notes.find(n => n.ref === 'projetos/datado.md').updated, '2026-11-10', 'groups carry the note updated date for sorting');
+  assert.equal(data.notes.find(n => n.ref === 'notes/solta.md').updated, null, 'notes without updated stay null');
+  const app = readFileSync(new URL('../console/app.js', import.meta.url), 'utf8');
+  const plain = runInNewContext(`${app.slice(app.indexOf('function taskPlainText('), app.indexOf('function taskRow('))}\ntaskPlainText`);
+  assert.equal(plain('Pedir para [[dayse-quirino|Dayse]] e [[ana]] revisar'), 'Pedir para Dayse e ana revisar', 'wikilinks read as plain names');
+  for (const option of ["['open', 'Abertas']", "['done', 'Concluídas']", "['due', 'Vencimento']", "['updated', 'Nota atualizada recentemente']"]) assert(app.includes(option), `tasks toolbar offers ${option}`);
   assert.equal(aurora.title, 'Projeto Aurora'); assert.equal(aurora.type, 'Project'); assert.match(aurora.sha256, /^[a-f0-9]{64}$/);
   assert.deepEqual(aurora.tasks.map(t => t.text), ['Escrever briefing', 'Reunir referências', 'Subtarefa aninhada', 'Enviar proposta', 'Revisão futura', 'Data impossível', 'Último item'], 'code blocks and inline text are not tasks');
   const byText = (n, text) => n.tasks.find(t => t.text === text);
@@ -56,7 +64,7 @@ try {
   const solta = data.notes.find(n => n.ref === 'notes/solta.md');
   assert.equal(byText(solta, 'Já resolvida').today, false, 'done overdue task is history, not Hoje');
   assert.equal(byText(solta, 'Concluída hoje').today, true);
-  assert.deepEqual(data.counts, { open: 9, today_open: 2, today_done: 2, today_total: 4 });
+  assert.deepEqual(data.counts, { open: 10, today_open: 2, today_done: 2, today_total: 4 });
   assert.equal(noteTasks(root, { today: '2026-11-12', vault: { daily: 'rotina' } }).notes.some(n => n.daily), false, 'a configured daily folder replaces the default folder names');
 
   // Toggle: one byte, nothing else.

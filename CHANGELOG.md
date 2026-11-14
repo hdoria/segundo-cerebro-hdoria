@@ -1,5 +1,10 @@
 # Mudanças do Cérebro hdoria
 
+## v1.43.2 - 2026-11-14 · filtro e ordenação em Tarefas
+
+- Tarefas ganha filtro (abertas, todas ou concluídas) e ordenação (projeto, vencimento, nota atualizada recentemente ou nome da nota). A escolha fica lembrada no navegador.
+- Links `[[nota|Nome]]` no texto da tarefa aparecem só como o nome.
+
 ## v1.43.1 - 2026-11-14 · intervalo da importação no menu
 
 - O rodapé do menu lateral mostra a última importação automática e deixa escolher o intervalo: desligado, 15 min, 30 min, 1 hora ou 3 horas. A escolha vale na hora e fica salva no runtime do vault. `CEREBRO_AUTO_IMPORT_MINUTES`, quando definida, continua valendo e trava o menu.
