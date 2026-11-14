@@ -17,6 +17,7 @@ O julgamento sobre o que importou hoje **expira em ~48h**. A daily captura ele a
 3. **Sanitize PII** antes de gravar (regra 5 do AGENTS.md).
 4. **Grave o rollup do dia** em `meu-negocio/dailies/AAAA-MM-DD.md`: 3-5 linhas do dia + os átomos do dia linkados + pendências. Frontmatter: `type: Daily`, `created` e `related_to` com os átomos (veja "Formato da nota" no `AGENTS.md`). Crie a pasta se não existir.
 5. **Roteie os átomos**: decisão → `decisoes/` · assunto quente → `fios/` · aprendizado perene → área certa (`oferta`/`icp`/`o-que-funciona`).
-6. **Feche em 1 linha**: espelhe o dia de volta (*"dia de X — decidiu Y, travou Z"*) e, se uma pendência liga com algo do cérebro, aponte: *"isso toca no teu [[fio-tal]]"*.
+6. **Tarefas que parecem prontas** (1-2 min): rode `node .cerebro/bin/cerebro.mjs tasks list --json` e cruze as abertas com o que ela contou hoje, com o rollup e com as decisões recentes. Mostre **no máximo 7** candidatas, cada uma como `nota:linha · texto · motivo` (o motivo cita a fala ou a nota que indica que acabou). Pergunte quais fechar; ela pode responder "todas", números ou "nenhuma". Feche **só as confirmadas** com `node .cerebro/bin/cerebro.mjs tasks close <id> --confirm` (o id vem do `tasks list`) e diga quais fechou. Sem candidata com motivo concreto, pule o passo sem comentar.
+7. **Feche em 1 linha**: espelhe o dia de volta (*"dia de X — decidiu Y, travou Z"*) e, se uma pendência liga com algo do cérebro, aponte: *"isso toca no teu [[fio-tal]]"*.
 
-Regras: **10 minutos, teto** — se passar, você está complicando · não interrogue: 3 perguntas e pronto · dia sem sinal não se força · a semanal nasce DESTAS dailies, então capriche no rollup, não no volume.
+Regras: **10 minutos, teto** — se passar, você está complicando · não interrogue: 3 perguntas e pronto · dia sem sinal não se força · a semanal nasce DESTAS dailies, então capriche no rollup, não no volume · tarefa só fecha com o sim dela; parecer pronta não basta.

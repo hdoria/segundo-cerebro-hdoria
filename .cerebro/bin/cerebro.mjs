@@ -15,7 +15,7 @@ const ALLOWED = new Set([
   'install-system', 'installation-compatibility', 'motor-path', 'ping', 'register-source',
   'render-map', 'routine-runtime', 'runtime-access', 'runtime-secret', 'source-contract',
   'system-contract', 'system-experiment', 'system-learn', 'system-run', 'system-source-binding',
-  'system-state', 'update', 'vault-compile', 'vault-import-history', 'vault-import-journal', 'vault-sync',
+  'system-state', 'tasks', 'update', 'vault-compile', 'vault-import-history', 'vault-import-journal', 'vault-sync',
 ]);
 const SKILL_SCRIPTS = { 'render-map': ['.claude', 'skills', 'arquiteto', 'scripts', 'render-map.mjs'] };
 const AGENT_SCRIPTS = new Set(['activate', 'ping']);

@@ -1,5 +1,12 @@
 # Mudanças do Cérebro hdoria
 
+## v1.44.0 - 2026-11-14 · agentes fecham tarefas prontas
+
+- Novo comando do lançador: `node .cerebro/bin/cerebro.mjs tasks list` mostra as tarefas abertas com um id curto, e `tasks close <id> --confirm` marca uma como feita com a mesma gravação conferida do Console (só o `[ ]` muda).
+- O contrato do agente passa a fechar sozinho só a tarefa que ele executou na conversa ou que o dono disse estar feita, e lista no fim da resposta o que fechou. Qualquer outra evidência vira sugestão.
+- O `/daily` sugere até 7 tarefas que parecem prontas, cada uma com o motivo, e fecha só as que o dono confirmar.
+- Tarefas: o cabeçalho de cada grupo acompanha o filtro e a ordenação por data usa a data de fato.
+
 ## v1.43.2 - 2026-11-14 · filtro e ordenação em Tarefas
 
 - Tarefas ganha filtro (abertas, todas ou concluídas) e ordenação (projeto, vencimento, nota atualizada recentemente ou nome da nota). A escolha fica lembrada no navegador.

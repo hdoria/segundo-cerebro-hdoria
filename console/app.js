@@ -2501,13 +2501,18 @@ function renderTasks() {
   } else {
     const ordered = [...data.notes];
     if (slot.sort === 'name') ordered.sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
-    if (slot.sort === 'updated') ordered.sort((a, b) => (b.updated || '').localeCompare(a.updated || ''));
+    const when = (group) => { const value = Date.parse(group.updated || ''); return Number.isFinite(value) ? value : -Infinity; };
+    if (slot.sort === 'updated') ordered.sort((a, b) => when(b) - when(a));
     groups = ordered.map((group) => {
       const rest = group.tasks.filter(keep);
       if (!rest.length) return '';
       const open = group.tasks.filter((task) => !task.today && !task.done).length;
+      const doneCount = group.tasks.filter((task) => !task.today && task.done).length;
+      const tally = slot.filter === 'done' ? `${doneCount} ${doneCount === 1 ? 'concluída' : 'concluídas'}`
+        : slot.filter === 'all' ? `${open} ${open === 1 ? 'aberta' : 'abertas'}, ${doneCount} ${doneCount === 1 ? 'concluída' : 'concluídas'}`
+          : `${open} ${open === 1 ? 'aberta' : 'abertas'}`;
       const updated = slot.sort === 'updated' && group.updated ? ` · atualizada em ${fmtDate(group.updated, false)}` : '';
-      return `<section class="task-group dashboard-panel" aria-label="${escapeHtml(group.title)}"><div class="subheading"><h3><button type="button" class="task-note-link" data-open-local-file="${escapeHtml(group.ref)}">${escapeHtml(group.title)}</button></h3><span>${escapeHtml(TASK_NOTE_TYPES[String(group.type || '').toLowerCase()] || group.type || 'Nota')} · ${open} ${open === 1 ? 'aberta' : 'abertas'}${updated}</span></div><div class="panel-body"><ul class="task-list">${rest.map((task) => taskRow(group, task)).join('')}</ul></div></section>`;
+      return `<section class="task-group dashboard-panel" aria-label="${escapeHtml(group.title)}"><div class="subheading"><h3><button type="button" class="task-note-link" data-open-local-file="${escapeHtml(group.ref)}">${escapeHtml(group.title)}</button></h3><span>${escapeHtml(TASK_NOTE_TYPES[String(group.type || '').toLowerCase()] || group.type || 'Nota')} · ${tally}${updated}</span></div><div class="panel-body"><ul class="task-list">${rest.map((task) => taskRow(group, task)).join('')}</ul></div></section>`;
     }).join('');
   }
   if (!groups) groups = `<p class="section-help">${slot.filter === 'done' ? 'Nenhuma tarefa concluída fora do bloco Hoje.' : slot.filter === 'open' ? 'Nenhuma tarefa aberta fora do bloco Hoje.' : 'Nenhuma tarefa fora do bloco Hoje.'}</p>`;

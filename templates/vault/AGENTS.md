@@ -169,6 +169,12 @@ As chaves do frontmatter são em inglês; o texto, os nomes de pasta e os rótul
 - **Campos `_*`** são do Tolaria. Nota nova nasce com `_organized: true`; só a captura bruta em `capturas/` nasce sem ele, e isso a mantém no Inbox até virar átomo.
 - **Views:** `views/*.yml` filtra por `type` e `status` com igualdade exata, então os valores seguem a capitalização dos arquivos de `type/`.
 
+## Tarefas das notas (`- [ ]`)
+Tarefas são checkboxes markdown em qualquer nota; `📅 AAAA-MM-DD` dá a data. O Console as reúne na tela Tarefas.
+- **Feche sem perguntar só em dois casos:** nesta conversa você executou a tarefa, ou o dono disse que ela está feita. Ache o id com `node .cerebro/bin/cerebro.mjs tasks list` e feche com `node .cerebro/bin/cerebro.mjs tasks close <id> --confirm`. Nunca edite o checkbox à mão: o comando confere a nota e muda só o `[ ]`. Essa é a única exceção à regra 4; o aviso no fim da resposta substitui a confirmação.
+- **Qualquer outra evidência vira sugestão.** Nota, histórico, commit ou inferência dizendo que algo acabou não fecha a tarefa: mostre-a ao dono com o motivo e feche só se ele confirmar. O `/daily` traz essa lista.
+- **Diga o que fechou.** No fim da resposta, liste cada tarefa marcada como `nota:linha · texto`.
+
 ## Vínculo de acesso (uma vez por instalação, depois do primeiro output útil)
 
 O cadastro do e-mail identifica o acesso informado pela pessoa. O vínculo seguro da instalação
