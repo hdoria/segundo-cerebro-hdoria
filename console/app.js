@@ -6127,6 +6127,40 @@ function setNavCollapsed(collapsed) {
   try { localStorage.setItem('cb-nav', document.body.dataset.nav); } catch { /* preferência local, nunca crítica */ }
 }
 setNavCollapsed((() => { try { return localStorage.getItem('cb-nav') === 'collapsed'; } catch { return false; } })());
+const AUTO_IMPORT_LABELS = new Map([[0, 'Desligado'], [15, '15 min'], [30, '30 min'], [60, '1 hora'], [180, '3 horas']]);
+
+function renderAutoImport(value) {
+  const host = $('#auto-import');
+  if (!host || !value) return;
+  const last = value.last?.completed_at
+    ? `${value.last.ok ? 'Última importação' : 'Última importação falhou'} · ${fmtDate(value.last.completed_at)}`
+    : value.minutes ? 'Ainda não importou nesta sessão' : 'Importação desligada';
+  const options = value.choices.map((minutes) => `<option value="${minutes}"${minutes === value.minutes ? ' selected' : ''}>${escapeHtml(AUTO_IMPORT_LABELS.get(minutes) || `${minutes} min`)}</option>`).join('');
+  const control = value.locked
+    ? `<span>${escapeHtml(AUTO_IMPORT_LABELS.get(value.minutes) || `A cada ${value.minutes} min`)}</span>`
+    : `<select data-auto-import aria-label="Importar notas automaticamente">${options}</select>`;
+  renderMarkup(host, `<label><span>Importar notas a cada</span>${control}</label><small>${escapeHtml(value.locked ? 'Definido por CEREBRO_AUTO_IMPORT_MINUTES' : last)}</small>`);
+  host.hidden = false;
+}
+
+async function loadAutoImport() {
+  try { renderAutoImport(await getJson('/api/auto-import')); } catch { /* rodapé opcional */ }
+}
+
+document.addEventListener('change', async (event) => {
+  const select = event.target.closest?.('[data-auto-import]');
+  if (!select) return;
+  select.disabled = true;
+  try {
+    renderAutoImport(await mutate('/api/auto-import', { minutes: Number(select.value) }));
+    toast(Number(select.value) ? 'Importação automática atualizada.' : 'Importação automática desligada.');
+  } catch (error) {
+    toast(label(error.message), 'bad');
+    void loadAutoImport();
+  setInterval(() => { void loadAutoImport(); }, 60_000);
+  }
+});
+
 $('#collapse-nav')?.addEventListener('click', () => setNavCollapsed(document.body.dataset.nav !== 'collapsed'));
 
 document.addEventListener('keydown', (event) => {
@@ -6145,6 +6179,7 @@ try {
   state.csrf = (await getJson('/api/session')).csrf_token;
   await loadModel();
   void loadTasks();
+  void loadAutoImport();
 } catch (error) {
   renderMarkup($('#content'), empty('Console indisponível', `Não foi possível compilar o estado local: ${label(error.message)}.`));
   toast(label(error.message), 'bad');

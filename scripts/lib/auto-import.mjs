@@ -36,6 +36,9 @@ function writeStatus(root, status) {
   renameSync(temp, path);
 }
 
+export const AUTO_IMPORT_CHOICES = Object.freeze([0, 15, 30, 60, 180]);
+const settingsPath = (root) => join(root, '.cerebro', 'runtime', 'console-settings.json');
+
 /** Intervalo em minutos de CEREBRO_AUTO_IMPORT_MINUTES (padrão 30, `0` desliga). */
 export function autoImportMinutes(env = process.env) {
   const raw = env.CEREBRO_AUTO_IMPORT_MINUTES;
@@ -44,7 +47,30 @@ export function autoImportMinutes(env = process.env) {
   return Number.isInteger(minutes) && minutes >= 0 && minutes <= 1440 ? minutes : DEFAULT_MINUTES;
 }
 
-export function createAutoImporter({ root, minutes = autoImportMinutes(), steps = AUTO_IMPORT_STEPS, clock = () => new Date() }) {
+/** A variável de ambiente vence a escolha salva no Console, que vence o padrão. */
+export function readAutoImportSetting(root, env = process.env) {
+  if (env.CEREBRO_AUTO_IMPORT_MINUTES !== undefined && env.CEREBRO_AUTO_IMPORT_MINUTES !== '') {
+    return { minutes: autoImportMinutes(env), source: 'env' };
+  }
+  try {
+    const saved = JSON.parse(readFileSync(settingsPath(root), 'utf8'))?.auto_import_minutes;
+    if (AUTO_IMPORT_CHOICES.includes(saved)) return { minutes: saved, source: 'saved' };
+  } catch { /* sem escolha salva */ }
+  return { minutes: DEFAULT_MINUTES, source: 'default' };
+}
+
+export function saveAutoImportMinutes(root, minutes) {
+  if (!AUTO_IMPORT_CHOICES.includes(minutes)) throw new Error('auto-import-interval-invalid');
+  let current = {};
+  try { current = JSON.parse(readFileSync(settingsPath(root), 'utf8')) || {}; } catch { current = {}; }
+  const path = settingsPath(root);
+  mkdirSync(dirname(path), { recursive: true });
+  const temp = `${path}.${process.pid}.tmp`;
+  writeFileSync(temp, `${JSON.stringify({ ...current, auto_import_minutes: minutes }, null, 2)}\n`, { mode: 0o600 });
+  renameSync(temp, path);
+}
+
+export function createAutoImporter({ root, minutes = readAutoImportSetting(root).minutes, steps = AUTO_IMPORT_STEPS, clock = () => new Date() }) {
   let running = null;
   let timer = null;
   let first = null;
@@ -79,6 +105,11 @@ export function createAutoImporter({ root, minutes = autoImportMinutes(), steps 
       first.unref?.();
       timer = setInterval(() => { void runOnce(); }, minutes * 60_000);
       timer.unref?.();
+    },
+    setMinutes(value) {
+      minutes = value;
+      this.stop();
+      this.start();
     },
     stop() {
       if (first) clearTimeout(first);

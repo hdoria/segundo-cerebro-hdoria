@@ -191,6 +191,10 @@ nav button:hover .nav-glyph, nav button.active .nav-glyph { color: var(--text); 
 .local-boundary i { width: var(--s-1-5); height: var(--s-1-5); flex: 0 0 var(--s-1-5); border-radius: var(--r-circle); background: var(--ok); }
 .local-boundary strong { display: block; color: var(--text-3); font-size: var(--fs-meta); font-weight: var(--fw-medium); }
 .local-boundary span { display: block; color: var(--text-3); font-size: var(--fs-meta); }
+.auto-import { padding: 0 var(--s2) var(--s1); color: var(--text-3); font-size: var(--fs-meta); }
+.auto-import label { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.auto-import select { font: inherit; color: var(--text-2); background: transparent; border: var(--stroke) solid var(--hairline); border-radius: var(--r-sm); padding: 0 var(--s1); }
+.auto-import small { display: block; margin-top: var(--s1); }
 .sys-line { margin-top: var(--s2); padding: 0 var(--s2); color: var(--text-3); font: var(--fw-book) var(--fs-meta)/var(--lh-relaxed) var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 main { min-width: 0; background: var(--surface); padding: var(--s-6) var(--gutter) var(--s-12); }
@@ -292,6 +296,7 @@ body[data-nav="collapsed"] #area-switcher { padding-top: var(--s-2); border-top:
 body[data-nav="collapsed"] .brand > div:last-child,
 body[data-nav="collapsed"] .local-boundary div,
 body[data-nav="collapsed"] .sys-line,
+body[data-nav="collapsed"] .auto-import,
 body[data-nav="collapsed"] .nav-hint span:nth-child(2),
 body[data-nav="collapsed"] .nav-hint kbd { display: none; }
 body[data-nav="collapsed"] nav button { grid-template-columns: var(--s-4); justify-content: center; min-height: var(--s-10); font-size: 0; }
@@ -2474,6 +2479,7 @@ span.knowledge-note { cursor: default; }
   .sidebar-scroll { padding-inline: var(--s-2); }
   .sidebar-footer { padding-inline: var(--s-1); }
   .nav-section + .nav-section { padding-top: var(--s-2); border-top: var(--stroke) solid var(--hairline); }
+  .auto-import { display: none; }
   .brand > div:last-child, .local-boundary div, .nav-group, .nav-hint span:not(.nav-glyph), .nav-hint kbd { display: none; }
   #area-switcher .area-pill { grid-template-columns: var(--s-3-5); justify-content: center; min-height: var(--s-8); font-size: 0; }
   #area-switcher .area-pill b { display: none; }

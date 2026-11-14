@@ -83,6 +83,33 @@ try {
   const written = files(served).filter((path) => !before.includes(path));
   assert(written.length && written.every((path) => path.startsWith(join('.cerebro', 'runtime'))), `nada fora do runtime: ${written.join(', ')}`);
 
+  // Configuração pelo menu: a escolha fica no runtime do vault e a variável de ambiente trava.
+  const configured = brain();
+  const app = createConsoleServer({ root: configured, sessionToken: 'sessao-fixa', csrfToken: 'csrf-fixo' });
+  await new Promise((done) => app.server.listen(0, '127.0.0.1', done));
+  const base = `http://127.0.0.1:${app.server.address().port}`;
+  const headers = { Cookie: (await fetch(`${base}/`)).headers.get('set-cookie').split(';', 1)[0] };
+  const post = (payload) => fetch(`${base}/api/auto-import`, { method: 'POST', headers: { ...headers, Origin: base, 'Content-Type': 'application/json', 'X-Cerebro-CSRF': 'csrf-fixo' }, body: JSON.stringify({ ...payload, confirm: true }) });
+  try {
+    const initial = await (await fetch(`${base}/api/auto-import`, { headers })).json();
+    assert.deepEqual([initial.minutes, initial.locked, initial.last], [30, false, null], 'padrão de 30 minutos, sem trava');
+    const saved = await post({ minutes: 60 });
+    assert.equal(saved.status, 200);
+    assert.equal((await saved.json()).minutes, 60, 'escolha no menu vale na hora');
+    assert.equal((await (await fetch(`${base}/api/auto-import`, { headers })).json()).minutes, 60, 'escolha persiste');
+    assert.equal((await post({ minutes: 7 })).status, 400, 'só intervalos do menu');
+    const noCsrf = await fetch(`${base}/api/auto-import`, { method: 'POST', headers: { ...headers, Origin: base, 'Content-Type': 'application/json' }, body: JSON.stringify({ minutes: 15, confirm: true }) });
+    assert.equal(noCsrf.status, 403, 'mudar a configuração exige CSRF');
+    process.env.CEREBRO_AUTO_IMPORT_MINUTES = '5';
+    const locked = await (await fetch(`${base}/api/auto-import`, { headers })).json();
+    assert.deepEqual([locked.minutes, locked.locked], [5, true], 'variável de ambiente vence a escolha salva');
+    assert.equal((await post({ minutes: 15 })).status, 409, 'com a variável definida, o menu não muda');
+  } finally {
+    delete process.env.CEREBRO_AUTO_IMPORT_MINUTES;
+    await new Promise((done) => app.server.close(done));
+  }
+  assert.deepEqual(files(configured).filter((path) => path.includes('console-settings')), [join('.cerebro', 'runtime', 'console-settings.json')], 'configuração mora no runtime');
+
   const quiet = brain();
   const plain = createConsoleServer({ root: quiet });
   await new Promise((done) => plain.server.listen(0, '127.0.0.1', done));

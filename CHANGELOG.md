@@ -1,5 +1,9 @@
 # Mudanças do Cérebro hdoria
 
+## v1.43.1 - 2026-11-14 · intervalo da importação no menu
+
+- O rodapé do menu lateral mostra a última importação automática e deixa escolher o intervalo: desligado, 15 min, 30 min, 1 hora ou 3 horas. A escolha vale na hora e fica salva no runtime do vault. `CEREBRO_AUTO_IMPORT_MINUTES`, quando definida, continua valendo e trava o menu.
+
 ## v1.43.0 - 2026-11-14 · agendador local e importação automática
 
 - O Console importa sozinho o histórico de sessões e o journal (dailies e weekly reviews) logo depois de subir e a cada 30 minutos. `CEREBRO_AUTO_IMPORT_MINUTES` muda o intervalo e `0` desliga. Falha aparece em Avisos.

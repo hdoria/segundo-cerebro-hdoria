@@ -25,7 +25,7 @@ import { localDate, noteTasks, toggleNoteTask } from './lib/note-tasks.mjs';
 import { listLocalFiles, readLocalFile, saveLocalFile, resolveLocalFileLink, recoverLocalNoteEdits, listLocalFileBacklinks, listLocalNoteAttachments, readLocalNoteAttachment } from './lib/local-file-browser.mjs';
 import { businessMetrics } from './lib/business-metrics.mjs';
 import { operationalInbox, markOperationalNoticeRead } from './lib/operational-inbox.mjs';
-import { createAutoImporter, readAutoImportStatus } from './lib/auto-import.mjs';
+import { AUTO_IMPORT_CHOICES, createAutoImporter, readAutoImportSetting, readAutoImportStatus, saveAutoImportMinutes } from './lib/auto-import.mjs';
 import { isPrivateNote, knowledgeNotes, vaultMemoryLifecycle } from './lib/vault-read-model.mjs';
 import { vaultProcedures } from './lib/procedure-read-model.mjs';
 import { vaultInsights } from './lib/vault-insights.mjs';
@@ -1645,6 +1645,16 @@ export function createConsoleServer({
     }
     return { ...hermesCache, target, activation: hermesActivation.status() };
   };
+  let importer = null;
+  const autoImportView = () => {
+    const setting = readAutoImportSetting(brainRoot);
+    const last = readAutoImportStatus(brainRoot);
+    const steps = Object.values(last?.steps || {});
+    return {
+      minutes: setting.minutes, choices: AUTO_IMPORT_CHOICES, locked: setting.source === 'env', running: Boolean(importer),
+      last: last ? { completed_at: last.completed_at || null, ok: steps.length > 0 && steps.every((step) => step?.ok === true) } : null,
+    };
+  };
   const server = createServer(async (request, response) => {
     const url = new URL(request.url || '/', 'http://127.0.0.1');
     const sessionCookie = `${COOKIE_NAME}=${sessionToken}; HttpOnly; SameSite=Strict; Path=/`;
@@ -1811,6 +1821,22 @@ export function createConsoleServer({
         const payload = await body(request);
         assertMutation(request, sessionToken, csrfToken, payload);
         send(response, 200, toggleNoteTask(brainRoot, payload));
+        return;
+      }
+      if (request.method === 'GET' && url.pathname === '/api/auto-import') {
+        if (!exactEqual(cookies(request)[COOKIE_NAME], sessionToken)) throw new Error('session-required');
+        send(response, 200, autoImportView());
+        return;
+      }
+      if (request.method === 'POST' && url.pathname === '/api/auto-import') {
+        if (!originAllowed(request)) throw new Error('origin-not-allowed');
+        assertAuthenticatedPost(request, sessionToken, csrfToken);
+        const payload = await body(request);
+        assertMutation(request, sessionToken, csrfToken, payload);
+        if (readAutoImportSetting(brainRoot).source === 'env') throw new Error('auto-import-interval-locked');
+        saveAutoImportMinutes(brainRoot, payload.minutes);
+        importer?.setMinutes(payload.minutes);
+        send(response, 200, autoImportView());
         return;
       }
       if (request.method === 'GET' && url.pathname === '/api/vault-insights') {
@@ -2268,13 +2294,13 @@ export function createConsoleServer({
     } catch (error) {
       const reasonCode = safeReason(error);
       const status = reasonCode === 'session-required' || reasonCode === 'csrf-invalid' || reasonCode === 'origin-not-allowed' ? 403
-        : reasonCode === 'not-found' ? 404 : ['inbox-notice-stale', 'task-stale', 'task-line-changed', 'local-note-conflict', 'local-note-busy', 'hermes-target-remote', 'hermes-target-local', 'hermes-action-running'].includes(reasonCode) ? 409
+        : reasonCode === 'not-found' ? 404 : ['inbox-notice-stale', 'task-stale', 'task-line-changed', 'auto-import-interval-locked', 'local-note-conflict', 'local-note-busy', 'hermes-target-remote', 'hermes-target-local', 'hermes-action-running'].includes(reasonCode) ? 409
           : reasonCode === 'inbox-read-state-unavailable' || ['tools-probe-failed', 'hermes-remote-failed'].includes(reasonCode) ? 503 : 400;
       send(response, status, { reason_code: reasonCode });
     }
   });
   if (autoImport) {
-    const importer = createAutoImporter({ root: brainRoot });
+    importer = createAutoImporter({ root: brainRoot });
     server.on('listening', () => importer.start());
     server.on('close', () => importer.stop());
   }
