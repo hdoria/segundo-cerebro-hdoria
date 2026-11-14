@@ -2191,6 +2191,7 @@ body:has(.console-main) {
   display: grid;
   grid-template-columns: var(--sidebar) minmax(0, 1fr);
   overflow: hidden;
+  background: var(--bg-side);
 }
 .sidebar {
   min-width: 0;
@@ -2200,7 +2201,6 @@ body:has(.console-main) {
   flex-direction: column;
   padding: 0;
   background: var(--bg-side);
-  border-right: var(--stroke) solid var(--hairline);
 }
 .brand {
   display: flex;
@@ -2519,6 +2519,14 @@ main.console-main {
   flex-direction: column;
   min-height: 0;
   padding: 0;
+  margin: var(--s-3);
+  border: var(--stroke) solid var(--hairline);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface);
+}
+.brand {
+  margin-top: calc(var(--s-3) + var(--stroke));
 }
 .topbar {
   display: flex;
@@ -10768,6 +10776,12 @@ span.knowledge-note {
     justify-content: center;
     min-height: var(--topbar-mobile-h);
     padding: var(--s-2);
+    margin-top: 0;
+  }
+  main.console-main {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
   }
   nav button {
     grid-template-columns: var(--s-4);

@@ -121,6 +121,9 @@ A composição acompanha também o shell do Gr8r Studio original (`904205c`), pr
 task-manager local (`08a2a2e`): barra superior de `--topbar-h` fora da região rolável, sidebar
 de `--side-w` com marca e rodapé estáveis e navegação com scroll próprio. Breadcrumb, busca,
 tema e atualização pertencem à barra global; título, subtítulo e data ficam na página.
+Como no task-manager atual, o conteúdo é um painel encaixado: o fundo do sidebar envolve tudo, o
+sidebar não tem borda própria e o painel tem margem `--s-3`, borda `--hairline` e raio `--r-lg`; a
+marca desce `--s-3` para alinhar com a barra do painel. Abaixo de 800px o encaixe some.
 Os grupos Dia a dia, Operação, Conhecimento e Conexões organizam a navegação; Áreas tem
 seção própria. Rótulos estruturais de navegação devem permanecer visíveis no menu expandido.
 

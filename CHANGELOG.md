@@ -1,5 +1,9 @@
 # Mudanças do Cérebro hdoria
 
+## v1.44.1 - 2026-11-14 · painel encaixado no Console
+
+- O conteúdo do Console passa a ficar num painel encaixado, com margem, borda e cantos arredondados, envolvido pelo fundo do menu lateral. Em telas estreitas ele ocupa a largura toda, como antes.
+
 ## v1.44.0 - 2026-11-14 · agentes fecham tarefas prontas
 
 - Novo comando do lançador: `node .cerebro/bin/cerebro.mjs tasks list` mostra as tarefas abertas com um id curto, e `tasks close <id> --confirm` marca uma como feita com a mesma gravação conferida do Console (só o `[ ]` muda).

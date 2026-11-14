@@ -64,7 +64,7 @@ kbd {
    ========================================================================== */
 
 body:has(.console-main) { height: var(--viewport-height); overflow: hidden; }
-.app-shell { height: var(--viewport-height); min-height: 0; display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); overflow: hidden; }
+.app-shell { height: var(--viewport-height); min-height: 0; display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); overflow: hidden; background: var(--bg-side); }
 
 .sidebar {
   min-width: 0;
@@ -74,7 +74,6 @@ body:has(.console-main) { height: var(--viewport-height); overflow: hidden; }
   flex-direction: column;
   padding: 0;
   background: var(--bg-side);
-  border-right: var(--stroke) solid var(--hairline);
 }
 
 .brand { display: flex; align-items: center; gap: var(--s-2-5); flex-shrink: 0; min-height: var(--topbar-h); padding: var(--s-2) var(--s-4); }
@@ -199,7 +198,9 @@ nav button:hover .nav-glyph, nav button.active .nav-glyph { color: var(--text); 
 
 main { min-width: 0; background: var(--surface); padding: var(--s-6) var(--gutter) var(--s-12); }
 
-main.console-main { display: flex; flex-direction: column; min-height: 0; padding: 0; }
+/* Painel encaixado, como o shell do task-manager: o fundo do sidebar envolve o conteúdo. */
+main.console-main { display: flex; flex-direction: column; min-height: 0; padding: 0; margin: var(--s-3); border: var(--stroke) solid var(--hairline); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); }
+.brand { margin-top: calc(var(--s-3) + var(--stroke)); }
 .topbar { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; position: relative; z-index: var(--layer-header); height: var(--topbar-h); gap: var(--s-4); padding: 0 var(--gutter); border-bottom: var(--stroke) solid var(--hairline); background: var(--surface); }
 .shell-breadcrumb { display: flex; flex: 1; align-items: center; min-width: 0; gap: var(--s-2); color: var(--text-3); font-size: var(--fs-meta); white-space: nowrap; }
 .shell-breadcrumb > span { overflow: hidden; text-overflow: ellipsis; }
@@ -2483,7 +2484,8 @@ span.knowledge-note { cursor: default; }
   .brand > div:last-child, .local-boundary div, .nav-group, .nav-hint span:not(.nav-glyph), .nav-hint kbd { display: none; }
   #area-switcher .area-pill { grid-template-columns: var(--s-3-5); justify-content: center; min-height: var(--s-8); font-size: 0; }
   #area-switcher .area-pill b { display: none; }
-  .brand { justify-content: center; min-height: var(--topbar-mobile-h); padding: var(--s-2); }
+  .brand { justify-content: center; min-height: var(--topbar-mobile-h); padding: var(--s-2); margin-top: 0; }
+  main.console-main { margin: 0; border: 0; border-radius: 0; }
   nav button { grid-template-columns: var(--s-4); justify-content: center; min-height: var(--s-10); font-size: 0; }
   nav button b { display: none; }
   .local-boundary { justify-content: center; }
