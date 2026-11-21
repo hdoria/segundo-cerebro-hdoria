@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "about": "Hashes SHA-256 de versões oficiais anteriores de arquivos que já foram seed e hoje são do motor. Uma cópia instalada igual a um destes hashes é do produto, não edição do dono.",
+  "files": {
+    "LICENSE": [
+      "231c0ce662cbe3795ad87b0d27a8e4db966195340298a5049a40783a675cb1b6"
+    ],
+    "LICENSE-CONTEUDO.md": [
+      "1d542568c203ecdc0df5d9c18c52644fbf003c15dc1643db54cacb486d7221ff",
+      "2c31b6e3db1f32fe8a8694fb01a6ab5f53dd1610325bfad54d14b68c123d442d"
+    ]
+  }
+}

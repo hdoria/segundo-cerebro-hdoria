@@ -81,7 +81,11 @@ try {
   writeFileSync(join(next, '.claude/skills/comecar/SKILL.md'), `${readFileSync(join(next, '.claude/skills/comecar/SKILL.md'), 'utf8')}\nlinha nova\n`);
   const nextEnv = { CEREBRO_UPDATE_SOURCE_DIR: next };
   const nargs = ['--tag', 'v99.0.0', '--vault', vault, '--motor', motor];
+  const legacyReceipt = join(vault, '.cerebro/runtime/receipts/routines/routine-receipt-legado.json');
+  mkdirSync(dirname(legacyReceipt), { recursive: true });
+  writeFileSync(legacyReceipt, `${JSON.stringify({ privacy: { content_shared_with_inevita: false } }, null, 2)}\n`);
   const p1 = JSON.parse(node(updater, nargs, nextEnv));
+  assert.equal(p1.legacy_identifiers, 1, 'prévia acusa dado de rotina com identificador antigo');
   assert.ok(p1.files.some((entry) => entry.root === 'motor' && entry.path === 'VERSION' && entry.action === 'replace'));
   assert.ok(p1.files.some((entry) => entry.root === 'vault' && entry.path === '.claude/skills/comecar/SKILL.md' && entry.action === 'replace'));
 
@@ -108,11 +112,14 @@ try {
   assert.equal(readFileSync(join(vault, '.cerebro/version'), 'utf8').trim(), '99.0.0');
   assert.match(readFileSync(join(vault, '.claude/skills/comecar/SKILL.md'), 'utf8'), /linha nova/);
   assert.match(readFileSync(join(vault, '.cerebro/motor'), 'utf8'), /MOTOR_VERSION=99\.0\.0/);
+  assert.deepEqual(JSON.parse(readFileSync(legacyReceipt, 'utf8')).privacy, { content_shared_with_community: false },
+    'update aprovado migra o identificador antigo');
 
   // A prévia dividida mostra os dois caminhos absolutos.
   const again = JSON.parse(node(updater, nargs, nextEnv));
   assert.equal(again.motor, motor);
   assert.equal(again.vault, vault);
+  assert.equal(again.legacy_identifiers, 0, 'migração idempotente');
 
   // M2: o ramo legado (sem --vault) nunca trata o motor dividido como pasta única.
   const frozen = [treeHash(motor), treeHash(vault)];

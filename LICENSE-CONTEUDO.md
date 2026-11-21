@@ -1,21 +1,26 @@
 # Licença do conteúdo
 
-O repositório tem duas camadas com licenças diferentes — de propósito:
+Este repositório junta código e texto, e cada um segue regras próprias.
 
-| Camada | O que é | Licença |
-|---|---|---|
-| **Motor** | `scripts/`, `skills/`, `.claude/`, `.agents/`, `protocol/`, `templates/`, `tests/` e demais código | [MIT](LICENSE) — usa, modifica, redistribui, inclusive comercialmente |
-| **Conteúdo** | `METODO*.md`, `GLOSSARIO.md`, `FONTES.md`, `docs/guides/` | [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.pt-br) |
+## Código: MIT
 
-## O que a CC BY-NC 4.0 significa aqui, em português claro
+Os scripts, as skills, o protocolo, os templates, os testes e o restante do código estão sob a
+[licença MIT](LICENSE). Você pode usar, alterar e redistribuir, inclusive em projeto comercial,
+desde que mantenha o aviso de copyright.
 
-- **Pode**: usar o conteúdo no teu Cérebro, adaptar pro teu negócio, citar com atribuição
-  ("Cérebro INEVITA"), compartilhar trechos com a fonte.
-- **Não pode**: revender o conteúdo, empacotar como produto pago, republicar o método ou o
-  acervo como se fossem teus.
+O código começou como fork de `gabrielzucco/cerebro-inevita`, também MIT. O aviso original continua
+no [`LICENSE`](LICENSE), e as atribuições de terceiros estão no [`NOTICE`](NOTICE).
 
-O motivo é simples: o método é aberto porque queremos que ele se espalhe. O conteúdo carrega
-a voz e o trabalho de campo da INEVITA — ele viaja junto, mas não vira mercadoria de terceiro.
+## Texto do método: CC BY-NC 4.0
 
-Tudo que TU escreves dentro do teu Cérebro (em `meu-negocio/`, `privado/`, `operacao/`,
-`capturas/` etc.) é **teu**, integralmente — nenhuma das licenças acima alcança o teu conteúdo.
+`METODO*.md`, `GLOSSARIO.md`, `FONTES.md` e `docs/guides/` são de Hugo Doria, publicados em
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.pt-br).
+
+Com eles você pode aplicar o método no seu Cérebro, adaptar ao seu negócio e compartilhar trechos,
+citando "Cérebro hdoria, de Hugo Doria". Vender o texto, embalar em produto pago ou publicar como
+se fosse seu fica fora da licença. O uso comercial do texto é do autor.
+
+## O que você escreve
+
+As notas do seu vault (`meu-negocio/`, `privado/`, `operacao/`, `capturas/` e as outras pastas)
+pertencem a você. Nenhuma das duas licenças acima vale para elas.

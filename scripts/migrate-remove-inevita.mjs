@@ -149,6 +149,15 @@ function atomicWrite(path, text, mode) {
   }
 }
 
+export function hasLegacyIdentifiers(path) {
+  try {
+    const text = readFileSync(path, 'utf8');
+    return (path.endsWith('.jsonl') ? migrateJsonlText(text) : migrateJsonText(text)).status === 'changed';
+  } catch {
+    return false;
+  }
+}
+
 export function planMigration(root) {
   const brain = resolve(root);
   const cerebroDir = join(brain, '.cerebro');

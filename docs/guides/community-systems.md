@@ -1,193 +1,202 @@
-# Sistemas da comunidade: operação local
+# Listar, instalar e melhorar sistemas no terminal
 
-Este guia descreve os comandos do cliente, disponíveis desde a release v1.39.0 e mantidos no patch documental 1.39.1. Para usar pela conversa, comece pelo [guia do MCP](community-mcp.md). A disponibilidade de cada sistema e a permissão de acesso são consultadas na plataforma; a publicação do cliente não aprova uma contribuição nem comprova ciclos reais de uso de um sistema.
+Este guia mostra como listar, instalar, melhorar e acompanhar sistemas da comunidade Vibe Makers usando só o terminal. Serve para quando o MCP não está disponível, quando você quer ver exatamente o que cada comando faz ou quando uma instalação ou um envio falhou e você precisa entender por quê.
 
-O cliente precisa de Node.js 20 ou mais recente, vínculo válido da instalação e acesso vigente à comunidade Vibe Makers para as operações remotas. O Funil usa Python 3.9 ou mais recente para o próprio método; a instalação não executa Python, scripts ou skills do pacote. Os comandos remotos abaixo devem usar o serviço de distribuição compatível da plataforma.
+Se você prefere conversar com a IA, o caminho equivalente está no [guia do MCP](community-mcp.md#conectar). Se o Cérebro ainda não está montado, comece pela [implantação assistida](implantacao-assistida.md).
 
-## Compatibilidade e ordem de atualização
+Uma ressalva importante: instalar arquivos de um sistema não prova resultado no seu negócio. A instalação só põe o pacote no lugar. Quem mostra se funciona é o primeiro trabalho real.
 
-Atualize o **cliente do membro antes de exigir o novo contrato no backend**. O cliente precisa dos serviços `community-*`, do instalador V2, das regras de privacidade e do envio da credencial de instalação. Copiar apenas um comando novo para um Cérebro antigo não constitui uma atualização compatível.
+## Como chamar os comandos
 
-Conserve `.cerebro/id`, `.cerebro/install-credential` e o contexto privado durante a atualização pelo processo oficial. Não gere outra identidade para contornar um erro de acesso. A credencial permanece local e não deve ser copiada para argumentos, chat, configuração MCP ou logs.
+Todos os comandos usam o lançador, a partir da raiz do vault:
 
-Cliente e backend de distribuição precisam compartilhar o contrato de identidade da instalação, catálogo/grant/recibo/contribuição e envelope V2. O cliente mantém suporte ao envelope schema1 de Calls. O acesso é decidido pela plataforma em cada ação; um `member_id` informado pelo cliente não concede autoridade. E-mail cadastrado, sozinho, não substitui a credencial da instalação.
-
-O wrapper exige cliente 1.39.0: a base 1.38.0 não possui o transporte V2 nem envia a credencial pelo instalador de sistemas. Quem tem uma instalação anterior deve seguir a [atualização segura](../../COMECE-AQUI.md) antes de usar estes comandos. Quem tem um acervo artesanal começa pela [implantação assistida](implantacao-assistida.md), preservando a origem como referência ou aprovando uma cópia para outra pasta.
-
-O wrapper atual do Funil usa `funil-e-crescimento`, system ID `sistema-funil`, canal `pilot` e visibilidade `validation-lab`. O acesso `public` no contrato de release significa o público autorizado da comunidade; o manifesto legado usa `community_members`. Ambos os contadores de prova real começam em zero. O produto founding `funil-vivo` não é substituído por inferência.
-
-## Ajuda, catálogo e detalhes
-
-Execute na raiz do Cérebro que contém estes scripts:
-
-```sh
-node scripts/community.mjs --help
-node scripts/community.mjs list
-node scripts/community.mjs show --slug=funil-e-crescimento
+```bash
+node .cerebro/bin/cerebro.mjs community <subcomando> [flags]
 ```
 
-`--help` não lê credenciais, usa rede ou escreve. `list` e `show` consultam o serviço. A raiz padrão é a instalação que contém o script; para uma raiz diferente, defina explicitamente `CEREBRO_INSTALL_ROOT` no processo. Nenhum desses comandos instala algo globalmente.
+O lançador define `CEREBRO_INSTALL_ROOT` como o vault, e é isso que faz o comando achar a sua identidade e escrever no lugar certo. Chamar `node scripts/community.mjs` direto só funciona na instalação de pasta única. Na instalação dividida, sem essa variável, a raiz vira a pasta do motor e o resultado sai errado.
 
-O endpoint padrão é o serviço `cerebro-system-distribution` da plataforma. `CEREBRO_DISTRIBUTION_URL` permite um endpoint explicitamente configurado. Use HTTPS; fixtures HTTP locais exigem uma opção de teste específica, descrita ao final. Não forneça uma URL desconhecida: o serviço recebe o vínculo da instalação.
+Subcomandos: `--help`, `list`, `show`, `install`, `prepare`, `review`, `approve`, `send`, `contributions` e `contribution`. Rodar `--help` é seguro: sem credencial, sem rede, sem gravação.
 
-## Conferir e instalar
+Variáveis que você pode precisar:
 
-Primeiro consulte a versão e o hash atuais:
+- `CEREBRO_INSTALL_ROOT`: a raiz do Cérebro (o lançador já define).
+- `CEREBRO_DISTRIBUTION_URL`: troca o endereço do serviço. O padrão é `https://cerebro.vibemakers.com.br/api/system-distribution`, e HTTPS é obrigatório. O serviço recebe a identidade da sua instalação, então não aponte para uma URL que você não conhece.
+- `CEREBRO_COMMUNITY_ALLOW_LOCALHOST=1`: só para testes locais da CLI.
 
-```sh
-node scripts/community.mjs install --slug=funil-e-crescimento
+A credencial (`.cerebro/id` e `.cerebro/install-credential`) é lida do disco. Nunca passe por flag. Para criar o vínculo, veja [Conectar](community-mcp.md#conectar).
+
+## Ver o que existe
+
+```bash
+node .cerebro/bin/cerebro.mjs community list
+node .cerebro/bin/cerebro.mjs community show --slug=SLUG
 ```
 
-Sem `--confirm`, o resultado tem `status: preview`, `writes: false` e `grant_consumed: false`. Esta é uma prévia dos metadados da release: não baixa o bundle, não valida ainda todos os arquivos ou conflitos locais e não cria identidade de instalação.
+`list` mostra os sistemas disponíveis para o seu acesso atual. `show` detalha um deles: versão, hash (`release.package_sha256`) e a primeira tarefa. Anote o hash, porque a instalação vai pedi-lo.
 
-Depois de revisar a release, substitua o marcador pelo `release.package_sha256` exibido e confirme:
+## Instalar
 
-```sh
-node scripts/community.mjs install \
-  --slug=funil-e-crescimento \
-  --sha256=HASH_DA_RELEASE_REVISADA \
-  --runtime=codex \
-  --confirm
+### 1. Prévia, sem escrita
+
+```bash
+node .cerebro/bin/cerebro.mjs community install --slug=SLUG
 ```
 
-A aplicação reconfere a release, solicita/resgata o grant, valida o pacote e chama o instalador compartilhado com o CLI oficial e o MCP. Hash diferente bloqueia a instalação. Ao solicitar outra tentativa, revise o estado: o download pode ter consumido o grant antes de uma falha local. O fluxo `community install` solicita nova autorização, preservando a instalação íntegra já existente.
+O que volta sem `--confirm`: `status: preview`, `writes: false`, `grant_consumed: false` e, junto, o bloco `release`. Ele não baixa o pacote, não gasta o download autorizado e não confere conflitos locais. Serve para você ver o que vai entrar.
 
-O resultado V2 inclui `refs`, `entrypoint`, `first_task`, `status: installed` e `remote_receipt`. O estado de operação do sistema continua `package_added`: fontes ainda precisam ser configuradas e o primeiro trabalho precisa de revisão humana.
+### 2. Instalação com o hash aprovado
 
-A distribuição V2 fica organizada assim, com caminhos relativos à raiz do Cérebro:
+```bash
+node .cerebro/bin/cerebro.mjs community install --slug=SLUG --sha256=HASH --confirm
+```
+
+`HASH` é o `release.package_sha256` que você viu. Se ele não bater com a release atual, o comando para com `reviewed_hash_required` ou `release_changed`. O parâmetro `--runtime` indica a ferramenta de IA que você usa (o padrão é `codex`); os valores são os mesmos da ativação: `claude-code`, `codex`, `gemini-cli`, `antigravity` e `outro`.
+
+O fluxo é: pedir o download, resgatá-lo, validar o pacote, instalar e enviar o recibo. O pacote não executa nada: scripts e skills de dentro dele não rodam, e nenhuma cópia de `AGENTS.md`, `CLAUDE.md` ou skills vai para o seu vault.
+
+O resultado traz `status: installed`, `refs`, `entrypoint`, `first_task` e `remote_receipt: confirmed` ou `pending`. Se vier `pending`, os arquivos estão instalados e só o recibo falhou: rode a mesma instalação de novo para a mesma versão. Detalhe: o download autorizado pode ter sido consumido antes de uma falha local, e então a nova tentativa pede outro.
+
+### Limites e requisitos do pacote
+
+- No máximo 512 arquivos, 1 MiB por arquivo, 4 MiB no total e 6 MiB de JSON.
+- caminhos seguros, sem `.git`, `.cerebro` ou `.env`.
+- se o seu Cérebro for mais antigo que o `minimum_brain_version` do pacote, a instalação é recusada com `brain_version_incompatible`; fora de um Cérebro, `brain_not_recognized`.
+
+### Onde ficam os arquivos
+
+Tudo relativo à raiz do vault. Para o slug `SLUG` e a versão `VERSAO` com o hash curto `HASH`:
 
 ```text
-sistemas/outros-instalados/<slug>/
-  releases/<versao>-<hash>/
-    bundle/                 árvore original, byte a byte
-    contracts/              contratos externos ao bundle
-    package.json            envelope exato
-    installation.json       recibo técnico local
-  manifest.json             wrapper operacional
-  release.json
-  contract.json
-  capability.json
-  manifest.md               orientação de entrada
-  workspace/                destino reservado ao trabalho privado
-.cerebro/sistemas/<slug>.json
+sistemas/outros-instalados/SLUG/
+  manifest.json  release.json  contract.json  capability.json  manifest.md
+  releases/VERSAO-HASH/
+    bundle/          a árvore original do pacote, intacta byte a byte
+    contracts/       os contratos, fora do bundle
+    package.json
+    installation.json
+  workspace/         reservado ao seu trabalho privado; o instalador não cria
+.cerebro/sistemas/SLUG.json   estado: status package_added, fontes unbound
 ```
 
-O instalador reserva a localização do workspace, mas não o inicializa. Abra o `entrypoint` retornado e siga `first_task` e o método do pacote para revisar/inicializar o trabalho. No Funil, conserve o bundle original e faça alterações de trabalho no workspace. A instalação não copia `AGENTS.md`, `CLAUDE.md` ou skills para as configurações globais do membro. Acrescenta somente regras privadas ausentes ao `.gitignore` do destino.
+Alguns pontos:
 
-Schema1 continua passando pelo writer legado do instalador oficial. A transação com staging e bundle integral descrita acima pertence ao V2; não atribua essa garantia nova a todo o writer legado.
+- o bundle não é editado. Os contratos ficam fora dele, e o wrapper operacional é a parte que você pode adaptar.
+- o estado em `.cerebro/sistemas/SLUG.json` nasce com `status: package_added` e as fontes `unbound` (por configurar). A gravação do estado é a última do processo. Se algo falha de forma síncrona, tudo volta atrás.
+- versões anteriores e o `workspace/` nunca são apagados.
+- o recibo remoto, quando confirmado, fica gravado em outro lugar que não o bundle.
+- o `.gitignore` do vault recebe as regras que faltarem, para manter fora do Git: `sistemas/outros-instalados/*/workspace/`, `sistemas/outros-instalados/*/releases/`, `.community-stage-*/`, `.*.install.lock`, `.cerebro/sistemas/` e `comunidade/minhas-contribuicoes/propostas/*`.
 
-## Preparar uma melhoria sem enviar
+Não há subcomando para consultar o estado de uma instalação. Para saber como um sistema está, leia `.cerebro/sistemas/SLUG.json` e o `installation.json` da release.
 
-A preparação parte de um bundle V2 instalado e lê somente os caminhos escolhidos dentro de `source-dir`. O arquivo selecionado precisa existir no pacote-base e ter uma alteração. O exemplo abaixo pressupõe que `workspace/metodo/oferta.md` já foi editado e revisado localmente. A versão `0.2.1-rc.1` é ilustrativa, não uma versão declarada publicada.
+A identidade local é preservada nas atualizações. Se o acesso for negado, não crie uma identidade nova para driblar o bloqueio.
 
-Confira a prévia:
+### Pacotes no formato antigo
 
-```sh
-node scripts/community.mjs prepare \
-  --slug=funil-e-crescimento \
-  --source-dir=sistemas/outros-instalados/funil-e-crescimento/workspace \
-  --file=metodo/oferta.md \
-  --version=0.2.1-rc.1 \
-  --summary="Abrir pela situação concreta e reaproveitar revisões anteriores."
+Pacotes em `schema1` (legado) seguem um caminho de instalação separado do envelope V2, mas pelo mesmo comando. O cliente é atualizado antes de o backend passar a exigir um contrato novo, então um Cérebro em dia continua instalando.
+
+## Conflitos e travas
+
+O instalador nunca sobrescreve uma edição sua. Quando algo não bate, ele para com um código:
+
+| Código | O que aconteceu | Como resolver |
+| --- | --- | --- |
+| `release_changed` | A release mudou depois da sua prévia | Rode `show` de novo e confira o novo hash |
+| `package_hash_mismatch` | O pacote baixado não confere com o hash aprovado | Não instale; refaça a prévia |
+| `installed_contract_modified_conflict` | Você editou um contrato instalado | Guarde a sua edição e revise a diferença antes de seguir |
+| `installed_wrapper_modified_conflict` | Você editou o wrapper | Idem: a sua edição é preservada |
+| `installed_file_mismatch` | Um arquivo instalado difere do registrado | Compare com `installation.json` |
+| `installed_contract_mismatch` | O contrato instalado difere do esperado | Compare com a release |
+| `unmanaged_system_conflict` | Já existe uma pasta de sistema que o instalador não gerencia | Mova ou renomeie a pasta |
+| `existing_system_requires_migration` | O sistema existente precisa de migração | Migre antes de instalar |
+| `installation_in_progress` | Outra instalação do mesmo slug está rodando | Espere e confira |
+| `installation_interrupted_review_required` | Uma instalação anterior ficou pela metade | Inspecione antes de reparar (abaixo) |
+| `release_directory_exists` | A pasta da release já existe | Inspecione e decida |
+| `installation_changed_review_again` | O estado mudou durante a instalação | Refaça a prévia |
+| `version_conflict` | A versão colide com a existente | Confira as versões instaladas |
+
+Sobre travas: a instalação usa um arquivo `sistemas/outros-instalados/.SLUG.install.lock` e uma pasta de preparo `.community-stage-<uuid>`. Não há recuperação automática, nem `--force`. Se uma instalação foi interrompida, inspecione o lock, a pasta da release, os wrappers e o estado antes de apagar qualquer coisa. Um reparo às cegas pode destruir trabalho seu.
+
+## Melhorar um sistema instalado
+
+Você encontrou um ajuste que vale para todos. O caminho para propor é preparar um candidato.
+
+```bash
+node .cerebro/bin/cerebro.mjs community prepare \
+  --slug=SLUG \
+  --source-dir=sistemas/outros-instalados/SLUG/workspace/ajustes \
+  --file=contratos/qualificacao.md \
+  --file=prompts/abordagem.md \
+  --version=1.1.0 \
+  --summary="Reordena as perguntas de qualificação para começar pelo orçamento."
 ```
 
-Acrescente `--confirm` ao mesmo comando para salvar o candidato privado. Repita `--file=<caminho>` para cada arquivo adicional aprovado para seleção. O resumo aceita até 2.000 caracteres. Sem `--confirm`, nenhum candidato é salvo: não use o ID da prévia nas próximas operações.
+Regras que o comando aplica:
 
-O resultado confirmado contém `candidate_id`, `package_sha256` e `package_ref`. Os arquivos ficam em `comunidade/minhas-contribuicoes/propostas/<candidate_id>/`. A alternativa `--base-package=<envelope-relativo>` substitui `--slug` quando a base V2 foi fornecida explicitamente por arquivo local.
+- só lê os arquivos citados em `--file` (pode repetir a flag), dentro de `--source-dir`. Nada é varrido.
+- cada arquivo precisa existir no pacote base e ter mudança de fato (`path_not_shareable`, `selection_has_no_change`).
+- `--version` tem de ser diferente da versão base (`new_version_required`).
+- `--summary` tem até 2000 caracteres e não pode ter dado sensível (`invalid_or_sensitive_summary`).
+- a seleção é explícita (`explicit_selection_required`), sem pastas privadas (`private_selection_refused`), só texto (`binary_content_not_supported`), e segredos ou dados pessoais óbvios são barrados (`sensitive_content_requires_redaction`).
+- os diretórios `originais/` e `copy/` do sistema `sistema-funil` não podem ser escolhidos.
 
-O candidato contém o **bundle público completo mais as alterações selecionadas**, não apenas um diff. Não há varredura recursiva do workspace. Contexto, peças de clientes, dados e credenciais não são selecionáveis implicitamente. A detecção de segredos e PII óbvios ajuda a bloquear erros, mas não substitui a revisão do conteúdo.
+Sem `--confirm`, é uma prévia. Com `--confirm`, grava o candidato. Se você não tem o sistema instalado, mas tem o envelope dele, troque `--slug` por `--base-package=<envelope-relativo>`.
 
-Nesta versão, a composição não adiciona/remove caminhos da base. No Funil, `copy/` e `originais/` permanecem intactos; os metadados gerados não são patches selecionáveis. O inventário é recalculado. A nova versão identifica a distribuição e os contratos; o motor do RC mantém a versão interna `0.2.0-rc.1`, exigida pelo seu validador. Alterar a versão interna requer trabalho explícito no contrato do motor. Uma nova contribuição fica em piloto, com zero evidência real herdada.
+O candidato é o bundle completo mais os seus arquivos alterados, e não só a diferença. Ele vai para `comunidade/minhas-contribuicoes/propostas/<uuid>/`, com `package.json` e `candidate.json`; depois aparecem `approval.json` e `submission.json`. Guarde os três campos devolvidos: `candidate_id`, `package_sha256` e `package_ref`.
+
+A política de envio vale também aqui: piloto, não listado, zero ciclos reais, zero Cérebros verificados, sem ação externa e sem fonte privada ligada. Um pacote novo não herda evidência de ninguém.
+
+Se o que você tem é um sistema inteiro novo, o caminho é o [guia de publicação](community-release.md) (ou a conversa guiada em [Compartilhar um sistema novo](community-mcp.md#compartilhar-um-sistema-novo)).
 
 ## Revisar, autorizar e enviar separadamente
 
-Substitua os marcadores pelos valores retornados na preparação confirmada:
+São três decisões, e cada uma vale por si. Use o `candidate_id` e o `package_sha256` que o preparo devolveu.
 
-```sh
-node scripts/community.mjs review --candidate=ID_DO_CANDIDATO
+### Revisar
+
+```bash
+node .cerebro/bin/cerebro.mjs community review --candidate=ID
 ```
 
-`review` mostra a seleção, arquivos gerados, tamanhos, hashes de antes/depois e `package_ref`. Não gera um diff textual completo. Inspecione o conteúdo completo do envelope local indicado antes de autorizar; seus arquivos estão representados em base64. A lista de hashes, sozinha, não substitui essa leitura editorial.
+Mostra o `status` do candidato (`prepared`, `approved_for_submission` ou `submitted`), a lista de arquivos com tamanhos e hashes, e o `package_ref`. Não há diff textual: é uma conferência de lista e hash. Leia o conteúdo dos arquivos você mesmo.
 
-Depois da revisão, autorize **esse hash exato**:
+### Autorizar
 
-```sh
-node scripts/community.mjs approve \
-  --candidate=ID_DO_CANDIDATO \
-  --sha256=HASH_DO_CANDIDATO_REVISADO \
-  --confirm
+```bash
+node .cerebro/bin/cerebro.mjs community approve --candidate=ID --sha256=HASH --confirm
 ```
 
-Isso grava `approval.json` e retorna `approved_for_submission`; ainda não envia. A autorização inclui o resumo revisado. Mudanças no payload ou no resumo invalidam a autorização anterior. Prepare um novo candidato para outra revisão.
+Grava uma autorização para aquele hash exato (`approval.json`). Se qualquer arquivo ou o resumo mudar depois, a autorização deixa de valer e o envio é recusado. Sem `--confirm` você vê só a prévia.
 
-O envio exige outra decisão explícita:
+### Enviar
 
-```sh
-node scripts/community.mjs send \
-  --candidate=ID_DO_CANDIDATO \
-  --sha256=HASH_DO_CANDIDATO_REVISADO \
-  --confirm
+```bash
+node .cerebro/bin/cerebro.mjs community send --candidate=ID --sha256=HASH --confirm
 ```
 
-Sem `--confirm`, `approve` e `send` exibem prévias; `send` continua exigindo uma autorização local válida. No envio confirmado, a plataforma reconfere o acesso e recebe a proposta privada. O cliente usa o ID do candidato como chave de idempotência e grava `submission.json` quando recebe o recibo. `submitted` não significa revisão aceita nem publicação.
+O envio confere o seu acesso naquele momento, manda a proposta privada e usa o ID do candidato como chave de idempotência: reenviar o mesmo candidato não duplica nada. A resposta é `status: submitted` com `published: false`, e grava `submission.json`. Sem `--confirm`, só prévia. Sem autorização válida, o envio para com `approval_required`, `candidate_hash_mismatch` ou `approval_hash_mismatch`.
 
-A revisão da comunidade e a publicação exigem outro membro com autoridade de revisor na plataforma. O CLI e o MCP do membro não oferecem comandos de curadoria/publicação. Uma aprovação editorial sintética não é aprovação humana de Gabriel nem prova de mercado.
+Enviar não publica. A revisão e a publicação são feitas por outro membro revisor, dentro da plataforma, fora desta linha de comando.
 
-## Consultar o estado
+## Acompanhar
 
-```sh
-node scripts/community.mjs review --candidate=ID_DO_CANDIDATO
-node scripts/community.mjs contributions
-node scripts/community.mjs contribution --id=ID_DA_CONTRIBUICAO_NA_PLATAFORMA
+```bash
+node .cerebro/bin/cerebro.mjs community contributions
+node .cerebro/bin/cerebro.mjs community contribution --id=ID
 ```
 
-O ID local do candidato e o ID remoto da contribuição têm funções diferentes. `review` consulta a preparação local. Os dois últimos comandos consultam a plataforma; a resposta respeita a identidade e a permissão atuais. O detalhe remoto pode incluir o envelope autorizado para revisão, enquanto o MCP projeta apenas metadados.
+O primeiro lista as suas contribuições; o segundo mostra o detalhe de uma, no que a plataforma autoriza você a ver. Os dois consultam a plataforma, então exigem o vínculo e o acesso vigente.
 
-Não existe um subcomando separado de status da instalação. Consulte o JSON local `.cerebro/sistemas/<slug>.json`, os `refs` retornados e `installation.json`. Uma consulta a `show` informa a release do catálogo, não comprova a integridade da instalação local.
+## Verificação local
 
-## MCP local
+Para checar que o conjunto de comunidade do motor está íntegro:
 
-Gere a configuração no computador que possui esse Cérebro:
-
-```sh
-node scripts/community-mcp-config.mjs --root="/caminho/completo/do/seu/cerebro"
+```bash
+node scripts/test-community-all.mjs
 ```
 
-O gerador apenas imprime JSON com `mcpServers.cerebro-comunidade`. Revise e acrescente a entrada à configuração existente do cliente, conservando outros servidores. Nenhuma configuração global é alterada pelo comando. O servidor usa Node e `scripts/community-mcp.mjs` em stdio; não é o MCP empresarial nem um servidor HTTP local.
+Rode na pasta do motor (em desenvolvimento) e não dentro de um vault. A flag opcional `--funil=/caminho` aponta para um pacote externo de teste.
 
-Peça à IA para listar, detalhar e planejar a instalação. Após a aprovação do hash, ela pode instalar. Preparar contribuição, conferir o candidato, autorizar e enviar continuam sendo decisões separadas. As ferramentas chamam os mesmos serviços do CLI; não oferecem shell, leitura arbitrária de arquivos ou publicação no catálogo. Veja [o guia do MCP](community-mcp.md) para configuração, protocolo e nomes das ferramentas.
+## Para manter o Cérebro atualizado
 
-## Conflitos, locks e recibos
-
-| Situação | Comportamento e próximo passo |
-| --- | --- |
-| `release_changed`, `package_hash_mismatch` | Refaça a prévia e revise a versão/hash atuais. Não substitua o hash automaticamente. |
-| `installed_contract_modified_conflict`, `installed_wrapper_modified_conflict` | A edição local é preservada. Compare o wrapper com `releases/.../contracts/` e resolva a personalização antes de outra instalação. Não apague sua edição para forçar a atualização. |
-| `installed_file_mismatch`, `installed_contract_mismatch` | A árvore distribuída diverge do envelope. Inspecione a alteração e preserve trabalho local; o retry não trata o estado JSON como prova suficiente. |
-| `unmanaged_system_conflict`, `existing_system_requires_migration` | Já há conteúdo sem o estado V2 correspondente, ou migração necessária. Não existe migração automática nesse comando. |
-| `installation_in_progress` | Existe lock com processo ativo. Aguarde a operação e confira o estado antes de repetir. |
-| `installation_interrupted_review_required`, `release_directory_exists` | Pode haver lock, staging ou release órfã. Preserve-os e inspecione PID, estado, contratos e recibos antes de uma reparação manual. O comando não limpa automaticamente uma execução interrompida. |
-| `remote_receipt: pending` | Os arquivos podem estar instalados. Confira o estado e o recibo locais, refaça a prévia e repita `community install` da release revisada. O acesso é revalidado; não apague o workspace. |
-| `approval_required`, `candidate_hash_mismatch`, `approval_hash_mismatch` | Confira o candidato íntegro e registre nova autorização quando necessário; não reutilize a autorização de outro conteúdo. |
-| Falha no envio/resposta | Consulte `contributions` antes de repetir `send` com o mesmo candidato; a idempotência evita duplicar uma submissão igual. |
-| Vínculo inválido ou acesso negado | Recupere a ativação/acesso na plataforma. Não copie credenciais e não invente outro `member_id`. |
-
-Falhas síncronas de escrita V2 têm rollback testado. Encerramento abrupto do processo não possui journal de recuperação automática. O lock fica em `sistemas/outros-instalados/.<slug>.install.lock` e staging em `.community-stage-*`; não há `--force` ou comando de desbloqueio seguro automático.
-
-O recibo remoto confirmado é persistido fora do bundle. No fluxo avançado do instalador oficial com grant já consumido, o retry V2 verifica os bytes locais antes de tentar o recibo; o `community install` obtém uma autorização nova. Ambos dependem da política atual do servidor.
-
-## Verificação local e limites desta entrega
-
-Na raiz do repositório:
-
-```sh
-npm test
-npm run test:community
-npm run test:community -- --funil="/caminho/completo/funil-0.2.0-rc.1"
-```
-
-`npm test` executa a validação do produto e o runner da comunidade. Com `--funil`, o runner também compara os 99 arquivos do RC original byte a byte, conserva o ZIP e verifica o inventário recomposto. Usa fixtures isoladas, sem publicar, enviar contribuições reais ou usar segredos de membros. Python é executado somente por essa verificação explícita do RC.
-
-Para fixtures de rede, o CLI aceita `CEREBRO_COMMUNITY_ALLOW_LOCALHOST=1`; o processo MCP aceita `CEREBRO_COMMUNITY_ALLOW_LOCALHOST=true`. O runner configura seus próprios testes. Não habilite essas exceções na configuração normal. Os scripts `lint` e `typecheck` não estão definidos no `package.json` desta base.
-
-Os testes locais não substituem a revisão final da integração, a coordenação de atualização cliente/backend ou uma decisão de liberação em produção. Nenhum resultado técnico deste guia conta como uso real aprovado por um membro.
+Atualizar o motor é um trabalho à parte e preserva a sua identidade e as suas edições. O passo a passo seguro está em [COMECE-AQUI](../../COMECE-AQUI.md).

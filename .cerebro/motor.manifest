@@ -25,6 +25,7 @@ CHANGELOG.md
 .cerebro/layout.json
 .cerebro/motor.manifest
 .cerebro/seed.manifest
+.cerebro/product-history.json
 .cerebro/vault-seed.manifest
 .cerebro/private-ignore.manifest
 .claude/settings.json

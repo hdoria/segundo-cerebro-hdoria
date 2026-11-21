@@ -1,137 +1,171 @@
 ---
-topic: tratamento-de-fontes
-version: 1.0
-published: 2026-08-06
-_organized: true
+tipo: metodo
+versao: 1.45.0
+publicado: 2026-11-21
 ---
 
-# O QUE FAZER COM O QUE CHEGA
+# Fontes: a régua de refino
 
-*A régua de tratamento de fontes. Responde de uma vez: quando eu trato, quanto eu trato, e o que fica só como está.*
+Chega um PDF de contrato. Chega o export do CRM. Chega uma pasta de 400 arquivos que alguém
+compartilhou. E chega aquela gravação de 1h40 que você ainda não ouviu.
 
----
+A pergunta que trava todo mundo é "trato ou guardo o bruto?". A resposta está numa régua de cinco
+níveis, numa tabela por formato, e na disciplina de parar no nível que o trabalho pede.
 
-## A pergunta que todo mundo faz
+## A regra-mestra
 
-Ela chega em três versões, e é sempre a mesma:
+Formato de entrada não se uniformiza. O que você uniformiza é o caminho que a fonte percorre aqui
+dentro, e refina esse caminho só até onde o trabalho exige.
 
-- *"Quando eu tenho que tratar uma informação e quando guardo só o bruto?"*
-- *"Tudo tem que virar Markdown?"*
-- *"Como eu faço com e-mail, PDF, planilha, print, áudio — cada um é diferente?"*
+Reunião continua reunião. Contrato continua PDF. Planilha continua planilha. O que fica igual para
+todas é o caminho: capturar, etiquetar, extrair, aprovar, devolver ao trabalho.
 
-A resposta curta é uma frase:
+Markdown é o formato do destilado. Isso não autoriza converter o acervo da empresa em markdown.
 
-> **Não se padroniza o formato de entrada. Padroniza-se o caminho que a informação percorre — e você para no nível de refino que o trabalho exige.**
+E a parte em que quase ninguém acredita de primeira: **parar no ponteiro é saída legítima**. A
+maioria das suas fontes vai morrer no nível 0 ou 1, e isso é o sistema funcionando.
 
-O resto deste documento é essa frase destrinchada.
+## A pergunta única
 
----
+Antes de tocar em qualquer arquivo, pergunte:
 
-## A regra: refine só até onde o trabalho pede
+> *"que trabalho real vai sair disso?"*
 
-Refinar custa. Custa token, custa atenção tua, e custa **precisão** — porque contexto demais afoga o contexto certo. O palco tem número pra isso: um time enterprise curou a base de **7.000 para 1.000 blocos** e a precisão de contexto subiu de 57% para 82% — *"one-seventh the context size, a lot higher precision, and a lot less money burned on tokens"* `[AI Engineer World's Fair, palestras-expo-3 @ 05:27]`.
+Troque a pergunta e o resultado muda. "Isso é importante?" coloca tudo no mesmo patamar, porque
+tudo parece importante às 18h de uma terça. Trabalho real tem resposta concreta ou resposta
+nenhuma, e resposta nenhuma já é o nível 0.
 
-E o custo de não curar: com **30% de arquivos velhos ou duplicados, até 80% do contexto** que o agente usa pra responder vira lixo `[workshops-expo-2 @ 13:24]`. Limpar o corpus **dobra o recall**.
+A resposta mapeia direto no nível:
 
-Por isso a regra não é "guarde tudo bem organizado". É:
+| A resposta | O nível |
+|---|---|
+| não sei ainda | **nível 0 · ponteiro** |
+| vou buscar dentro | **nível 1 · legível** |
+| preciso achar sem ler tudo | **nível 2 · indexado** |
+| vai ser citado em decisão | **nível 3 · destilado** |
+| muda o próximo trabalho | **nível 4 · operacional** |
 
-> **Subir de nível sem um trabalho que justifique é desperdício.** Não é organização — é apodrecimento pago em token.
+## Os cinco níveis
 
----
+### Nível 0 · ponteiro
 
-## Os 4 níveis (+ o nível 0)
+Você registra onde a fonte mora e para. Sem copiar, sem converter, sem mover.
 
-| Nível | O que é | Custo | Pare aqui quando |
+Na prática isso vira uma nota em `meu-negocio/fontes/<id>.md` com `type: Source`. Pasta local fora
+do cérebro ganha também um registro de leitura, sem cópia e sem sync, por
+`node .cerebro/bin/cerebro.mjs register-source --path <caminho> --type <tipo> --confirm`. Sem o
+`--confirm` o comando recusa e nada é gravado.
+
+Esse é o nível de quase tudo que chega. Um drive de 12 GB da agência cabe em três linhas aqui.
+
+### Nível 1 · legível
+
+A fonte vira texto: transcrição, OCR, export. Continua bruto, só ficou lida por máquina.
+
+O texto vai para `capturas/` com cabeçalho de origem e `type: Capture`, sem `_organized` (é isso
+que mantém a captura no Inbox até ela virar átomo). O original fica intocado onde estava.
+
+Gravação é a skill `/transcrever`. Ela produz nível 1 e para ali.
+
+### Nível 2 · indexado
+
+A fonte ganha etiqueta no topo do arquivo em `capturas/` e uma linha no índice da fonte. Agora você
+acha o que precisa sem reler tudo.
+
+A etiqueta carrega quatro campos: o que aquilo é, a origem, a data e o caminho onde o original
+ficou. Sem etiqueta, bruto é entulho com data de modificação.
+
+### Nível 3 · destilado
+
+A fonte vira átomo: afirmação, citação literal com origem, o sentido em uma ou duas linhas, os elos.
+
+Chega até aqui só o que uma decisão vai citar. Quem executa é a `/guardar`, e reunião é a `/call`.
+Aqui a aprovação humana é plena: você mostra o átomo destilado e espera o "guardo assim?".
+
+### Nível 4 · operacional
+
+O destilado vira régua, decisão ou procedimento. Ele muda o próximo trabalho, não só a memória.
+
+Este é o nível mais caro e o mais raro. Reserve para o padrão que você já viu se repetir, com
+aprovação explícita de quem responde pelo resultado.
+
+## O caminho, sempre o mesmo
+
+1. **Capturar.** O bruto entra como entrou. Nada se converte à força.
+2. **Etiquetar.** Os quatro campos da etiqueta, logo na entrada.
+3. **Extrair.** Só o que o nível acordado pede.
+4. **Aprovar.** Até o nível 2, você confirma a gravação ("registro assim?"). Nos níveis 3 e 4, a
+   aprovação é de memória: o átomo ou a régua só existe depois do sim.
+5. **Devolver ao trabalho.** O destilado volta no momento do uso. Destilado que ninguém recupera é
+   arquivo morto com formatação melhor.
+
+Captura manual é o padrão. Quando a mesma fonte chega pela terceira vez, aí sim vale propor rotina
+que captura e etiqueta sozinha, com o gate humano intacto no tratamento.
+
+## A tabela por formato
+
+O que se extrai depende do formato. O nível típico é ponto de partida, e a pergunta única sempre
+ganha dele.
+
+| Formato de entrada | O que se extrai | Nível típico | Por quê |
 |---|---|---|---|
-| **0 · Ponteiro** | O cérebro registra **onde** está. Não copia, não converte, não move. | ~zero | Ainda não tem trabalho recorrente saindo dali |
-| **1 · Legível** | Vira texto (transcrição, OCR, export) — continua bruto, mas a máquina consegue ler | barato | Você vai precisar buscar dentro, mas não citar |
-| **2 · Indexado** | Ganha etiqueta: o que é, de onde veio, quando aconteceu, o que dá pra extrair | barato | Você precisa **achar** sem ler tudo |
-| **3 · Destilado** | Vira átomo: afirmação + citação literal + sentido + elos | caro (atenção tua) | Isso muda decisão e vai ser **citado** |
-| **4 · Operacional** | Vira régua, decisão ou procedimento | mais caro | Isso muda o **próximo trabalho**, não só este |
+| Planilha ou CRM | O padrão lido nos números, com a data da leitura e o recorte | 2 a 3, nunca a tabela inteira | O banco conta, o cérebro guarda o padrão lido nos números. Tabela virando nota é dado duplicado e vencido |
+| Reunião ou call | Entra como áudio e vira transcrição. Para cada decisão, dono, prazo, objeção e número, o minuto que a sustenta | 1, sobe a 3 quando virar decisão | Transcrever é nível 1: virou legível, parou. Quem sobe para destilado é a `/call`, com aprovação |
+| Áudio ou vídeo (aula, podcast) | Transcrição em bloco para ler e timestamp de palavra quando for cortar vídeo | 1 | Uma gravação, duas saídas, e nunca se transcreve duas vezes: timestamp refeito quebra a citação já feita |
+| Grupo de mensagens (WhatsApp) | A decisão e a objeção em linguagem literal, com data e papel de quem falou | 0 a 2 | PII em cada linha. Sanitize antes de qualquer gravação, e prefira o trecho ao histórico |
+| Proposta ou contrato (PDF) | Escopo, valor, prazo e as cláusulas que mudam decisão, cada uma com a página | 0, e 3 quando for citado | PDF continua PDF. Converter o arquivo inteiro em markdown não melhora a recuperação, aumenta a conta |
+| E-mail | O pedido, o que ficou combinado, a data e quem respondeu por quê | 0 a 2 | A thread inteira mora na caixa de entrada. Só o combinado precisa estar recuperável |
+| Site ou concorrente | Promessa, oferta, preço público e a data da consulta | 2 | Página muda sem avisar. Sem a data da consulta, a nota não dá para comparar depois |
+| Print ou imagem | O texto por OCR e, em uma linha, o que a imagem prova | 1 | A imagem é a evidência. O texto extraído é o que torna a evidência achável |
+| Drive ou acervo de mídia | Onde mora, quem é o dono, o que tem dentro em uma linha por pasta | 0 | Copiar um drive inteiro para dentro é a forma mais rápida de contaminar a recuperação |
 
-**A maioria das fontes morre no nível 0 ou 1 — e está certo.** Parar cedo não é preguiça: é o que mantém o cérebro afiado. Um cérebro que trata tudo vira um Drive bagunçado com nome bonito.
+## Número tem casa própria
 
----
+Planilha e CRM continuam sendo a casa dos números. O cérebro guarda o padrão que você leu neles,
+com a data e o recorte, e aponta para a casa.
 
-## Como decidir: uma pergunta só
+Quando precisar cruzar o banco com o cérebro, cruze por ID opaco. Nunca por nome de pessoa.
 
-Antes de tratar qualquer coisa, responda:
+## PII fica fora da nota
 
-> **Que trabalho real vai sair disso?**
+Antes de gravar qualquer coisa, varra e-mail, telefone, nome de cliente, @, CPF e CNPJ. Dado
+pessoal vai para `privado/` ou fica de fora, e nunca entra em `capturas/` nem em `meu-negocio/`.
 
-- **Não sei ainda** → nível 0. Registra onde está e segue a vida.
-- **Vou querer procurar coisas aqui dentro** → nível 1 ou 2.
-- **Isso vai ser citado numa decisão** → nível 3.
-- **Isso muda como a próxima entrega é feita** → nível 4.
+## O custo de refinar
 
-Repare que a pergunta **não** é "isso é importante?". Quase tudo parece importante. A pergunta é sobre trabalho — porque contexto que não vira trabalho é custo, não patrimônio.
+Cada nível acima do necessário cobra em três moedas: tokens na janela, atenção da pessoa que
+aprova, e precisão na hora de recuperar. A terceira é a que dói mais tarde: quanto mais nota velha
+e duplicada, menos o agente acha o que importa.
 
----
+O agente trabalha pelo índice e pelos átomos, e abre o bruto só quando precisa checar um ponto
+específico. É esse drill-down que faz 400 arquivos caberem numa conversa.
 
-## O caminho é sempre o mesmo (5 etapas)
+Refinar além do que o trabalho pede não organiza nada. Cobra token, cobra atenção, e devolve uma
+nota que ninguém vai recuperar.
 
-Não importa o formato. Toda fonte percorre:
+## Quatro erros que custam caro
 
-```
-capturar → etiquetar → extrair → aprovar → devolver ao trabalho
-```
+- **Tratar tudo.** Você gasta a semana destilando e a recuperação piora, porque o sinal afundou no
+  volume.
+- **Copiar o drive inteiro.** Ponteiro mais índice resolvem. Cópia cria uma segunda casa da verdade
+  que ninguém atualiza.
+- **Link sem trecho.** Decisão se sustenta em citação literal com origem. Apontar a pasta onde o
+  arquivo mora não sustenta nada.
+- **Bruto sem etiqueta.** Arquivo em `capturas/` sem origem e sem data é lixo com nome bonito em
+  seis meses.
 
-1. **Capturar** — de preferência automático (rotina, conector). O original **não se destrói**.
-2. **Etiquetar** — o que é, de onde veio, quando aconteceu, onde está o original.
-3. **Extrair** — só o que aquele tipo de fonte tem de valioso (varia por formato, ver tabela abaixo).
-4. **Aprovar** — humano no gate. Sem aprovação, não vira memória.
-5. **Devolver** — o destilado volta no momento do trabalho, não fica bonito numa pasta.
+## Como você sabe que funcionou
 
-*"A variedade está na entrada. A consistência está no método."*
+A prova está na resposta: você pergunta algo do negócio, o cérebro devolve o trecho citado com a
+origem, e você reconhece a fonte. Contagem de notas prova volume, nada mais.
 
----
+Isso é o que o `/teste` mede todo mês, com as suas cinco perguntas-canário. Resposta fraca aponta
+um buraco e a fonte capaz de tapá-lo.
 
-## Por formato: o que se extrai de cada um
+## O executável da régua
 
-| Formato | Entra como | Nível típico | O que se extrai |
-|---|---|---|---|
-| **Reunião / call** | áudio → transcrição | 3–4 | decisões, donos, prazos, objeções, números — e o minuto que sustenta cada uma |
-| **E-mail** | thread | 1–2 (3 se for negociação) | sequência da conversa, promessas feitas, objeções, o que ficou pendente |
-| **Proposta / contrato** | PDF | 0–2 | cláusulas, valores, prazos, condições — o PDF continua PDF |
-| **Planilha / CRM** | export ou conexão | 0–1 no cérebro | **fica em banco**, não em nota. O cérebro guarda o padrão que você leu nos números, não os números |
-| **Drive / acervo de mídia** | ponteiro | 0 (+2 no índice) | catálogo do que existe e onde está. Nunca copie o drive pra dentro |
-| **Grupo de WhatsApp** | export diário | 1–2 | decisões tomadas no meio da conversa, dores relatadas, combinados |
-| **Print / imagem** | descrição | 0–1 | o que a imagem prova. A maioria morre na triagem semanal |
-| **Site / concorrente** | link + trecho | 0–2 | a mudança observada, com data. Link sozinho apodrece |
+Esta régua tem uma skill que a executa: **`/fonte`**. Ela identifica o que chegou, faz a pergunta
+única, recomenda o nível com o custo em uma linha, executa até ali e para.
 
-> **Planilha e CRM merecem atenção:** número tem casa própria. Banco de dados é bom pra contar, filtrar e apagar; o cérebro é bom pra entender, cruzar e decidir. Se os dois precisam se encontrar, cruze por um ID opaco — nunca por nome de pessoa.
-
----
-
-## Três coisas que nunca mudam
-
-1. **O bruto nunca morre e nunca se converte à força.** A reunião continua reunião, o contrato continua PDF, o e-mail continua e-mail. O cérebro registra **onde está** e o que dá pra tirar dali. Ele só não é o que a IA lê por padrão — o agente lê o índice e os átomos, e abre o bruto só em drill-down.
-2. **Markdown é o destilado, não o mundo.** Texto simples é o formato porque *"agents are fluent in it"* `[Notion @ 17:33]` e humano também lê. Mas isso vale pro que você destilou — não é convite pra converter 800 arquivos.
-3. **PII nunca entra na nota.** Nome de cliente, e-mail, telefone, CPF/CNPJ: sanitiza antes de gravar, ou fica em `privado/`.
-
----
-
-## Os quatro erros clássicos
-
-| Erro | Por que dói | O certo |
-|---|---|---|
-| Tratar tudo que entra | Vira Drive bagunçado; a IA afoga | Trate o que tem trabalho saindo |
-| Copiar o Drive/Notion inteiro pra dentro | Duplica o que já existe e apodrece em paralelo | Conecta e aponta (nível 0) |
-| Guardar link sem trecho | Em 3 meses ninguém lembra por que salvou | Trecho literal + data + por quê |
-| Deixar tudo em bruto "pra tratar depois" | O bruto sem etiqueta é invisível pro agente | Etiqueta na entrada custa 10 segundos |
-
----
-
-## O teste de que está funcionando
-
-Você não mede isso por volume de notas. Mede por **resposta**: quando você pergunta algo do teu negócio, o cérebro responde com **citação e origem** — e a resposta melhora mês a mês. É o que o `/teste` mede.
-
-> *"The job of memory is to ground your model in knowledge that is current, large and citable."* `[palestras-expo-3 @ 06:40]`
-
-Current (fresco), large (abrangente), **citable** (com origem). Se a resposta não pode apontar de onde veio, não é memória — é chute com sotaque.
-
----
-
-**Quando a dúvida voltar:** a resposta não é "onde eu guardo isso?". É **"que trabalho vai sair disso?"** — e o nível certo cai da pergunta.
-
-**O executável desta régua é a skill `/fonte`** — aponte qualquer coisa pra ela ("o que eu faço com isso?", "ingere o que tá em capturas/") e ela recomenda o nível, executa até ele e para.
+Quando a dúvida for "isso merece tratamento?", a decisão é da `/fonte`. A `/guardar` entra no nível
+3, quando o trabalho já pede átomo, e a `/transcrever` entrega o nível 1 de qualquer gravação.

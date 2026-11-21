@@ -12,7 +12,7 @@ const COMMAND_RE = /^[a-z0-9-]+$/;
 const ALLOWED = new Set([
   'activate', 'concierge-run', 'commission-system', 'community', 'compatibility-diagnostic',
   'console', 'discover-context', 'entity', 'eval-calls', 'generate-operating-brief',
-  'install-system', 'installation-compatibility', 'motor-path', 'ping', 'register-source',
+  'install-system', 'installation-compatibility', 'migrate-remove-inevita', 'motor-path', 'ping', 'register-source',
   'render-map', 'routine-runtime', 'runtime-access', 'runtime-secret', 'source-contract',
   'system-contract', 'system-experiment', 'system-learn', 'system-run', 'system-source-binding',
   'system-state', 'tasks', 'update', 'vault-compile', 'vault-import-history', 'vault-import-journal', 'vault-sync',

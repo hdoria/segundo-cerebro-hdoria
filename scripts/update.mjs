@@ -20,6 +20,7 @@ const LAUNCHER_TEMPLATE = 'templates/vault/.cerebro/bin/cerebro.mjs';
 const STATE = '.cerebro/update-state.json';
 const BACKUPS = '.cerebro/update-backups';
 const LOCK = '.cerebro/update.lock';
+const PRODUCT_HISTORY = '.cerebro/product-history.json';
 const POINTER_FILE = '.cerebro/motor';
 const MOTOR_ROLE_FILE = '.cerebro/motor-install.json';
 const MOTOR_MANIFEST_FILE = '.cerebro/motor.manifest';
@@ -158,13 +159,19 @@ export function planUpdate(root, source, tag, { baseline = null, role = 'full' }
       !== bytesAt(root, 'VERSION')?.toString('utf8').trim()) throw new Error('baseline-version-mismatch');
   const changes = new Map();
   const owned = {};
+  // Arquivo que já foi seed e hoje é do motor não tem hash no recibo: a cópia igual a uma versão
+  // oficial anterior conta como do produto; qualquer outra continua sendo edição do dono.
+  const historyBytes = bytesAt(source, PRODUCT_HISTORY);
+  const productHistory = historyBytes ? JSON.parse(historyBytes).files || {} : {};
+  const officialCopy = (item, currentHash) => (productHistory[item] || []).includes(currentHash) ? currentHash : null;
   function add(item, incoming, kind) {
     const before = bytesAt(root, item);
     const after = item === 'CLAUDE.md' ? mergeClaude(before, incoming) : incoming;
     const beforeHash = before === null ? null : hash(before);
     const afterHash = hash(after);
     const baselineBytes = baseline ? bytesAt(baseline, item) : null;
-    const previousHash = state.files[item] ?? (baselineBytes === null ? null : hash(baselineBytes));
+    const previousHash = state.files[item]
+      ?? (baselineBytes === null ? officialCopy(item, beforeHash) : hash(baselineBytes));
     const action = beforeHash === afterHash ? 'unchanged' : before === null ? 'create' : 'replace';
     const conflict = action === 'replace' && kind === 'motor' && item !== 'CLAUDE.md'
       && previousHash !== beforeHash;
@@ -372,6 +379,25 @@ function findVaultUp(start) {
   }
 }
 
+// Dado de rotina gravado antes da troca dos identificadores inevita fica ilegível para o motor novo.
+// A prévia conta os arquivos; o apply aprovado migra com o backup do próprio script. Import dinâmico:
+// o update.mjs também roda sozinho, copiado fora do motor, e aí a migração fica de fora.
+async function legacyIdentifiers(dataRoot) {
+  try {
+    const { planMigration, applyMigration } = await import('./migrate-remove-inevita.mjs');
+    return { plan: planMigration(dataRoot), applyMigration };
+  } catch {
+    return null;
+  }
+}
+
+async function migrateLegacyIdentifiers(dataRoot) {
+  const legacy = await legacyIdentifiers(dataRoot);
+  if (!legacy?.plan.changes.length) return;
+  const { applied, backup } = legacy.applyMigration(legacy.plan);
+  console.log(`✓ ${applied} arquivo(s) de .cerebro migrados para os identificadores novos. Backup: ${backup}`);
+}
+
 // Instalação dividida: atualiza o motor e reprojeta o vault com um único plan_hash.
 // `link`: religa um vault sem ponteiro (clone em outra máquina, motor movido) a um motor existente.
 async function mainSplit(options, vault, motor, { link = false } = {}) {
@@ -389,10 +415,12 @@ async function mainSplit(options, vault, motor, { link = false } = {}) {
     const plan = planSplit({ motor, vault, source, tag: options.tag, link,
       baseline: options['baseline-dir'] && resolve(options['baseline-dir']) });
     console.log(JSON.stringify({ mode: 'preview', layout: 'split', link, tag: plan.tag, plan_hash: plan.digest,
-      motor, vault, warnings: plan.warnings, conflicts: plan.conflicts, files: plan.summary }, null, 2));
+      motor, vault, warnings: plan.warnings, conflicts: plan.conflicts, files: plan.summary,
+      legacy_identifiers: (await legacyIdentifiers(vault))?.plan.changes.length ?? 0 }, null, 2));
     if (!options.apply) return;
     const { motorBackup, vaultBackup } = applySplit({ motor, vault }, plan, { approvePlan: options['approve-plan'] });
     console.log(`✓ Motor e vault atualizados para ${options.tag}. Backups locais: motor ${motorBackup || 'sem alterações'}, vault ${vaultBackup || 'sem alterações'}`);
+    await migrateLegacyIdentifiers(vault);
   } finally { rmSync(temp, { recursive: true, force: true }); }
 }
 
@@ -444,10 +472,11 @@ async function main() {
       : await downloadPackage(repo, options.tag, temp);
     const plan = planUpdate(root, source, options.tag, { baseline: options['baseline-dir'] && resolve(options['baseline-dir']) });
     console.log(JSON.stringify({ mode: 'preview', tag: plan.tag, plan_hash: plan.digest,
-      conflicts: plan.conflicts, files: plan.summary }, null, 2));
+      conflicts: plan.conflicts, files: plan.summary, legacy_identifiers: (await legacyIdentifiers(root))?.plan.changes.length ?? 0 }, null, 2));
     if (!options.apply) return;
     const backup = applyPlan(root, plan, { approvePlan: options['approve-plan'] });
     console.log(`✓ Motor atualizado para ${options.tag}. Backup local: ${backup || 'sem alterações'}`);
+    await migrateLegacyIdentifiers(root);
     // O pós-update legado migra armazenamento privado; é uma ação separada e visível.
     // Não executar código baixado fora do plano de arquivos nem telemetria durante update.
     if (stat(safePath(root, '.cerebro/runtime'))?.isFile()) {

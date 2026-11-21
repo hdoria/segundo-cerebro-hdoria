@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readMotorPointer } from './installation.mjs';
+import { hasLegacyIdentifiers } from '../migrate-remove-inevita.mjs';
 import { loadAccessGrant } from './access-runtime.mjs';
 import { inspectRoutinePreflight } from './routine-preflight.mjs';
 import {
@@ -68,6 +69,19 @@ function uniqueIssues(issues) {
     seen.add(key);
     return true;
   });
+}
+
+export const LEGACY_IDENTIFIERS_COMMAND = 'node .cerebro/bin/cerebro.mjs migrate-remove-inevita --root=. --apply';
+
+// Arquivo recusado só por ainda usar os identificadores inevita vira um aviso único com o comando
+// da migração, em vez de uma linha por recibo.
+function groupLegacyIdentifiers(root, issues) {
+  const legacy = new Set(issues.filter((issue) => issue.ref?.startsWith('.cerebro/') && hasLegacyIdentifiers(join(root, issue.ref))).map((issue) => issue.ref));
+  if (!legacy.size) return issues;
+  return [
+    { reason_code: 'legacy-identifiers', ref: `${legacy.size} arquivo(s) no formato antigo. Rode no vault: ${LEGACY_IDENTIFIERS_COMMAND}`, count: legacy.size },
+    ...issues.filter((issue) => !legacy.has(issue.ref)),
+  ];
 }
 
 const ACTIVATION_STEPS = [
@@ -690,7 +704,7 @@ export function buildConsoleReadModel(root, { now = new Date() } = {}) {
       active: routines.filter((routine) => routine.health_reason_code === 'active').map((routine) => routine.routine_id),
       pending_judgments: pendingJudgments.map((item) => item.receipt_id),
     },
-    issues: uniqueIssues(issues),
+    issues: groupLegacyIdentifiers(root, uniqueIssues(issues)),
   };
 }
 

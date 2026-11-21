@@ -1,5 +1,15 @@
 # Mudanças do Cérebro hdoria
 
+## v1.45.0 - 2026-11-21 · método reescrito e daily com agenda
+
+- O método, o glossário, a régua de fontes e os guias da comunidade foram reescritos como texto próprio, em "você", e passam a ser CC BY-NC 4.0 de Hugo Doria. Saem as citações de palestra e os números de terceiros. Os termos que o motor usa continuam iguais, e o glossário ganhou verbetes que faltavam, como Fonte, Bandeja, Horizonte, Console, Canvas e Trace.
+- Os guias da comunidade passam a mostrar os comandos pelo lançador do vault, com a forma manual onde ele ainda não chega.
+- A `/daily` começa pelos eventos do dia e pelas reuniões com nota, quando o agente tem calendário ou notas de reunião conectados, e sugere o `/call` para reunião ainda não tratada. Sem essas ferramentas, segue como antes.
+- Tarefas: a lista virou tabela agrupada, com busca e agrupamento por nota, data, tipo ou nenhum, e grupos recolhíveis.
+- O ledger de runs ganhou trava de arquivo: a importação automática do histórico não apaga mais a linha de um Sistema que termina no mesmo instante.
+- O `/atualizar` reconhece a cópia oficial antiga de `LICENSE` e `LICENSE-CONTEUDO.md` em instalações de pasta única anteriores à v1.43, que antes viravam conflito na primeira mudança desses arquivos.
+- A atualização migra identificadores antigos da comunidade para os nomes novos, e o diagnóstico de compatibilidade aceita `knowledgeRoot` apontando para o próprio vault.
+
 ## v1.44.1 - 2026-11-14 · painel encaixado no Console
 
 - O conteúdo do Console passa a ficar num painel encaixado, com margem, borda e cantos arredondados, envolvido pelo fundo do menu lateral. Em telas estreitas ele ocupa a largura toda, como antes.

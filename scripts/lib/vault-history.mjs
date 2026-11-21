@@ -40,6 +40,7 @@ import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from 'node:fs';
 import { posix, dirname, isAbsolute, join, resolve, sep } from 'node:path';
 import { layout, readJson, validateRunRecord } from './system-protocol.mjs';
+import { withLedgerLock } from './ledger-lock.mjs';
 import { parseFrontmatter } from './vault-today.mjs';
 
 const DATED_NOTE_RE = /^(\d{4}-\d{2}-\d{2})-(.+)\.md$/;
@@ -534,7 +535,14 @@ function headingTokens(text) {
 
 // Lê as notas de sessão do vault e devolve o plano de importação. `confirm` grava;
 // sem ele, nada é escrito e o relatório diz o que entraria.
+// Gravando, a trava do ledger cobre leitura, montagem e rename: um append que cai no meio
+// espera, em vez de sumir sob o rename.
 export function importVaultSessionHistory(root, { confirm = false } = {}) {
+  if (!confirm || !layout(root).vault) return planVaultSessionHistory(root, { confirm });
+  return withLedgerLock(ledgerFile(root), () => planVaultSessionHistory(root, { confirm }));
+}
+
+function planVaultSessionHistory(root, { confirm }) {
   const config = layout(root).vault;
   if (!config || typeof config !== 'object') {
     return {

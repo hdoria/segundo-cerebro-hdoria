@@ -1,101 +1,142 @@
-# Preparar meu Cérebro
+# Implantar o Cérebro com a ajuda de um agente
 
-A skill `comecar` conduz a implantação neste fork. O agente acompanha a pessoa desde a escolha da pasta até o primeiro trabalho usando os dados do negócio.
-A plataforma entrega a instrução ao agente local. O MCP da comunidade entra depois, para consultar
-e instalar sistemas, quando estiver configurado e o acesso permitir.
+Este guia é para quem vai montar ou migrar o Cérebro com um agente de IA rodando no seu computador, sem precisar ser técnico. Leia antes da primeira ativação, ou quando for retomar uma implantação que ficou pela metade.
 
-## Escolher de onde começar
+Você só precisa dizer, na conversa com o agente, uma destas frases:
 
-- **Começar do zero:** o agente confirma uma pasta nova e uma versão publicada do Cérebro.
-- **Já uso o Cérebro:** o agente confere a versão instalada e prepara a atualização oficial,
-  com prévia, preservação do contexto e aprovação antes de aplicar. Depois, retoma `comecar`.
-- **Tenho um Cérebro artesanal:** o agente verifica somente a estrutura autorizada, seja um cofre
-  de Obsidian ou outra organização. O acervo pode continuar onde está, como referência, ou ter
-  uma parte copiada para uma instalação do Cérebro separada, depois de um plano aprovado.
-- **Continuar a implantação:** o agente recupera a escolha, as evidências e a próxima tarefa,
-  sem tratar uma interrupção como motivo para reinstalar.
+- "prepare meu Cérebro" para começar.
+- "continue de onde parei" para retomar.
 
-No agente, basta dizer “prepare meu Cérebro” ou “continue de onde parei”. Ele segue
-`COMECE-AQUI.md` e a skill `comecar` na conversa atual. Quem usa uma versão anterior
-deve seguir o caminho seguro de atualização de [COMECE-AQUI.md](../../COMECE-AQUI.md), usando
-o planejador da versão publicada e a base da versão instalada. Não execute o updater antigo
-nem aplique a atualização sobre uma pasta artesanal.
+O resto o agente conduz, e pede a sua aprovação antes de qualquer coisa que grave.
 
-Os comandos de instalação, atualização e MCP deste percurso usam Node.js 20 ou mais recente.
-O assistente pode começar a conversa e o trabalho local antes de configurar serviços externos.
+Se você quer o caminho mais curto, o [COMECE-AQUI](../../COMECE-AQUI.md) resume tudo e explica a atualização segura. Aqui está o detalhe das rotas.
 
-## Aproveitar o que já existe
+## Como o Cérebro fica no seu computador
 
-O acervo pode continuar no lugar original, como fonte autorizada. Se a pessoa preferir migrar,
-`migrar-cerebro` apresenta o mapa antes da cópia: o que entra, o que fica como referência, o que
-está duplicado, o que exige revisão e onde será guardado. A origem permanece intacta.
+O Cérebro tem duas pastas:
 
-Instruções e agentes antigos são examinados separadamente do conteúdo do negócio. Um documento
-encontrado não pode substituir automaticamente as regras do protocolo. CRM, banco e Drive entram
-como fontes externas; a migração de arquivos não conecta esses serviços.
+- o **vault**, com as suas notas. É o que você abre no Tolaria ou no Obsidian e onde o agente trabalha.
+- o **motor**, o código do produto, que fica ao lado e que você quase não toca.
 
-## Vincular a conta e conectar a comunidade
+A atualização do motor preserva o seu contexto. Ela é um trabalho diferente de organizar a empresa no Cérebro, e não migra nada do que você sabe sobre o negócio.
 
-Quando você quiser usar a comunidade, o agente confere o resultado da ativação pela sua conta
-na plataforma. Informar um e-mail, clonar o repositório ou instalar os arquivos não comprova o vínculo
-seguro necessário ao MCP. A credencial de instalação fica local e não deve ser colada na conversa.
+## Escolha o ponto de partida
 
-Com o vínculo confirmado e acesso vigente à comunidade Vibe Makers, siga [Conectar o MCP](community-mcp.md#conectar).
-O gerador prepara a configuração para o cliente de IA; a conexão precisa ser adicionada nesse
-cliente. Essa etapa não substitui a primeira entrega do Cérebro nem a configuração das fontes de
-cada sistema. Sem o vínculo, o trabalho local continua disponível.
+O agente identifica a sua situação e, quando há mais de uma saída razoável, pergunta. São estas:
 
-## Preparar somente as fontes necessárias
+| Situação | O que acontece |
+| --- | --- |
+| Não tem nada instalado | Instala um Cérebro novo |
+| Já tem um Cérebro instalado | Você escolhe: usar o existente, instalar um novo em pastas novas ou migrar |
+| Tem um acervo artesanal (Obsidian ou pastas suas) | Auditoria só de leitura, depois migração com mapa |
+| Já começou e parou | Retoma do ponto registrado |
 
-O agente começa pelo trabalho que a pessoa quer fazer. Para a fonte necessária, esclarece onde
-fica o original, a finalidade, quem autoriza, os limites de leitura, quem vai usar e como conferir
-se o material está atualizado. Essas escolhas formam o contrato da fonte.
+Se existe um Cérebro e você não disse o que quer, o agente oferece os três caminhos: **usar o existente**, **instalar novo em pastas novas** ou **migrar**. Instalar novo nunca reaproveita pastas antigas.
 
-Os estados têm evidências próprias:
+### Instalação nova
 
-| Estado | O que foi demonstrado |
-|---|---|
-| Fonte identificada | Sabemos onde ela está e por que pode ser útil. |
-| Contrato definido | Finalidade, autoridade e limites foram registrados; autorização e papel do Sistema têm suas próprias provas. |
-| Acesso testado | Uma leitura autorizada funcionou, com data e referência da prova. |
-| Frescor observado | Há evidência de até quando o conteúdo representa a operação. |
-| Fonte usada | O trabalho consumiu a fonte e produziu um resultado verificável. |
-
-Uma fonte manual pode atender ao primeiro trabalho. Atualização automática depende de conector,
-rotina e evidência de execução próprios. Ter um contrato não comprova nenhuma dessas três coisas.
-
-## Fazer o trabalho e escolher sistemas
-
-O primeiro trabalho usa uma amostra real, recebe a revisão do dono e guarda a correção aprovada.
-Uma segunda tarefa real deve reutilizar o contexto persistido, com confirmação do dono, antes de
-T4. A instalação dos arquivos e o vínculo da conta continuam separados dessa prova de uso.
-
-O arquiteto pode diagnosticar oportunidades quando solicitado. A instalação de um novo sistema
-segue os requisitos do pacote e do protocolo. A recomendação distingue sistema já instalado,
-release disponível para a conta, piloto acompanhado e proposta ainda sem pacote. Um card na
-vitrine não é prova de disponibilidade.
-
-## Se o processo parar
-
-O agente recupera o ponto de retomada em `operacao/decisoes-pendentes/onboarding.md`, quando esse
-registro foi autorizado, e confere os artefatos atuais antes de continuar. O registro guarda
-decisões e referências, sem credenciais ou cópia do conteúdo privado. Nenhum marco de ativação é
-criado só porque foi escrito nesse arquivo.
-
-Downloads, migração, fontes ou sistemas pendentes aparecem com a próxima ação concreta. A pessoa
-não precisa repetir uma escolha que já fez nem percorrer uma entrevista inteira para retomar.
-
-## Abrir o Console local
-
-No motor efetivo deste fork, use a raiz absoluta da pasta de dados escolhida:
+O agente roda o instalador do pacote com uma tag publicada, que ele confere no repositório `hdoria/segundo-cerebro-hdoria`. Precisa ser uma tag explícita, como `vX.Y.Z`; nomes como `main` ou `latest` não valem. Requisito: Node 20 ou mais novo.
 
 ```bash
-node scripts/console-server.mjs --root=/caminho/do/seu-cerebro --port=4782
+node PACOTE/scripts/install.mjs --tag vX.Y.Z --vault ~/Cerebro/notas
 ```
 
-Confira o endereço na saída e abra `http://127.0.0.1:4782`. Outra porta usa `--port=PORTA`.
-O Console lê contratos e recibos locais. Este lote de integração seletiva preservou a interface.
-Uma atualização futura pode substituir `console/` e `scripts/` conforme o pacote e o plano
-aprovados; preservar contexto privado não garante preservar código do fork. Para este checkout
-protegido, siga a [integração seletiva via Git](upstream-alignment.md). Implantar arquivos não
-comprova conexões, métricas ou estados sem evidência.
+Sem `--apply`, é só uma prévia, e nada é gravado. Com `--apply`, instala. Se você não informar pastas, os padrões são `~/Cerebro/notas` e `~/Cerebro/motor`; ao passar só `--vault`, o motor vai ao lado. Para escolher as duas, use `--vault` e `--motor`. Um destino dentro de outra instalação é recusado (`destination-inside-installation`).
+
+### Cérebro já instalado
+
+Para trazer um Cérebro existente para a versão atual, use a skill `atualizar`. Ela mostra uma prévia, o hash do plano e os conflitos, e só aplica com a sua aprovação. Preserva a sua identidade, a credencial, o contexto da empresa e as suas personalizações, e conflitos impedem a aplicação.
+
+Pelo terminal, a partir da raiz do vault:
+
+```bash
+node .cerebro/bin/cerebro.mjs update --tag vX.Y.Z
+node .cerebro/bin/cerebro.mjs update --tag vX.Y.Z --apply --approve-plan HASH
+```
+
+Instalações antigas, de pasta única, usam `--root` no lugar. Se o vault perdeu o ponteiro para o motor (por clone ou porque o motor mudou de lugar), o `update.mjs` religa com `--vault`, `--motor`, `--tag` e `--link`, também com prévia e hash aprovado antes de gravar.
+
+### Acervo artesanal
+
+Se o seu acervo é um Obsidian ou pastas organizadas do seu jeito, ele não tem marcadores do Cérebro, e isso não é defeito. O atualizador não serve para esse caso. O caminho é:
+
+1. a skill `auditar-cerebro` olha tudo em modo somente leitura e diz o que existe.
+2. a skill `migrar-cerebro` classifica o conteúdo e mostra o **mapa antes de copiar**. A origem fica intacta, o destino é aprovado por você e a cópia deixa um recibo local.
+
+Instruções e agentes antigos são examinados à parte do conteúdo do negócio, para que regras velhas não virem regras do seu Cérebro sem você ver.
+
+### Retomada
+
+Quando você diz "continue de onde parei", o agente lê o registro em `operacao/decisoes-pendentes/onboarding.md`. É um arquivo simples com as decisões tomadas e as referências do que já foi feito. Ele nunca guarda credenciais nem conteúdo privado. Se o arquivo não existe, o agente pergunta onde você parou.
+
+## O que o agente faz sozinho e o que pede a você
+
+Faz sozinho, sem gravar nada no seu vault: ler, listar, auditar, mostrar prévias e propor.
+
+Pede aprovação antes de gravar: instalar, atualizar, migrar, registrar uma fonte, vincular a conta e conectar a comunidade. Em instalação e atualização, a aprovação vem em três partes: a prévia, o hash do plano e a resolução dos conflitos.
+
+## Prove cada etapa, uma de cada vez
+
+Instalar, vincular a conta, registrar uma fonte, usar uma fonte e conectar a comunidade são coisas diferentes, e uma não prova a outra. Ter o Cérebro instalado não quer dizer que a conta está vinculada, e uma fonte registrada não quer dizer que ela foi usada.
+
+### Cérebro Base
+
+O primeiro objetivo é o **Cérebro Base**. Ele se ativa pelo uso: o agente orienta o mapa da empresa, registra fontes, usa uma fonte em um trabalho real e prova que o contexto aprovado volta a ser usado numa segunda tarefa. Só depois dessa segunda tarefa reutilizar o contexto, e com a sua confirmação, a implantação avança de nível. Antes disso, o que existe é um diagnóstico, não uma implantação completa.
+
+### Fontes
+
+Uma fonte passa por quatro estados, e cada um prova algo diferente:
+
+| Estado | Prova |
+| --- | --- |
+| Fonte identificada | Ela existe e você sabe onde encontrá-la |
+| Contrato definido | Está escrito o que ela traz, quem é o dono e como se usa |
+| Acesso testado | O agente conseguiu mesmo ler a fonte |
+| Fonte usada | Um trabalho real aproveitou o conteúdo dela e deixou recibo |
+
+No primeiro trabalho, uma fonte manual basta. Automatizar exige um conector, uma rotina e evidência de que funciona.
+
+Para registrar uma fonte para leitura manual, sem copiar nada:
+
+```bash
+node .cerebro/bin/cerebro.mjs register-source --path CAMINHO --type TIPO --label NOME --scope ESCOPO --confirm
+```
+
+Isso grava em `conexoes/configuradas/fontes.json`. Para evoluir uma fonte registrada até um contrato, use `source-contract migrate-registry` e depois `source-contract validate`. Ligar uma fonte a um sistema usa `system-source-binding plan` e depois `system-source-binding bind`. Quando o agente lê uma fonte local, a garantia registrada é `receipt-audited`.
+
+## Vincular a conta
+
+O vínculo liga esta instalação à sua conta na comunidade Vibe Makers. Ele é feito pela ativação: a plataforma entrega o código, e o agente roda:
+
+```bash
+node .cerebro/bin/cerebro.mjs activate --claim=CODIGO --runtime=claude-code
+```
+
+O `--runtime` aceita `claude-code`, `codex`, `gemini-cli`, `antigravity` e `outro`. A ativação cria, no vault, `.cerebro/id` e `.cerebro/install-credential`. E-mail, clone de pasta e arquivos copiados não comprovam o vínculo.
+
+O agente só oferece o vínculo depois da primeira entrega útil. Se você registra o e-mail, ele fica em `.cerebro/acesso-email`; se recusa, em `.cerebro/acesso-dispensado`. Com a telemetria desligada, a ativação devolve `activation_local_only` e não fala com a plataforma. Tudo isso é opcional: o trabalho local segue sem vínculo.
+
+## A comunidade vem depois
+
+A conexão com a comunidade pelo MCP é a etapa seguinte à entrega local, e nunca um pré-requisito. Quando chegar a hora, siga [Conectar](community-mcp.md#conectar). Sem conexão, você ainda consulta o catálogo pelo terminal: `node .cerebro/bin/cerebro.mjs community list`.
+
+### Que sistema faz sentido
+
+Ao recomendar um sistema, o agente separa quatro coisas, para não prometer o que não existe:
+
+- **instalado**: já está no seu vault.
+- **release acessível agora**: dá para instalar hoje.
+- **piloto assistido**: existe, mas em fase de teste e com acompanhamento.
+- **proposta sem pacote**: é só uma ideia, sem nada instalável.
+
+Aparecer na vitrine da comunidade não prova que o sistema está disponível para você.
+
+## Quando algo trava
+
+- **Node antigo:** instale o Node 20 ou mais novo.
+- **Destino recusado:** escolha uma pasta fora de qualquer instalação.
+- **Conflito na atualização:** o plano para; resolva e peça a prévia de novo.
+- **Perdeu o ponteiro do motor:** use o `--link` descrito acima.
+- **Não sabe em que passo está:** diga "continue de onde parei" e o agente lê o registro de retomada.
+
+Os detalhes de sistemas da comunidade, com o terminal, ficam no [guia de sistemas](community-systems.md).

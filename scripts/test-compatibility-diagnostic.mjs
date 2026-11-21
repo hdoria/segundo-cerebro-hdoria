@@ -112,6 +112,15 @@ try {
   assert.equal(starter.inventory.runs.valid, 0);
   assert.equal(starter.system_readiness.ready.length, 0);
 
+  const knowledgeAtRoot = sandbox('brain-compat-knowledge-root-');
+  installFoundation(knowledgeAtRoot, 'starter');
+  write(knowledgeAtRoot, '.cerebro/layout.json', { ...baseLayout(), knowledgeRoot: '.' });
+  assert.equal(buildCompatibilityDiagnostic(knowledgeAtRoot, { now: fixedNow }).checks.find((item) => item.id === 'layout').status, 'met',
+    'knowledgeRoot "." semeado pelo instalador aponta para o próprio vault e é compatível');
+  write(knowledgeAtRoot, '.cerebro/layout.json', { ...baseLayout(), knowledgeRoot: '../fora' });
+  assert.notEqual(buildCompatibilityDiagnostic(knowledgeAtRoot, { now: fixedNow }).checks.find((item) => item.id === 'layout').status, 'met',
+    'layout com caminho fora do vault continua incompatível');
+
   const brokenReferenceRoot = sandbox('brain-compat-broken-reference-');
   installFoundation(brokenReferenceRoot);
   rmSync(join(brokenReferenceRoot, '.cerebro', 'id'));

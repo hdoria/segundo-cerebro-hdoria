@@ -188,7 +188,7 @@ function layoutAssessment(root, issues) {
   const value = technicalJson(join(root, ref), 'layout', issues);
   if (!value || !object(value)) return { valid: false, value: {}, ref };
   const refs = Object.entries(value).filter(([, configured]) => typeof configured === 'string');
-  const unsafe = refs.filter(([, configured]) => !safeInside(root, configured, configured));
+  const unsafe = refs.filter(([, configured]) => resolve(root, configured) !== resolve(root) && !safeInside(root, configured, configured));
   const hasSystemRef = typeof value.systemContracts === 'string' || typeof value.systemContract === 'string';
   const valid = Number.isInteger(value.version) && value.version >= 1
     && typeof value.sourceContracts === 'string' && hasSystemRef

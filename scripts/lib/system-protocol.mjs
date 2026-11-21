@@ -14,6 +14,7 @@ import {
   validateSystemContractVersion,
 } from './company-brain-protocol-v2.mjs';
 import { isBrainRoot } from './installation.mjs';
+import { withLedgerLock } from './ledger-lock.mjs';
 
 export { validateAccessGrant, validateSourceContract };
 
@@ -310,7 +311,7 @@ export function appendRunRecord(root, record) {
   if (errors.length) throw new Error(`run record inválido: ${errors.join(' · ')}`);
   const path = ledgerPath(root);
   mkdirSync(dirname(path), { recursive: true });
-  appendFileSync(path, `${JSON.stringify(record)}\n`, { mode: 0o600 });
+  withLedgerLock(path, () => appendFileSync(path, `${JSON.stringify(record)}\n`, { mode: 0o600 }));
   return path;
 }
 

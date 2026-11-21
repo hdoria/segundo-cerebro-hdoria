@@ -62,6 +62,16 @@ try {
     assert.deepEqual(real.conflicts, [], `conflitos com o pacote real: ${real.conflicts}`);
     applyPlan(root, real, { approvePlan: real.digest });
     assert.equal(read(root, 'README.md'), 'readme editado\n');
+
+    // Arquivo que era seed e virou motor: cópia oficial antiga atualiza; cópia editada pelo dono é conflito.
+    const edited = join(temp, 'real-single-edited');
+    mkdirSync(edited);
+    applyPlan(edited, planUpdate(edited, archive, prevTag));
+    write(edited, 'LICENSE-CONTEUDO.md', 'licença ajustada pelo dono\n');
+    const guarded = planUpdate(edited, PRODUCT, tag);
+    if (read(PRODUCT, 'LICENSE-CONTEUDO.md') !== 'licença ajustada pelo dono\n') {
+      assert.ok(guarded.conflicts.includes('LICENSE-CONTEUDO.md'), 'edição do dono em arquivo que era seed vira conflito');
+    }
   }
 
   // M2: o motor de instalação dividida e o vault com ponteiro nunca são tratados como pasta única.

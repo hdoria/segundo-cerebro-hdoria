@@ -1,411 +1,465 @@
 ---
-version: 2.0
-published: 2026-08-04
-_organized: true
+tipo: metodo
+versao: 1.45.0
+publicado: 2026-11-21
 ---
 
-# O MÉTODO COMPLETO — Engenharia de Contexto
+# O método completo
 
-*Como transformar o que só você sabe na única vantagem que a IA não dá pro teu concorrente.*
+Este documento conta a história inteira: por que o Cérebro é construído assim, onde cada tipo de dado mora, como o ciclo roda, o que nunca pode ser quebrado e como saber se está funcionando.
 
----
-
-## ABERTURA — A tese em uma página
-
-Deixa eu te apresentar a Maya.
-
-A Maya é a analista que todo mundo procura. Não é a mais inteligente da empresa — tem gente com mais QI na mesma sala. Mas quando a pergunta é difícil, é na mesa dela que o time para. Por quê? Porque a Maya carrega o contexto: ela sabe o que já foi tentado, por que o cliente X cancelou, qual número o CEO olha de verdade. No palco de um dos maiores eventos de IA do mundo, foi ela o exemplo escolhido pra explicar o que faz um profissional valer mais — e a pergunta que fecha a história é esta: *"would you say your smartest teammate is your best teammate?"* `[WTF Context Layer @ 02:13–05:47]`
-
-Performance não é só inteligência. É **inteligência × contexto**. E isso vale exatamente igual pra IA.
-
-Aqui está o fato que muda tudo: o modelo de IA que você usa é **o mesmo** que o teu concorrente usa. Mesmo ChatGPT, mesmo Claude, mesmo tudo. A inteligência virou commodity — tá na tomada, igual pra todo mundo. Então o que diferencia o resultado? Foi dito assim, no palco, por quem opera IA em escala de bilhões:
-
-> *"When the model becomes commodity, context is the competitive advantage. You will get that advantage before your competitors."* `[PayPal Seminar 2 @ 12:23]`
-
-E mais fundo ainda — contexto não é só vantagem operacional, é patrimônio:
-
-> *"Context is also IP... in a world where you and your competitor have the same models, what differentiates a company?"* `[WTF Context Layer @ 18:54]`
-
-**Engenharia de Contexto** é a disciplina de transformar o que você sabe — e o que o teu negócio gera todo dia — em estrutura que a inteligência artificial opera com precisão. Numa frase pro leigo: **fazer a IA trabalhar com o que só você tem.**
-
-Você já sentiu o problema, mesmo sem esse nome. É a IA que te devolve template. É explicar teu negócio de novo, toda vez, do zero. É a resposta genérica que serve pra qualquer um — logo, não serve pra você. Este documento ensina o método inteiro pra sair disso: os fundamentos (por que funciona), o mapa (onde cada coisa mora), o ciclo (o que se faz, em que ritmo), o contrato (as regras que não se quebram), os erros, os resultados, os sistemas (quando o ciclo vira máquina) e pra onde isso vai.
-
-Eu passei dias dentro do maior evento de IA do mundo esperando ouvir a discussão que eu achava que dominaria tudo: qual modelo é melhor. Ela nunca veio. Ninguém ali gastava um minuto com isso — pra quem opera IA em escala, o modelo já virou commodity: todo mundo tem o mesmo. A briga inteira era outra, e quando eu percebi qual era, não consegui mais desver: **contexto**. O teu contexto ninguém tem, e não tem como recuperar se você não construir. É o último fosso. Este documento é o que eu trouxe de lá.
-
-— Gabriel Zucco
+A versão de uma sentada, com os quatro movimentos do dia a dia, está em [METODO.md](METODO.md). Leia aquela primeiro se você só quer começar a usar. Este aqui é leitura de estudo, uma vez, e consulta depois.
 
 ---
 
-## PARTE 1 · OS FUNDAMENTOS — por que isso funciona
+## Parte 1 · Por que contexto
 
-Sete fundamentos. Cada um com a prova de palco — porque a diferença entre método e opinião é a citação.
+### O modelo é igual pra todos
 
-### 1 · O modelo é commodity. O contexto é a vantagem.
+Todo mundo que paga a mesma assinatura usa o mesmo modelo. Seu concorrente, seu cliente, o estagiário dele. A diferença de resultado não sai de lá.
 
-Todo mundo tem o mesmo modelo — a tua IA e a do teu concorrente são idênticas. O que diferencia o resultado é o que entra nela. É a história da Maya: a colega mais valiosa não é a mais inteligente, é a que carrega o contexto. A tua IA sem contexto é um gênio recém-contratado que não sabe nada de você. Com contexto, é a Maya.
+Ela sai do **Contexto**: o que só o seu negócio tem. O preço que você cobra e o que acontece quando você cobra mais. A objeção que aparece na terceira call e não na primeira. O cliente que dá lucro e o que dá trabalho. O jeito que a sua entrega é feita quando dá certo. Isso não está em dado de treino nenhum.
 
-> *"When the model becomes commodity, context is the competitive advantage."* `[PayPal Seminar 2 @ 12:23]`
+Quando a IA te dá uma resposta genérica, a causa quase sempre é a mesma: ela não recebeu o seu Contexto. Trocar de modelo não resolve, porque o buraco está na entrada. Prompt mais elaborado também não resolve, porque instrução melhor sobre nada continua sendo sobre nada.
 
-### 2 · Sem contexto, a IA chuta.
+### Contexto certo vence contexto grande
 
-No palco, o palestrante fez um exercício com a plateia: pediu pra completarem uma frase pela metade. Cada pessoa completou diferente — porque sem informação, qualquer continuação é igualmente provável `[PayPal Seminar 2 @ 01:35–02:34]`. O modelo funciona do mesmo jeito:
+A tentação natural é despejar: todo o Drive, todo o Notion, cinco anos de e-mail. Isso piora a resposta. Contexto grande dilui, traz informação velha com cara de atual e enche a janela de ruído que o modelo precisa atravessar antes de achar o que importa.
 
-> *"In the absence of context, all the options have equal probability."* `[PayPal Seminar 2 @ 02:15]`
+A curadoria vem antes da computação. Dez trechos certos, citados, com origem conhecida, produzem resposta melhor que mil páginas cruas. É por isso que o Cérebro trabalha em pedaços pequenos e verificáveis, e não em despejo.
 
-Resposta genérica **não é defeito do modelo — é ausência de contexto**. E o corolário que inverte o senso comum: quanto melhor o modelo fica, MAIS o contexto vale — porque modelo inteligente segue instrução precisa com mais fidelidade: *"as models get better, they will get better at instruction following"* `[audio-gz_14-25 @ 18:33]`. Esperar o próximo modelo não resolve teu problema. Ele vai chutar melhor.
+E essa escolha fica mais valiosa, não menos, quanto melhor o modelo. Modelo fraco erra até com contexto bom. Modelo bom acerta fino quando o contexto é preciso e erra com confiança quando o contexto é sujo. O ganho de cada geração nova de modelo vai pra quem tem o contexto arrumado.
 
-### 3 · Contexto é capital que compõe.
+### O Contexto é patrimônio
 
-Contexto guardado hoje vale mais amanhã — porque o modelo que vai lê-lo amanhã é melhor que o de hoje. A regra da casa (do nosso próprio debrief pós-evento): *você processa uma vez, depois reprocessa com um modelo melhor.* A call de hoje, transcrita e guardada, será relida daqui a um ano por uma IA muito mais capaz — e vai render insight que hoje ninguém consegue extrair. Já a call que não foi capturada evaporou em 24 horas. Pra sempre.
+Modelo é aluguel. Você troca de provedor num mês e não perde nada.
 
-O palco chama o resultado disso de *"personal knowledge base that compounds"* `[Compound Eng @ 12:41]` — uma base de conhecimento que **compõe**, como juros. E uma consequência que quase ninguém declara: se contexto é capital, ele tem que ser **teu** — capital não mora em prédio alugado. (Vira lei na Parte 4.)
+O Contexto é o contrário. Ele se acumula, e o que você guarda hoje vai ser lido pelos modelos de dois anos pra frente, que vão tirar dele coisa que o modelo de hoje não consegue tirar. Essa composição só acontece se o material sobreviver à troca de ferramenta.
 
-### 4 · Qualidade vence quantidade — cure antes de computar.
+Por isso o Cérebro é uma pasta de arquivos de texto na sua máquina. Markdown com frontmatter, legível por uma pessoa e por qualquer máquina, sem banco proprietário, sem formato que só um produto abre. O editor pode mudar. O agente pode mudar. A pasta fica.
 
-A explicação de palco mais didática do evento inteiro foi com **Lego**: te dão um balde de peças e pedem uma nave espacial — você se vira, sai qualquer coisa. Aí a pergunta: *"what if I gave you the instructions as well?"* `[PayPal Seminar 2 @ 02:44]`. O manual certo vale mais que o dobro de peças. Mais contexto não é melhor contexto — o contexto CERTO é melhor contexto.
+A **Conexão** com o mundo de fora segue a mesma lógica. Protocolo aberto, do tipo do MCP, serve exatamente pra isso: o mesmo Contexto em arquivo pode ser plugado num agente diferente amanhã sem conversão nem exportação. O motor onde a inteligência roda (o terminal, o editor, o aplicativo de chat) é peça substituível. O Contexto não é.
 
-E tem o inimigo com nome: o apodrecimento do contexto [context rot]. *"If you dump everything, you will have context rot"* `[PayPal Seminar 2 @ 02:48]`. A verdade do teu negócio muda — o preço mudou, a estratégia virou, aquele cliente saiu. Nota velha fingindo ser atual não é neutra: é veneno que contamina toda resposta.
+### Engenharia de Contexto
 
-A prova em número: um time enterprise curou sua base de 7.000 pra 1.000 blocos de conhecimento — *"one-seventh the context size, a lot higher precision, and a lot less money burned on tokens"* `[Agent Memory @ 05:38]`. Um sétimo do volume, mais precisão. Curadoria não é perda. É a alavanca.
+**Engenharia de Contexto** é o nome do trabalho de montar, guardar e entregar o contexto certo pra IA no momento em que ela vai decidir ou produzir algo.
 
-### 5 · Conserta o sistema, nunca a resposta.
+Em linguagem de operação: alguém tem que decidir o que entra, em que formato, com que prova, onde fica guardado, quem valida e quando aquilo expira. Esse alguém é o dono do negócio, com a IA fazendo o trabalho pesado e propondo. A **Skill** é onde esse procedimento fica escrito, e o **Sistema** é onde ele vira resultado que sai sozinho toda semana.
 
-Ninguém no Vale corrige output. Se a IA errou, o problema está no contexto (ou no motor) que gerou o erro:
+### Três altitudes, cumulativas
 
-> *"Don't re-prompt the agent. Go back, fix your system, fix your harness."* `[PayPal Seminar 3 @ 33:24–33:42]`
+O mesmo método serve em três altitudes, e elas se empilham. Não dá pra pular.
 
-O motor [harness] é o corpo que a inteligência veste — *"the model, floating in a glass jar. Plus this harness — the harness is the body"* `[No Memory No Harness @ 06:12]`. Corrigir a resposta na mão trata o sintoma uma vez. Corrigir o sistema conserta **todas as próximas** — e é aí que mora a composição: *"the compounding effect over time that you'll get in that harness is tremendous"* `[PayPal Seminar 3 @ 33:24–33:42]`.
+**Altitude 1, pessoal.** Seu próprio trabalho ganha memória. O que você decidiu, o que leu, o que escreveu e o que funcionou param de morar na sua cabeça e na janela de conversa. O ganho aparece em dias.
 
-### 6 · Escreve-se para dois leitores: humanos e agentes.
+**Altitude 2, negócio.** O Cérebro passa a conhecer a oferta, o cliente ideal, o posicionamento, o que já foi tentado e o que deu errado. Resposta estratégica começa a aterrissar no caso real em vez de devolver teoria. O ganho aparece em semanas.
 
-A empresa nativa de IA é desenhada pra agentes E pessoas. *"Agent experience is the new user experience"* `[PayPal Seminar 2 @ 00:40]`. Na prática do founder: contexto bom é texto simples e estruturado — que a máquina lê perfeitamente (*"plain Markdown, a language that agents are fluent in"* `[Notion @ 17:53]`) sem deixar de ser legível por você. Nada de formato proprietário, nada de sistema que só a ferramenta entende.
+**Altitude 3, empresa nativa de IA.** O trabalho recorrente deixa de ser executado por lembrança e passa a ser executado por **Sistema**, com régua, **Recibo** e versão. Pessoa entra pra julgar e decidir, não pra repetir. O ganho aparece em meses e depende das duas altitudes anteriores existirem.
 
-### 7 · O que se mede, melhora — o que não se mede, degrada.
+### O segmento não muda o método
 
-> *"Your eval is the loss function and the data."* `[Weco/Jiang, audio-gz @ 11:58]`
+Clínica, indústria, agência, software, escritório, varejo: o ciclo é idêntico. Muda apenas qual captura vem primeiro.
 
-Traduzindo: as tuas perguntas de teste [evals / golden patterns] são o volante do sistema inteiro. Sem medir, você não sabe se o teu cérebro está ficando mais inteligente ou apodrecendo em silêncio. O método resolve isso com o Teste do Cérebro (Parte 6) — as mesmas perguntas, todo mês, e a resposta ou melhorou ou você tem trabalho a fazer.
-
----
-
-## PARTE 2 · O MAPA — onde cada coisa mora
-
-Método sem arquitetura vira pasta bagunçada com nome bonito. Esta parte define a unidade, os lugares e a regra de circulação.
-
-### O átomo — a unidade de tudo
-
-Todo conhecimento entra no cérebro como **átomo**: uma nota de UMA ideia, com quatro partes.
-
-```
-AFIRMAÇÃO  → o título: a sacada em uma frase forte
-CITAÇÃO    → a prova literal, com fonte e minutagem
-SENTIDO    → por que isso importa pra ESTE negócio
-ELOS       → links pro que se relaciona
-```
-
-Um átomo de verdade, como ele aparece num cérebro real (exemplo realista):
-
-```markdown
-# Cliente de ticket alto não abandona por preço — abandona por silêncio
-
-CITAÇÃO: "eu não cancelei por causa do valor, cancelei porque passei
-três semanas sem saber o que tava acontecendo"
-[call-renovacao-cliente-K @ 00:14:32]
-
-SENTIDO: nosso churn de plano anual não é problema de pricing, é
-problema de cadência de contato. Mexer no preço não resolve.
-
-ELOS: `rotina-de-touchpoints` · `decisao-2026-06-plano-anual`
-```
-
-A citação é o score de confiança do átomo: **ou tem prova, ou não entra.** Sem citação não é átomo, é palpite. E é a citação que permite o rastreio — no palco: *"where the hell did this piece of information come from... trace it back"* `[Agent Memory @ 03:46]`.
-
-### A tabela única — os estados do dado × as 4 memórias
-
-Todo dado do teu negócio vive num estágio, cada estágio corresponde a um tipo de memória (a taxonomia é do palco), e a pergunta que importa é uma só: **o agente lê isso por padrão?**
-
-| Estágio | Analogia | Nome no Vale | O que é | O agente lê? |
-|---|---|---|---|---|
-| **A sessão** | a mesa de trabalho | working memory / janela de contexto | a conversa desta rodada — descartável | é ONDE ele lê; nunca é armazém |
-| **O bruto** | o arquivo morto | episodic memory | transcrições, capturas na íntegra — imutável, é a prova | NÃO por padrão — só em drill-down |
-| **Os átomos** | o fichário na mesa | semantic memory | o destilado curado, citável, com frescor | **SIM — é o que ele opera** |
-| **Os índices** | o sumário da agenda | views | catálogos, fios, gente — regeneráveis dos átomos | SIM — é por onde ele navega |
-| **As skills** | o manual de procedimentos | procedural memory | o know-how executável: como se faz | SIM — quando executa |
-
-A analogia que resolve pra sempre: o **arquivo morto** guarda tudo (você não rasga documento — um dia o advogado precisa); a **mesa de trabalho** tem só o caso de agora; a **agenda** diz onde cada coisa está sem carregar tudo. Quem despeja o arquivo morto na mesa, trava. Vale pra você, vale pra IA: *"a bigger context window is the surest way to quickest failure in an expensive manner"* `[Agent Memory @ 03:00]`.
-
-E o critério pra decidir onde algo mora é **taxa de mudança** — *"the only axis that drives this is rate of change"* `[Prompt/Memory/Weights pt1 @ 11:23]`. Muda toda hora → mesa (sessão). Muda às vezes → átomo. Nunca muda → já está no modelo, não é teu problema. A parábola de palco que ilustra o erro contrário: uma empresa gravou o catálogo de produtos dentro do próprio modelo (fine-tuning) — e ficou presa a um catálogo fossilizado, porque *"your architecture was accumulated, it was not designed"* `[Prompt/Memory/Weights pt1 @ 02:28–04:20]`. A síntese do palestrante: *"prompt is behavior, memory is facts, weights are how to reason"* `[Prompt/Memory/Weights pt1 @ 17:05]`.
-
-### O catálogo e o drill-down — a regra de circulação
-
-**Guardar tudo ≠ dar tudo pro agente.** É a regra que resolve 80% das dúvidas de arquitetura.
-
-O caminho de leitura padrão do agente é: **roteador → catálogo → átomos**. Ele nunca varre o arquivo inteiro — consulta o índice, vai direto ao átomo, e **só abre o bruto em drill-down**: quando a citação aponta pra lá e a pergunta exige a íntegra ("lê essa call inteira e me responde X"). O palco valida o desenho: o agente *"does not even have to look at the individual files... simply looks at the context MD file"* `[IMG_6330 @ 00:06]`.
-
-A indexação tem três eixos, porque toda pergunta real tem um eixo: **tempo** (pastas por data — "o que decidimos em junho?"), **tema** (os fios — os assuntos quentes em andamento), **pessoa** (gente — uma página por cliente/parceiro-chave). Fios e gente não duplicam conteúdo: são listas de links com uma linha de síntese.
-
-### Metadados: 7 campos, teto
-
-Cada nota carrega um cabeçalho mínimo: `type · source · topic · created · confirmed · status(Active|Superseded) · pessoas`. Cada campo existe porque responde uma pergunta de busca real. Campo que o agente não usa é burocracia que o humano abandona — sete campos é teto, não meta.
+Negócio de venda consultiva começa pelas objeções e pelos motivos reais de perda. Negócio de serviço recorrente começa pelo padrão de cancelamento e pelo que o cliente diz na renovação. Negócio de produção começa pelo defeito que volta e pelo fornecedor que atrasa. Essa primeira escolha é a única parte específica de segmento, e `/arquiteto` existe pra fazê-la com evidência em vez de palpite.
 
 ---
 
-## PARTE 3 · O CICLO — o que se faz, em que ritmo
+## Parte 2 · O Átomo
 
-O método em movimento são **5 verbos**: **capturar → destilar → estruturar → operar → medir.** Dois músculos atravessam o ciclo inteiro: automatizar (transformar o repetitivo em skill) e **julgar** — o único que nenhum modelo substitui.
+### A unidade mínima
 
-### CAPTURAR — instrumente a vida
+Um **Átomo** é uma nota de uma ideia só, com quatro partes:
 
-Nenhuma call sem transcrição. Decisão importante = áudio de 2 minutos no celular. A captura tem que ser **automática, zero decisão** — porque decisão na captura é fricção, e fricção mata hábito.
+1. **Afirmação**, no título. A frase que diz o que a nota afirma, não o assunto da nota.
+2. **Citação literal** da fonte, entre aspas, com a origem em wikilink e o timestamp quando existir.
+3. **Por quê**, uma ou duas linhas sobre o que isso muda no negócio.
+4. **Elos**, os links que ligam esse Átomo ao resto.
 
-O hábito-chave é a **voz**: você fala a ~200 palavras por minuto — três vezes mais rápido do que digita `[LLM KB @ 02:00]`. Dirigindo, andando, saindo da reunião: 2 minutos de áudio capturam o julgamento quente que nenhuma ata captura. O palestrante que vive esse sistema descreveu o resultado: *"wake up to a perfectly fresh wiki — it's like the daily paper, but it's your own"* `[LLM KB @ 13:17]`. Você acorda e o teu conhecimento de ontem já está organizado te esperando.
+No arquivo, isso aparece como `type: Atom` no frontmatter, com `topic`, `created`, `confirmed`, `origin` e `related_to`, e o corpo trazendo a citação em bloco, o **Por quê** e os elos.
 
-Capturar é automático. **Julgar vem depois** — nunca na hora.
+A diferença entre título-assunto e título-afirmação parece cosmética e não é. "Precificação" não pode ser conferido, contrariado nem confirmado. "Proposta com implantação separada da mensalidade derruba a objeção de preço" pode. Afirmação é testável, assunto é pasta.
 
-### DESTILAR — do bruto ao átomo, com a memória quente
+### A citação é a prova
 
-Destilar é extrair do bruto só o que tem sinal e virar átomo. A IA propõe, **você aprova** — e essa aprovação humana não é fricção, é o mecanismo central: *"human promotions = the training signal"* `[Agent Memory @ 15:08]`. Teu "sim" e teu "não" são o que ensina o sistema a pensar como você.
+A citação literal é a parte que faz o Cérebro ser diferente de uma conversa com IA. Ela amarra cada afirmação a um pedaço de realidade com endereço, e permite voltar na origem meses depois pra ver se a frase ainda significa aquilo.
 
-A regra de ouro: **o julgamento é perecível.** Destile em até 48 horas, enquanto a memória está quente — você lembra do tom, do que ficou subentendido, do que importava. Depois de uma semana, você lê a própria transcrição como um estranho. O insumo caro do método é o teu julgamento, e ele tem prazo de validade.
+Sem citação, a nota não entra. O que existe sem evidência é opinião da IA passando por fato, e isso contamina tudo que vem depois. Quando a pergunta não tem resposta no cofre, a saída certa é `(não consta na fonte)`, que é informação útil, porque aponta exatamente a fonte que falta.
 
-Quando tratar cada coisa (por categoria, não regra única):
+Paráfrase nunca entra entre aspas. O sentido é derivado e pode ser reescrito. A evidência é primária e fica verbatim.
 
-| Categoria | Quando trata | Em lote? |
-|---|---|---|
-| Decisão de call/conversa | na hora / até 24h | não — perecível |
-| O dia (daily) | fim do dia, 5-10 min | não — memória quente |
-| Call/reunião gravada | até 48h | 2-3 juntas, ok |
-| Acervo (palestra, artigo, referência) | no semanal | SIM — lote é ideal |
-| Ruído/talvez (prints, links) | triagem semanal | sim — a maioria morre |
+### Metadados: cada campo responde uma busca
 
-### ESTRUTURAR — cada átomo no lugar, catálogo em dia
+O frontmatter é mínimo de propósito. Campo que não responde uma pergunta real some, porque campo que ninguém preenche certo mente mais do que informa.
 
-Átomo com metadados, elos pros conceitos relacionados, catálogo atualizado. Organizado por **uso**, não por assunto — a pergunta nunca é "onde isso se encaixa?", é "quando eu (ou o agente) vou precisar disso, por onde vou procurar?".
-
-### OPERAR — a IA trabalha com os átomos
-
-Aqui o investimento paga: a IA decide, cruza, cria e executa com o TEU contexto. Duas regras de operação:
-
-1. **Sempre citando.** Resposta que não aponta fonte não merece confiança. A IA bem configurada responde "(não consta na fonte)" em vez de inventar.
-2. **Know-how vira skill.** Uma skill é um comando que sabe fazer UMA coisa, com as regras embutidas — *"skills as a unit of context"* `[Navan @ 05:11]`. E é assim que o agente descobre o que existe: *"how else is an agent gonna know that CLI even exists?"* `[Airbyte @ 13:31]`. O que você faz duas vezes por semana merece virar skill.
-
-### MEDIR — o fecho do ciclo
-
-Sem medir, o ciclo é fé. Duas medições fecham o loop:
-
-- **O Teste do Cérebro:** as tuas perguntas de teste [evals / golden patterns] — 5 perguntas fixas do TEU negócio, rodadas 1x/mês. A resposta melhorou desde o mês passado? (Detalhe na Parte 6.)
-- **A revisão de frescor:** nota sem confirmação há 60+ dias é confirmada, atualizada ou marcada `Superseded`. **Nada se deleta** — o morto vira histórico, não veneno.
-
-### Os 3 relógios — a cadência que sustenta tudo
-
-A captura contínua não é relógio — é infraestrutura (roda sozinha, zero decisão). Os relógios são três:
-
-| Relógio | O quê | Tempo |
-|---|---|---|
-| **Diário** | a daily: decisões do dia, 3-5 átomos, pendências | 5-10 min |
-| **Semanal** | o reindex: promover átomos, atualizar fios/gente/catálogos, zerar a triagem | 30-45 min |
-| **Mensal** | o fecho: Teste do Cérebro + revisão de frescor | 20 min |
-
-Menos de uma hora por semana de ritual deliberado. O resto é infraestrutura e carona.
-
-Uma regra fina que economiza horas: **agregados nascem do destilado, nunca da íntegra.** O resumo da semana nasce das dailies — não de reler as transcrições da semana. A daily já extraiu o julgamento quente; reler íntegras refaz o trabalho com julgamento pior. E se o resumo semanal sente falta de algo, o diagnóstico é claro: a daily está rasa — conserta a daily (fundamento 5: o sistema, não a resposta).
-
-Semana passada eu vivi o antes-e-depois em 48 horas. No sábado, o processo de tráfego da nossa operação morava na minha cabeça — eu me ausentei um dia e a operação rodou sem critério; custou mais de mil reais. Na segunda, o processo estava escrito no cérebro: as regras de decisão, a régua de cada experimento, o log de cada mudança. Quem executa agora é a IA — e o meu sócio não precisa "aprender o processo", porque o processo saiu da minha cabeça. Foi a frase que eu disse na hora, e é o que este método faz: *"isso é um puta case — o processo tá na minha cabeça… agora quem executa todo o processo é IA. O processo saiu da minha cabeça."*
-
-— Gabriel Zucco
-
----
-
-## PARTE 4 · O CONTRATO — as leis + a segurança
-
-Regra que aparece no corpo do método não se repete aqui — aqui ficam as **invioláveis**: as que, quebradas, destroem o cérebro em silêncio.
-
-### As leis
-
-**Lei 1 — Opera-se o citado, nunca o bruto.** Sem prova, não entra; sem fonte, não se confia.
-
-**Lei 2 — Bruto é imutável.** Editar a prova é destruir o cofre. Errou? Nova versão, com registro. A original fica.
-
-**Lei 3 — PII e dado sensível ficam fora.** Governança antes de conexão (abaixo).
-
-**Lei 4 — Guardar tudo ≠ dar tudo pro agente.** Arquivo frio guarda; catálogo serve.
-
-**Lei 5 — Nota morta não se deleta — se marca `Superseded`.** Histórico é contexto; veneno é nota morta fingindo estar viva.
-
-**Lei 6 — O que não se mede, apodrece.** Sem Teste do Cérebro você não tem cérebro — tem pasta.
-
-**Lei 7 — Portabilidade: teu contexto vive em arquivo aberto, nunca preso em ferramenta.** Texto simples, no teu disco, sob teu controle. *"If you don't own your harness, you don't own your memory"* `[No Memory No Harness @ 17:55]`. Ferramenta se troca; capital não se abandona. Se pra sair de uma ferramenta você perde o contexto, você nunca teve contexto — teve refém.
-
-**Lei 8 — Regra inviolável vira código, não prompt.** Pedir "por favor não faça X" num prompt é pedir. O palco foi seco: *"if the gate can be misused, it will"* `[gates talk @ 00:19]` — e *"agents are dangerous until proven safe"* `[história dos LLMs @ 15:58]`. Regra que NÃO PODE ser quebrada (privacidade, dado que não sai, formato obrigatório) vira verificação automática — um portão que barra, não um pedido que torce.
-
-**Lei 9 — Guardar não é aprender.** *"Agentic memory is not learning, it's just more memory"* `[Agent Memory @ 02:17]`. Cérebro que só acumula é depósito. Ele aprende quando o julgamento promove (teu "sim/não" ao destilar) e quando o resultado volta (a peça que performou alimenta o próximo ciclo). Regra prática, do palco: a regra **50/50** — metade do esforço no trabalho de hoje, metade em melhorar o sistema que faz o trabalho `[Compound Eng @ 00:37]`. Quem gasta 100% executando nunca compõe.
-
-**Lei 10 — Um dono do julgamento.** Antes de sonhar com dez agentes: *"if you can't build a single agentic loop, why build a multi-agent system?"* `[Microservices @ 00:57]`. E quem matou a própria arquitetura multi-agente explicou por quê: *"we didn't want the judgment to be distributed between agents"* `[Why We Killed @ 09:17]`. Julgamento distribuído é julgamento diluído. Um cérebro, um dono, uma voz.
-
-### PII e LGPD — o básico que founder precisa saber
-
-Dado pessoal de terceiro (nome, e-mail, telefone, CPF de cliente/aluno/membro) tem regras próprias — e uma armadilha técnica que quase ninguém vê: **arquivo versionado é arquivo eterno.** Se o teu cérebro vive em pastas sincronizadas/versionadas, dado pessoal que entrou fica no histórico mesmo depois de "deletado". Quando alguém exercer o direito de exclusão (LGPD), você precisa conseguir apagar de verdade.
-
-A solução é separar por natureza: **dado pessoal e estruturado** (cadastro, e-mail, números de uso) mora em banco de dados — onde deletar uma linha é deletar de verdade. **Conhecimento qualitativo** (a dor narrada, o padrão, o aprendizado) mora no cérebro — sempre destilado e **anonimizado**: "founder de e-commerce no estágio X relata dor Y", nunca "o João da loja Z". O padrão entra; a pessoa, não. Se os dois precisam se cruzar, cruza-se por um código opaco (um ID), nunca pelo nome.
-
----
-
-## PARTE 5 · MELHORES PRÁTICAS E ERROS COMUNS
-
-### O que gera mais resultado por hora investida
-
-1. **Contexto certo > mais contexto.** O Lego (fundamento 4): o manual vale mais que o dobro de peças. Antes de adicionar, pergunte: isso melhora alguma resposta que eu realmente peço?
-2. **Curadoria é a alavanca escondida.** 7.000 → 1.000: um sétimo do contexto, MAIS precisão `[Agent Memory @ 05:38]`. Cortar é investimento, não perda.
-3. **Conserta o sistema, não a resposta.** Cada erro da IA é diagnóstico grátis: faltou átomo? Nota velha? Regra ambígua na skill? Consertou o sistema, consertou todas as próximas.
-4. **Destile quente.** As 48 horas valem mais que qualquer ferramenta. Julgamento frio produz átomo raso.
-5. **Voz como porta de entrada.** 200 palavras/min, zero fricção, julgamento quente embutido.
-
-### Os 7 erros clássicos
-
-**1 · O drive que aluciona.** Despejar tudo numa pasta e conectar a IA "pra ela saber tudo". Resultado: contradições, versões velhas, ruído — e a IA responde com convicção baseada em lixo. Capturar sem destilar não é cérebro, é entulho com API. *"If you dump everything, you will have context rot"* `[PayPal Seminar 2 @ 02:48]`.
-
-**2 · O mingau de busca automática [RAG cego].** Confiar que "busca semântica" resolve a bagunça. Quem tentou em escala conta: *"we built a whole distributed rag pipeline... it didn't do anything good for us"* `[Agent Memory @ 04:15]` — indexar tudo automaticamente devolve *"a whole bunch of garbage"* `[Agent Memory @ 02:37]`. Busca não substitui curadoria; só entrega a bagunça mais rápido.
-
-**3 · A nota morta fingindo estar viva.** O preço antigo sem data, a estratégia abandonada sem marca `Superseded`. Pior que não ter a informação é ter a informação errada com cara de certa. Frescor é o antídoto do apodrecimento [context rot].
-
-**4 · O prompt épico no lugar do contexto.** Reescrever o mega-prompt pela décima vez em vez de construir a base que torna qualquer prompt simples. Prompt é pedido; contexto é conhecimento. Pedido bonito sobre conhecimento vazio devolve template bonito.
-
-**5 · A ferramenta nova toda semana.** Trocar de app é a procrastinação mais produtiva que existe. O método roda em texto simples + disciplina; quem não roda o ciclo em markdown não vai rodar em plataforma nenhuma. E cada migração de ferramenta fechada é contexto perdido no caminho (Lei 7).
-
-**6 · Guardar achando que está aprendendo.** Depósito cresce, cérebro compõe (Lei 9). Se nada volta — se o resultado da peça, da decisão, do experimento nunca realimenta o sistema — você tem um museu, não um sócio.
-
-**7 · A janela como armazém.** Colar tudo na conversa "pra IA ter contexto". A mesa não é o arquivo: *"a bigger context window is the surest way to quickest failure in an expensive manner"* `[Agent Memory @ 03:00]`. Entra pouco, sai gravado, a sessão morre em paz.
-
----
-
-## PARTE 6 · RESULTADOS E PROVAS
-
-### Os números (verificados, com fonte)
-
-- **1/7 do contexto, mais precisão:** a curadoria de 7.000 → 1.000 blocos — *"one-seventh the context size, a lot higher precision, and a lot less money burned on tokens"*, com a precisão subindo **65 → 74 → 82** ao longo das rodadas de curadoria `[Agent Memory @ 05:38]`. Menos contexto, melhor curado, respondeu melhor E mais barato.
-- **91% menos erros** no sistema em produção do PayPal depois de aplicar a disciplina de contexto e sistema `[PayPal Seminar 3 @ 00:42]`. Escala de bilhões, não de laboratório.
-- E o outro lado: os mesmos times contam que a força bruta (indexar tudo, janela gigante) **falhou primeiro** — a curadoria não foi a opção elegante, foi a que sobrou funcionando.
-
-### A régua — como você sabe que está avançando
-
-O progresso do cérebro se mede numa escala de três degraus:
-
-| Degrau | Como a IA responde |
+| Campo | A busca que ele responde |
 |---|---|
-| **Em branco** | genérica — serve pra qualquer negócio, logo pra nenhum |
-| **Estagiário** | sabe os fatos, erra o julgamento — cita teu contexto mas conclui raso |
-| **Sócio** | responde como quem está contigo há 10 anos — contexto + critério |
+| `type` | que tipo de coisa é isso, e em que view aparece |
+| `created` / `updated` | quando nasceu e quando mexeram |
+| `confirmed` | isso ainda vale hoje |
+| `topic` | de que assunto é |
+| `origin` | de onde veio, pra poder voltar lá |
+| `status` / `superseded_by` | morreu, e quem substituiu |
+| `tags` | que recorte atravessa várias notas |
+| `related_to` / `belongs_to` | com o que isso conversa, e a que coisa maior pertence |
 
-### O Teste do Cérebro — a medição na prática
+As chaves ficam em inglês, o texto em português, as datas em `AAAA-MM-DD`. O primeiro H1 é o título, e o nome do arquivo é a versão kebab-case dele, sem acento.
 
-Escreva **5 perguntas fixas do teu negócio** — as perguntas que você faria a um sócio de verdade. Exemplos do formato: "qual nossa maior alavanca de crescimento agora, e por quê?" · "o que o cliente do segmento X mais reclama, com prova?" · "que decisão de 60 dias atrás a gente reverteria hoje?"
+### O Bruto é imutável
 
-Todo mês, no relógio mensal: faz as 5 perguntas à IA, avalia cada resposta na régua, anota o placar. São as tuas perguntas de teste [evals / golden patterns] — a versão founder do que o Vale constrói à mão: *"we like to build out what we call golden patterns by hand"* `[HumanLayer @ 09:53]`.
+O material como chegou (a transcrição, o PDF, o export, o áudio) é o **Bruto**. Ele fica íntegro em `capturas/`, fora do git, e não se reescreve.
 
-Três resultados possíveis, três ações: **subiu** → o ciclo está funcionando, segue. **Estagnou** → o contexto não está chegando na pergunta — cadê o átomo que deveria responder isso? **Caiu** → tem nota apodrecendo no caminho — roda a revisão de frescor. Canário que reprova abre conserto de sistema (fundamento 5) — senão medir vira ritual decorativo.
+Essa regra existe porque destilar é interpretar, e interpretação erra. Se o Átomo saiu torto, o conserto é um Átomo novo com registro de que ele substitui o anterior. O Bruto original continua onde estava, e a correção fica auditável. Material que se reescreve no lugar perde a capacidade de provar qualquer coisa.
 
-E a imagem de palco que resume o que você está construindo — o **funcionário novo**: em toda empresa, o novato sugere algo e ouve "já tentamos isso há dois meses, não funcionou por causa de X". O cérebro maduro dá essa resposta na hora: *"'yes, we considered that two months ago'... this is the context, this is the history, now let's go from here"* `[Agent Memory @ 01:53]`. A tua IA deixa de ser o estagiário eterno que esquece tudo a cada conversa.
+Reunião continua reunião. Contrato continua PDF. Nada é convertido à força pra caber num formato único.
 
-Fecho esta parte com o placar mais recente da casa. Em 4 de agosto de 2026 eu rodei o primeiro Teste do Cérebro: cinco perguntas de sócio — a maior alavanca de crescimento agora, o que trava a ativação, que decisão de 60 dias atrás a gente reverteria, o que para se eu sumir uma semana, qual promessa está em risco. As cinco respostas vieram no nível **sócio**: com número, com fonte, com data. E uma delas trouxe o que eu não tinha pedido — o cérebro me apontou, com prova e prazo, uma promessa nossa que estava em risco de atrasar. Doeu. E virou a primeira coisa da minha lista naquele dia. É isso que este método constrói: não uma IA que te elogia — uma que te conta o que você precisa ouvir.
+### Apodrecimento do Contexto
 
-— Gabriel Zucco
+A nota mais perigosa do Cérebro é a que morreu fingindo estar viva. O preço antigo, a oferta que mudou em abril, o ICP que você abandonou, a decisão que foi revertida e ninguém anotou.
 
----
+Ela não erra sozinha. Ela entra em toda resposta como fato vigente e contamina o raciocínio inteiro, com a agravante de parecer confiável, porque tem citação e origem. Quanto maior o acervo, maior a chance de uma dessas estar no meio da resposta.
 
-## PARTE 7 · OS SISTEMAS — quando o ciclo vira máquina
-
-> Esta parte apresenta a camada. O contrato das oito unidades e os templates estão em
-> [`METODO-SISTEMAS.md`](METODO-SISTEMAS.md); o protocolo executável de pré-registro e decisão está
-> em [`METODO-EXPERIMENTOS.md`](METODO-EXPERIMENTOS.md).
-
-Tudo até aqui é o método operado por você: capturar, destilar, estruturar, operar, medir. Esta parte é o **segundo andar** — o que acontece quando um resultado do teu negócio importa tanto que passa a rodar o ciclo inteiro como **sistema**: com pipeline documentado, régua definida antes do dado e aprendizado que volta pra dentro.
-
-### O que é um sistema
-
-Um sistema é **um resultado que a empresa sabe produzir — com o caminho escrito.** Não é uma pasta nem uma ferramenta: é o pacote de cinco coisas que transforma "alguém aqui sabe fazer" em "a empresa sabe fazer":
-
-```
-RESULTADO     → o que ele entrega, em uma frase (ex.: "call comercial vira decisão registrada")
-PIPELINE      → o caminho: quais fontes entram, o que sai, em que ordem
-CONFIGURAÇÃO  → o contexto do TEU negócio que o sistema precisa (o que só você preenche)
-RÉGUA         → como se mede se a entrega prestou — definida ANTES de rodar
-FEEDBACK      → o que cada execução ensinou; é o que faz a próxima rodar melhor
-```
-
-O teste de maturidade é um só: **se a pessoa que opera o sistema sair amanhã, a empresa continua sabendo?** Se a resposta depende da memória de alguém, você tem um talento — não um sistema.
-
-### Um sistema real, de dentro da nossa operação
-
-Não é teoria — é como a casa opera o próprio funil, contado no nosso grupo:
-
-> *"Hoje a gente conectou o nosso cérebro [...] às transcrições dos anúncios, transcrições da VSL, [...] os dados do funil, as nossas reuniões, as tarefas. E aí a IA consegue cruzar o que o anúncio prometeu, o que a VSL falou, onde as pessoas abandonaram, quem está avançando no funil, quais decisões a gente tomou — e a partir disso identifica o principal gargalo, propõe uma hipótese e monta um experimento. Depois que a gente aprova, ela executa e acompanha, e o resultado volta para o cérebro e melhora a próxima decisão."* `[Gabriel, grupo da comunidade @ 02/08]`
-
-E a consequência, seis meses depois:
-
-> *"Se alguém perguntar por que a gente baixou o orçamento de um anúncio, por que a gente mudou uma VSL ou onde as pessoas pararam de avançar no funil — isso não depende mais da memória de ninguém, porque está tudo documentado com o contexto."* `[Gabriel, grupo da comunidade @ 02/08]`
-
-Repare no desenho: as fontes já existiam (anúncios, vídeo, funil, reuniões). O sistema não criou dado novo — **costurou o que a empresa já gerava** e fechou o circuito: gargalo → hipótese → experimento → aprovação humana → execução → resultado de volta no cérebro.
-
-### O experimento — decisão de negócio com régua selada
-
-Toda mudança que você faz no negócio — subir orçamento, trocar um vídeo, mexer no preço — é um experimento, declarado ou não. A diferença entre operação madura e achismo é **quando a régua é escrita**:
-
-**Critério antes do dado.** O experimento se registra ANTES de rodar: qual a hipótese, qual métrica decide, qual número mata ou aprova. Depois que o dado chega, quem lê **preenche o resultado — não edita o critério.** Régua escrita depois do resultado não é régua: é justificativa. (É a versão de negócio do fundamento 7 — e a razão de ser da Lei 11, abaixo.)
-
-O ganho composto vem do registro: cada experimento — vencedor ou perdedor — vira átomo com hipótese, número e decisão. O gestor de tráfego que sai da equipe leva as mãos, não o critério. O critério ficou.
-
-### O recibo — "passou" deixa de ser declaração
-
-No método individual, a régua é o Teste do Cérebro: 5 perguntas, uma vez por mês, você julga. No sistema, a régua cresce e vira **recibo de execução**: o ciclo só fecha quando a verificação foi preenchida de verdade — com o resultado apontado, a avaliação feita e a **decisão humana registrada**. Sem recibo, não fechou. É a Lei 8 aplicada à operação: "passou" não é uma frase que se diz, é um portão que se atravessa — e portão, como o palco avisou, *"if the gate can be misused, it will"* `[gates talk @ 00:19]`.
-
-### O humano continua no gate
-
-Nada disso remove você da cadeia — muda ONDE você fica. A IA identifica, propõe, executa e registra; **aprovar continua sendo seu**: o experimento só sobe depois do teu "vai", o sistema só se declara valioso depois que quem usa confirma a primeira entrega real. É o mesmo mecanismo do destilar (*"human promotions = the training signal"* `[Agent Memory @ 15:08]`), operando em escala de empresa: teu julgamento sai de dentro das tarefas e sobe pros portões.
-
-### A lei que os sistemas acrescentam ao contrato
-
-**Lei 11 — Critério vem antes do dado.** Experimento sem régua pré-registrada é opinião com gráfico. A régua se escreve antes de rodar; o resultado se preenche depois; **ninguém edita o critério no meio.**
+É por isso que **Frescor** é mecanismo e não boa intenção, e por isso o ciclo mensal existe. A Parte 5 trata dele.
 
 ---
 
-## PARTE 8 · PARA ONDE VAI
+## Parte 3 · A casa de cada dado
 
-### As 3 altitudes
+### Os estados do dado
 
-O método sobe em três altitudes — cada uma contém a anterior:
+Dado no Cérebro vive em cinco estados, e o que separa um do outro é se o agente lê por padrão.
 
-**Altitude 1 — VOCÊ (mês 1).** Teu cérebro pessoal: a IA te conhece — tuas decisões, teu histórico, teu jeito de pensar. É onde a demo acontece: a mesma pergunta na IA pelada e na IA com o teu cérebro, lado a lado. A diferença dispensa explicação.
+| Estado | Onde fica | O agente lê por padrão |
+|---|---|---|
+| Sessão | a janela da conversa | sim, e esquece quando a janela fecha |
+| **Bruto** | `capturas/` (e `privado/` pro que é pessoal) | não, só quando um Átomo aponta pra lá |
+| Átomos | `meu-negocio/` | sim, pelos trechos citados |
+| Índices | `mapa.md`, `fios/`, `gente/`, `meu-negocio/fontes/` | sim, são a porta de entrada |
+| Skills e Sistemas | as skills projetadas no vault e `sistemas/` | sim, quando a tarefa casa com uma delas |
 
-**Altitude 2 — TEU NEGÓCIO (trimestre 1).** As decisões, as áreas e os processos operando com contexto. As calls viram átomos, as skills executam o repetitivo, a régua sobe de estagiário pra sócio nas perguntas que importam.
+A memória de trabalho é a janela e ela não persiste. Uma janela, um trabalho. O que você não gravou em arquivo não existe amanhã, e isso é uma vantagem: o que sobrevive passou por um filtro.
 
-**Altitude 3 — TUA EMPRESA AI-NATIVE (ano 1).** A empresa desenhada pra agentes E pessoas (fundamento 6), com regras invioláveis em código (Lei 8) e loops rodando de noite. *"Keep extracting until the middle runs itself"* `[Compound Eng @ 01:45]` — você extrai teu know-how em skills até o meio do funil rodar sozinho, e teu tempo sobe pro que só humano faz: julgamento, relação, aposta.
+### Catálogo primeiro, Bruto sob demanda
 
-### O cérebro como padrão plugável
+O caminho que o agente faz tem três degraus. Primeiro o roteador, o contrato do cofre, que diz onde as coisas estão e o que é proibido. Depois o catálogo: o **Mapa** do negócio numa página, os índices de fonte, os **Fios** quentes, as páginas de **Gente**. Só então os Átomos relevantes, com os trechos citados.
 
-Aqui vai uma boa notícia estrutural: o mercado inteiro está convergindo pra um padrão aberto de conexão entre IAs e fontes de contexto — o MCP, pense nele como **a tomada universal**: qualquer ferramenta nova que chegar vai ter o plugue. Quem construiu o cérebro em arquivo aberto (Lei 7) pluga o MESMO contexto em qualquer modelo, hoje e daqui a cinco anos. Quem deixou o contexto preso dentro de um app específico vai recomeçar do zero a cada troca. O método te deixa do lado certo dessa convergência — sem apostar em ferramenta nenhuma.
+O **Bruto** entra no último degrau e só sob demanda, quando um Átomo específico aponta pra ele e a pergunta exige o original. Ler o catálogo custa pouco, erra pouco e leva direto ao lugar. Varrer o Bruto custa muito e erra muito.
 
-É assim que a gente faz aqui, aliás: o Cérebro é exatamente este método empacotado — markdown, skills, relógios — instalável em 5 minutos. Mas o método vem antes da ferramenta, e sobrevive a ela. Enquanto isso, o que o palco inteiro está construindo com milhões em infraestrutura... aqui já roda em texto simples. A frase que fecha a nossa auditoria de arquitetura: **"o palco inteiro está construindo, com milhões em infra, o que aqui já roda em markdown."**
+### A taxa de mudança decide a casa
 
-### A camada coletiva — o que nem o Vale tem
+Antes de escolher onde algo mora, olhe a velocidade com que aquilo muda.
 
-O fecho do evento apontou pra frente: *"AI makes individuals faster. Shared memory makes teams faster."* `[No Memory No Harness @ 19:13]`. A IA acelera o indivíduo; a memória compartilhada acelera o grupo. Um founder com cérebro é rápido. Uma comunidade de founders onde cada aprendizado destilado circula — o erro que um cometeu vira átomo que todos consultam — é outra categoria de velocidade. É a fronteira onde este método está sendo empurrado agora.
+Dado que muda a cada hora (saldo, posição de pipeline, estoque) mora na ferramenta que é dona dele. O Cérebro guarda o padrão lido naqueles números, não os números. Planilha e CRM continuam sendo a fonte de verdade.
 
-### Dos cadernos aos sistemas
+Dado que muda em meses (preço, oferta, posicionamento, ICP) mora numa nota de área, com `confirmed:` pra você confirmar de tempo em tempo.
 
-Este documento é o método — deliberadamente independente de segmento, porque o fundamento não muda: contexto é a vantagem, seja você agência, e-commerce ou SaaS. O que muda é **onde dói primeiro e o que capturar primeiro**.
+Dado que nunca muda (o Bruto de uma reunião que aconteceu, um contrato assinado) mora em `capturas/` pra sempre, intocado.
 
-Na primeira versão deste documento, as aplicações por área — marketing, produto, vendas — eram promessa: "os próximos cadernos". A promessa mudou de forma: **as aplicações não estão virando texto, estão virando sistemas instaláveis** (Parte 7) — o resultado, o pipeline, a régua e o feedback empacotados, prontos pra receber a configuração do TEU negócio. O primeiro deles — **geração de demanda**, o circuito de funil que você leu na Parte 7 — já roda em laboratório com empresas da comunidade, e é assim que os próximos nascem: rodando de verdade numa operação real antes de chegar em você.
+Confundir essas três é a origem de boa parte da bagunça: número volátil copiado pra nota nasce velho, e padrão durável deixado solto no chat morre com a janela.
 
-### O fecho
+### Três eixos de índice
 
-Lembra da Maya? Ela não era a mais inteligente. Era a que tinha contexto — e por isso era a que todos procuravam.
+O mesmo Átomo precisa ser encontrável por três caminhos diferentes, porque a pergunta chega por qualquer um deles.
 
-A inteligência, agora, está na tomada. Igual pra todo mundo, cada ano mais barata, cada ano melhor. O que não está na tomada — o que não se compra, não se copia e não se baixa — é o que você viveu, decidiu, errou e aprendeu. O teu contexto.
+**Tempo.** `meu-negocio/dailies/` guarda o rollup de cada dia e o resumo de cada semana. Responde "o que aconteceu em outubro".
 
-Quem opera esse ativo com método não fica só com uma IA melhor. Vira outra coisa: a pessoa que decide com o histórico inteiro na mesa, que gera sozinha o resultado que antes exigia um time — a pessoa que todos procuram quando a pergunta é difícil.
+**Tema.** `fios/` guarda o que está quente agora, um arquivo por assunto em andamento. Responde "onde a gente estava naquela discussão de preço".
 
-O modelo é de todos. **O contexto é teu.** O método é este. Comece pela primeira captura — hoje, 2 minutos, no áudio do celular.
+**Pessoa.** `gente/` guarda uma página por cliente, parceiro ou concorrente que importa. Responde "o que esse cliente já disse pra gente".
+
+Índice só linka. Ele não guarda conteúdo próprio nem segunda versão do fato, porque duas casas pra mesma verdade garantem que uma delas vai ficar errada.
+
+### PII, dado sensível e LGPD
+
+Nome, e-mail, telefone, CPF, CNPJ e dado de saúde ou financeiro de pessoa identificável não entram nas notas. Varredura antes de gravar, sempre. O que for pessoal e necessário vai pra `privado/`, que fica fora do git, e nada mais.
+
+A regra tem um motivo técnico além do legal: nota é versionada e viaja. Uma vez commitada, ela persiste no histórico mesmo depois de editada. Dado pessoal pertence ao banco que já tem base legal, retenção e titular definidos.
+
+Quando você precisa cruzar o banco com o Cérebro, cruze por **Entidade** opaca: um identificador sem significado (`cliente-0147`) que aponta pro registro canônico lá. O qualitativo entra anonimizado, no formato "cliente de porte X no segmento Y disse Z". O padrão se preserva, a pessoa não é identificável.
+
+E a ordem importa: governe antes de conectar. Fonte nova se registra com autoridade, finalidade, dono e retenção declarados antes de qualquer conector recorrente apontar pra ela. Registrar fonte e conectar fonte são dois atos distintos, e o primeiro não autoriza o segundo.
 
 ---
 
-*Síntese em uma linha: **capture tudo, destile quente, opere só o citado, indexe por tempo-tema-pessoa, meça por mês — e o bruto dorme no arquivo esperando modelos melhores. Quando um resultado importa de verdade, vire-o sistema: régua antes do dado, recibo antes do "pronto".***
+## Parte 4 · Os cinco verbos
+
+O ciclo inteiro são cinco verbos: **capturar → destilar → estruturar → operar → medir**.
+
+Dois outros atravessam todos eles. **Automatizar** é tirar decisão humana do que é mecânico. **Julgar** é devolver decisão humana pro que é consequente. Os cinco verbos acontecem em sequência, esses dois acontecem o tempo todo.
+
+### Capturar
+
+Captura boa é automática e tem zero decisão embutida. No momento em que algo acontece, a pergunta "isso vale guardar" custa caro e faz você não guardar.
+
+Então a bandeja aceita tudo. Áudio de 40 segundos gravado no carro depois da reunião. Print da conversa. PDF que chegou por e-mail. Export do CRM. O filtro vem depois, no destilar.
+
+Voz é a porta de entrada mais barata que existe, porque dita em 40 segundos o que levaria 6 minutos pra escrever e porque funciona no celular, onde você está quando a coisa acontece. Como bônus, a voz carrega o julgamento quente: você diz "isso me preocupou porque o cliente nunca tinha reclamado disso" sem precisar decidir que vai dizer. Essa meia frase é o que vira o **Por quê** do Átomo depois.
+
+Captura contínua fica fora da lista dos Relógios. Ela está aberta o tempo todo, como a tomada da parede.
+
+### Destilar
+
+**Destilar** é separar sinal de ruído e transformar o sinal em Átomo.
+
+Sinal é dor, decisão, número, objeção, padrão que repetiu e peça que funcionou. Ruído é saudação, combinação de horário, repetição do que já está em nota. A maior parte do Bruto é ruído, e isso é normal.
+
+A IA faz o trabalho pesado: ela lê, propõe os Átomos com citação e origem, sugere elos. Você aprova, corrige ou descarta. Essa aprovação parece burocracia e funciona como treino: cada vez que você diz "esse não, esse sim, esse com a citação errada", o sistema aprende o que conta como sinal no seu negócio. Aprovação é treino.
+
+**Julgamento perece.** O que você sabe hoje sobre por que aquela reunião foi estranha evapora em uns dois dias. Destilado quente, o Átomo sai com o Por quê certo. Destilado frio, duas semanas depois, o mesmo Bruto rende Átomo raso, do tipo que descreve o que foi dito e não registra o que significava. A cadência existe por causa disso.
+
+**Quanto destilar** se resolve com uma pergunta só, e ela trata de trabalho, nunca de importância: que trabalho real vai sair disso. A resposta cai num **Nível de refino**:
+
+| Nível | Quando | O que acontece |
+|---|---|---|
+| 0 · **Ponteiro** | não sei ainda | registra onde o material está, e para |
+| 1 · legível | vou buscar dentro | transcreve, passa OCR, exporta pra texto |
+| 2 · indexado | preciso achar sem ler tudo | etiqueta o que é, de onde veio, o que extrair |
+| 3 · destilado | vai ser citado numa decisão | vira Átomo |
+| 4 · operacional | muda o próximo trabalho | vira régua, decisão ou procedimento aprovado |
+
+Parar no **Ponteiro** é saída legítima e frequente. Subir de nível sem trabalho que justifique é desperdício puro. A régua completa, com o custo por formato, está em [FONTES.md](FONTES.md).
+
+**Quando tratar, por categoria:**
+
+| O que chegou | Prazo | Dá pra agrupar |
+|---|---|---|
+| Decisão que acabou de ser tomada | na hora | não, perde o Por quê |
+| O dia | no fim do dia, 5 a 10 min | não |
+| Reunião | até 48 horas | não, cada uma na sua |
+| Acervo acumulado | no ritual semanal | sim, agrupado por tipo |
+| Ruído | nunca | nunca |
+
+### Estruturar
+
+Estruturar é o que faz um Átomo ser achável no mês que vem: metadados preenchidos, elos pro que já existe e lugar certo no catálogo.
+
+O lugar certo sai do uso, não do assunto. Quatro horizontes: agora (`fios/`), as áreas perenes do negócio, as referências que vieram de fora e o arquivo do que esfriou. A pergunta é "quando eu vou precisar disso", e não "de que tema isso é". Organizar por tema produz pasta bonita e busca inútil, porque o mesmo fato é de três temas e você só lembra de um.
+
+Agregado nasce do destilado, nunca do Bruto. O resumo da semana nasce dos rollups diários. O retrato do mês nasce dos resumos de semana. Reler as íntegras pra escrever o resumo é retrabalho com julgamento pior, porque na hora de reler o calor já foi. Se o resumo ficou pobre, o defeito está na captura daquele dia, e é lá que se conserta.
+
+### Operar
+
+Operar é usar o Cérebro pra produzir algo: responder, decidir, escrever, propor.
+
+A regra é citar sempre. A resposta traz os trechos das suas notas, com origem, e quando não existe trecho, a resposta é `(não consta na fonte)`. Nenhuma resposta se completa com conhecimento geral disfarçado de contexto próprio, porque é exatamente aí que entra a invenção com cara de verdade.
+
+Operar também é onde o know-how sai da sua cabeça. Na terceira vez que você explica o mesmo procedimento pro agente, aquele procedimento vira uma **Skill**: um arquivo de texto com os passos, as regras e o que nunca pode acontecer. A partir dali o procedimento é executável e versionável, e para de depender de você estar na sala.
+
+### Medir
+
+Sem medição periódica a qualidade cai devagar e ninguém percebe, porque cada resposta individual continua parecendo plausível.
+
+O método mede em dois níveis. O **Eval** de um **Sistema** pergunta se aquela execução atingiu o resultado dela. O **Teste do Cérebro** pergunta outra coisa: se o Cérebro inteiro conhece o negócio melhor do que mês passado.
+
+O Teste do Cérebro funciona assim. Na primeira rodada você escreve cinco **Perguntas-canário**, do tipo que um sócio de muitos anos saberia responder de cabeça, e elas ficam gravadas em `meu-negocio/teste-do-cerebro.md`. Todo mês o Cérebro responde usando só o cofre e evidência citada. Você julga cada resposta pela **Régua**, em três degraus:
+
+**em branco → estagiário → sócio**
+
+- **Em branco:** não tem informação nenhuma. O buraco é de fonte, e a ação é registrar e tratar a fonte que responderia aquilo.
+- **Estagiário:** tem informação solta, sem conexão nem consequência. O buraco é de destilação e elos, e a ação é destilar melhor o que já está lá.
+- **Sócio:** responde com evidência, aterrissa no caso e aponta a consequência. Nada a fazer além de manter fresco.
+
+As cinco perguntas ficam fixas. Pode entrar uma sexta, nunca trocar a régua, porque régua que muda não compara nada. Frequência mensal, teto de vinte minutos, e cada resposta fraca aponta um buraco e a fonte ou o Sistema capaz de tapá-lo.
+
+A única evidência de resultado que o método aceita é a medida dentro do seu próprio Cérebro: a sua Régua mês a mês, o seu **Eval** execução a execução, o seu **Feedback** registrado. Número de benchmark de terceiro não prova nada sobre a sua operação.
+
+### Automatizar e julgar
+
+Esses dois atravessam o ciclo inteiro, e a divisão é sempre a mesma: a IA propõe e executa, a aprovação continua humana.
+
+O **Gate** é onde isso fica concreto. Antes de gravar nota, antes de escrever em ferramenta de fora, antes de fechar tarefa, antes de marcar Sistema como ativo, alguém olha e decide. O agente faz a parte chata, que é ler tudo, montar a proposta e mostrar o diff.
+
+Um dono do julgamento, sempre. Dois donos é nenhum. E multiagente só depois que um laço simples funciona de verdade: três agentes conversando sobre um procedimento que nunca rodou direito produzem três vezes mais erro, mais rápido, com rastro pior.
+
+A última peça: regra que nunca pode falhar vira verificação em código. Documento é lembrete, e lembrete se esquece. No Cérebro, o **Pré-registro** de um **Experimento** é congelado por hash, e uma mudança na região selada é detectada em vez de confiada. O estado de um Sistema só anda por transições válidas, e passar pra ativo exige um **Run** com Eval aprovado mais confirmação humana registrada. O que é inviolável é checado por máquina.
+
+---
+
+## Parte 5 · Os Relógios
+
+Contexto tem cadência, e cada **Relógio** tem uma skill, um tempo e um entregável.
+
+| Relógio | Skill | Tempo | Entregável |
+|---|---|---|---|
+| Diário | `/daily` | 5 a 10 min | rollup do dia em `meu-negocio/dailies/AAAA-MM-DD.md` e no máximo 3 a 5 Átomos |
+| Semanal | `/reindex` | 30 a 45 min | bandeja zerada, Fios revisados, resumo da semana |
+| Mensal | `/revisar` | teto de 20 min | Frescor conferido |
+| Mensal | `/teste` | teto de 20 min | nota do Cérebro contra a Régua |
+
+A captura contínua fica fora da tabela porque está ligada o tempo todo, e não num horário. `/call` também fica fora: ele dispara por evento, quando você sai de uma reunião, com prazo de 48 horas, que é o tempo que seu julgamento sobre aquela conversa dura.
+
+### O diário
+
+Três perguntas, uma de cada vez: o que aconteceu hoje que importa pro negócio, que decisão foi tomada mesmo que pequena, o que travou. Do que você responder saem no máximo 3 a 5 Átomos. Dia comum rende um ou dois. Dia sem sinal rende zero, e o rollup sozinho já cumpriu o papel.
+
+Dez minutos é teto, não meta. Se passou, o ritual está sendo complicado.
+
+### O semanal
+
+A ordem importa: triagem da bandeja, faxina dos Fios, resumo da semana, elos órfãos.
+
+A bandeja termina zerada. Cada item de `capturas/` que entrou na semana recebe uma pergunta só, virar Átomo ou ficar arquivado como está. Cada Fio recebe outra, ainda está quente. Fio que esfriou sai do caminho com `status: Done`. Fio que virou decisão deixa o Átomo em `decisoes/` e fecha.
+
+O resumo da semana nasce das dailies daquela semana e de nada mais. Ele é o entregável visível do ritual, o momento em que o Cérebro mostra trabalho: a coisa que mais importou, o que andou, o que foi decidido, o que travou, o padrão que repetiu e a pergunta aberta pra semana seguinte.
+
+Fecha com a pergunta que torna o ritual cumulativo: o que o Cérebro errou ou não soube esta semana, e qual nota ou skill conserta isso. A correção é gravada. É isso que faz o Cérebro ficar melhor toda semana em vez de só ficar maior.
+
+### O mensal
+
+Duas skills, cada uma com teto de vinte minutos, que fecham o ciclo juntas.
+
+`/revisar` cuida do **Frescor**. Cada nota de `meu-negocio/` carrega `confirmed:` com a data da última validação. A varredura levanta o que está sem confirmação há mais de 60 dias, os Fios parados há mais de 30 e, com prioridade, os conflitos: duas notas afirmando coisas incompatíveis, como dois preços ou dois ICPs. Cada suspeita tem três saídas:
+
+- **Vale:** atualiza `confirmed:` pra hoje e nada mais.
+- **Mudou:** você edita junto, com evidência nova, e atualiza `confirmed:`.
+- **Morreu:** a nota recebe `status: Superseded` e `superseded_by` apontando pra que a substituiu, mais uma linha no topo dizendo isso.
+
+Nada é deletado nunca. Nota superada continua no cofre como histórico e nunca volta como fato vigente. Em conflito, uma vence e a outra é marcada, porque deixar as duas de pé é escolher que a resposta seja aleatória.
+
+`/teste` cuida da Régua, na mecânica da Parte 4. Os dois juntos fecham o mês: um garante que o que está lá é verdade, o outro mede se o conjunto responde melhor.
+
+---
+
+## Parte 6 · Os erros que todo mundo comete
+
+**Confundir acervo com aprendizado.** Dez gigabytes de PDF numa pasta é arquivo morto. Aprender exige julgamento na entrada e retorno de resultado na saída. Acumular não é aprender. A pergunta que separa as duas coisas: que decisão ficou diferente por causa do que entrou essa semana.
+
+**Deixar o raciocínio bom morrer na conversa.** É o erro mais comum e o mais caro. A conversa de três horas de ontem, com todo o raciocínio bom, não existe mais. O que não foi gravado em arquivo evaporou. Janela é bancada de trabalho, e o Cérebro é a prateleira.
+
+**Despejar tudo.** Anexar o Drive inteiro, colar a transcrição de 90 minutos, mandar o export completo do CRM. A resposta piora e ninguém liga causa e efeito, porque a resposta ruim continua soando bem.
+
+**Confiar em busca automática cega.** Busca semântica sobre acervo sujo devolve o trecho mais parecido, que não é o mais verdadeiro. Sem curadoria, sem Frescor e sem citação, ela recupera com confiança a nota que morreu em março.
+
+**Deixar nota morta no caminho.** É o erro que destrói confiança mais silenciosamente, porque quando o dono descobre que o preço estava errado em cinco respostas, ele para de usar o Cérebro inteiro. O mecanismo de conserto está na Parte 5.
+
+**Caçar o prompt perfeito.** Prompt de 2.000 palavras compensando ausência de contexto é trabalho jogado fora, e ele precisa ser refeito a cada conversa. O mesmo esforço gasto uma vez em Átomo citado serve pra sempre.
+
+**Consertar a resposta em vez do sistema.** Esse é o erro que impede todos os outros de serem corrigidos. Quando o Cérebro erra, editar a resposta resolve o caso e garante que amanhã erra igual. Pergunte sempre o que produziu aquele erro: faltou fonte, a nota estava velha, a skill não dizia, o Gate não existia. Conserta-se o sistema que gerou o erro.
+
+---
+
+## Parte 7 · Quando o resultado merece virar Sistema
+
+### De verificabilidade a repetibilidade
+
+Átomo dá verificabilidade. Você sabe de onde veio cada afirmação e pode voltar na origem.
+
+**Sistema** dá repetibilidade: o mesmo resultado sai de novo na semana que vem com a mesma qualidade, independente de quem lembrou de fazer e de quem estava inspirado. São propriedades diferentes, e as duas são necessárias. Átomo sem Sistema produz um cofre inteligente que ninguém opera. Sistema sem Átomo produz uma máquina rodando sobre dado que ninguém pode conferir.
+
+### O que um Sistema tem
+
+Um Sistema é um pacote de resultado, e todo pacote declara as mesmas peças:
+
+- **Resultado:** o que sai pronto no fim, descrito como entregável e não como atividade.
+- **Pipeline:** os passos da fonte real até o **Output**.
+- **Configuração:** o que muda de negócio pra negócio sem mexer no Pipeline.
+- **Rotina:** o que dispara (horário, evento ou execução manual).
+- **Régua:** o **Eval**, com a parte determinística e a parte humana.
+- **Feedback:** o registro do que foi corrigido, com a camada afetada.
+- **Versão:** o changelog, pra poder comparar e voltar atrás.
+
+Além disso, cada pacote traz uma Capability e um System Contract, que são o que permite Sistemas diferentes por dentro conversarem nas bordas com os mesmos identificadores, permissões e versões. O desenho completo, com as oito unidades e o protocolo, está em [METODO-SISTEMAS.md](METODO-SISTEMAS.md).
+
+### Um Sistema costura o que já existia
+
+Um Sistema roda sobre as fontes que já estavam na empresa antes dele: o drive, a caixa de e-mail, as transcrições, a planilha, o CRM. Software novo não entra na conta.
+
+O trabalho dele é costurar o que hoje é feito por mão e memória em um circuito que se fecha: a fonte real entra, o Pipeline roda, sai um Output, a Régua julga, fica um **Recibo** e o **Feedback** volta pra próxima execução. Esse último elo é o que separa automação de aprendizado. Automação repete. Sistema melhora.
+
+### O Recibo e o Run
+
+Cada execução é um **Run**, e todo Run deixa um **Recibo** local: a versão que rodou, as fontes usadas, os gates determinísticos que passaram ou falharam, o Output avaliado, a decisão humana e o motivo.
+
+Sem Recibo o ciclo não fecha, porque não existe o que comparar na próxima vez nem como provar o que foi feito. E Recibo com a decisão humana em branco é formulário, não prova.
+
+O Run também é o que permite costurar Sistemas sem duplicar dado. Cada Recibo referencia a mesma **Entidade** opaca e os mesmos identificadores de fonte, então dois Sistemas diferentes falam do mesmo cliente sem nenhum dos dois virar uma segunda casa da verdade.
+
+### Maturidade
+
+Os estados que um Sistema atravessa:
+
+- **instalado:** o pacote está aqui e configurado.
+- **beta:** executa, ainda acumulando casos e correções.
+- **validado:** repetiu o resultado com a Régua em casos reais.
+- **publicado:** pode ser distribuído com versão e rollback.
+
+Template em branco não é Sistema instalado. Primeiro Run aprovado não é Sistema validado. A validação exige resultado repetido, Eval, decisão humana, Feedback e versão.
+
+O teste final de maturidade é incômodo e honesto: o Sistema sobrevive à saída de quem o operava. Se ele só funciona com uma pessoa específica no comando, o que existe é um hábito dessa pessoa com documentação por cima.
+
+### Self Improvement sem autoedição cega
+
+**Self Improvement** é o laço que faz a próxima execução ser diferente da anterior por causa do que foi aprendido na anterior.
+
+A mecânica é deliberadamente devagar. Uma correção isolada fica local, registrada no Feedback daquele Sistema. Padrão comparável (três casos do mesmo tipo, com a mesma camada afetada) candidata uma mudança pequena. Pra virar mudança de verdade, ela passa por replay dos casos antigos, comparação, aprovação humana, versão e rollback possível.
+
+Falha nunca vira procedimento. Conversa nunca vira procedimento. Candidato isolado continua candidato. Um motor que se reescreve sozinho a cada tropeço acumula correção contraditória e ninguém consegue dizer por que ele mudou de comportamento.
+
+### Experimento, quando a mudança é incerta
+
+Mudança em Sistema que já roda e já tem resultado exige disciplina diferente, porque a tentação de olhar o dado e depois decidir o critério é grande e invisível.
+
+O instrumento é o **Experimento**: uma mudança única, declarada, com o **Pré-registro** congelado antes de qualquer dado aparecer. O Pré-registro carrega o gargalo alvo com evidência, o baseline, a hipótese, a mudança única, o que fica intocado, a métrica primária, a regra de contagem, o **Guardrail**, a parada antecipada, a janela de leitura e a regra de decisão. Uma vez congelado, ele não se edita, e o congelamento é verificado por hash.
+
+Circunstância externa que apareceu depois entra como **Emenda**, numerada e fora da região selada. Critério que muda depois do dado invalida a leitura, e o caminho honesto é declarar inconclusivo e abrir outro Experimento. O protocolo inteiro, da hipótese à decisão, está em [METODO-EXPERIMENTOS.md](METODO-EXPERIMENTOS.md).
+
+A régua de um Sistema também tem nome pra cada peça. Sensor é de onde o número vem. Métrica é o que se conta. Setpoint é o valor que separa aprovado de reprovado. **Golden pattern** é a forma de uma saída certa, o molde contra o qual a execução é comparada. **Golden set** é o conjunto de casos com resultado esperado conhecido, que deixa qualquer mudança ser testada contra o passado antes de entrar.
+
+---
+
+## Parte 8 · Motor, contexto e a camada coletiva
+
+### Motor vs contexto
+
+Uma instalação tem duas pastas, e a separação tem nome: **Motor vs contexto**.
+
+O motor é o produto: método, glossário, protocolo, templates, definições de Sistema, scripts e as skills. Ele é substituível e vem com versão.
+
+O contexto é seu: as notas, as capturas, os Sistemas instalados, o que `privado/` guarda, a identidade do negócio. Ele é único e não tem backup em lugar nenhum além do seu.
+
+`/atualizar` reescreve o motor a partir de uma versão que você escolhe, mostra o plano antes, pede aprovação e reprojeta as skills e o bloco gerenciado do contrato. O contexto não é tocado. Essa fronteira é o que permite o produto evoluir rápido sem que atualização nenhuma seja uma aposta sobre o seu acervo.
+
+A privacidade sai da mesma fronteira. O conteúdo das notas fica na sua máquina. Quando você roda uma rotina com um provedor de IA, só o contexto necessário daquela tarefa vai pra ele. A telemetria é técnica e opcional, carrega evento e metadado de instalação, nunca conteúdo de nota, e desliga com uma variável de ambiente ou um arquivo vazio na pasta de configuração.
+
+### A camada coletiva
+
+Existe uma terceira camada acima do pessoal e do negócio: o aprendizado destilado circulando entre pessoas que operam o mesmo método.
+
+A ideia é direta. Um padrão que alguém provou na operação dele (um Golden pattern que funciona, uma correção de Pipeline, um Eval mais afiado) pode viajar sem que nenhum dado de negócio viaje junto, porque o que circula é a forma e não o conteúdo.
+
+**Contribuição** é o caminho de saída, e ele tem três consentimentos separados: preparar o pacote anonimizado, aprovar o que vai dentro dele e enviar. Nenhum dos três implica o seguinte. Telemetria não é Contribuição, e nenhum dos dois leva conteúdo de nota.
+
+Essa camada ainda está em construção. O catálogo da comunidade mostra o que já é entregável e o que é roadmap, e uma linha de roadmap não significa que o Sistema existe. Prometer rede pronta seria o mesmo erro que o método combate.
+
+---
+
+## Parte 9 · As onze leis invioláveis
+
+Essas são as regras que o contrato do cofre carrega e que nenhuma conveniência quebra. Cada uma existe por causa de um jeito específico de o sistema apodrecer.
+
+1. **O Bruto é imutável.** Erro de destilação vira versão nova com registro. O original fica.
+2. **O Bruto fica frio.** O agente consulta o catálogo e os Átomos. Abre o original só quando um Átomo aponta e a pergunta exige.
+3. **Só se opera conteúdo citado.** Sem evidência, a resposta é `(não consta na fonte)`. Nunca se preenche o buraco com conhecimento geral.
+4. **Nota morta se marca, nunca se deleta.** `status: Superseded` mais `superseded_by`, e ela volta só como histórico.
+5. **PII e dado sensível não entram nas notas.** Só `privado/`, fora do git. E governa-se a fonte antes de conectar.
+6. **O Contexto é portátil.** Texto estruturado, em arquivo aberto, local, sob controle do dono. Nenhum formato que só um produto abre.
+7. **Regra que nunca pode falhar vira verificação em código.** Documento é lembrete. O que é inviolável é checado por máquina.
+8. **Sem medição periódica a qualidade cai.** Régua mensal e Eval por execução, sempre.
+9. **Um dono do julgamento.** A IA propõe e executa, a pessoa aprova. Multiagente só depois que um laço simples funciona.
+10. **Acumular não é aprender.** Entrada exige julgamento, saída exige retorno de resultado.
+11. **Critério antes do dado.** Em Sistema e em Experimento, o que define sucesso é registrado antes e fica intocado depois.
+
+---
+
+## Parte 10 · Por onde seguir
+
+Saber se está funcionando tem uma resposta curta e uma longa. A curta é a **Régua**: as suas cinco **Perguntas-canário** saíram de **em branco → estagiário → sócio** ao longo dos meses. A longa é o Recibo dos seus Sistemas, mostrando resultado repetido com Eval aprovado.
+
+Se você está começando, a ordem é esta:
+
+1. `/comecar` ativa o Cérebro Base: o Mapa do negócio, as fontes registradas sem serem conectadas, uma fonte real usada de verdade e o contexto aprovado voltando numa segunda tarefa.
+2. Os **Relógios** entram em seguida, do mais barato pro mais caro: `/daily` todo dia, `/reindex` toda semana, `/revisar` e `/teste` no mês.
+3. `/fonte` resolve o que fazer com cada coisa que chega, pela régua de [FONTES.md](FONTES.md).
+4. `/arquiteto` escolhe, com evidência, onde o primeiro Sistema vale mais.
+5. `/sistematizar` transforma aquele trabalho em pacote local, e `/operar` roda ponta a ponta.
+
+Os termos da casa, um por linha, estão em [GLOSSARIO.md](GLOSSARIO.md). Use sempre eles pra falar do método, porque vocabulário que cresce sem freio vira ruído. Termo novo entra pelo glossário, nunca por uma nota solta.
