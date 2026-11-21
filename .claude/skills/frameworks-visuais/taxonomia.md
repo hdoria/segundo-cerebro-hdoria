@@ -25,9 +25,9 @@ analogias"*.
   pictogramas: rua, tornado, botão, ponte-mini, onda-mini) · `setas-tensao`.
 - **Sinais na nota fonte:** você se pega querendo usar 2+ arquétipos ao mesmo tempo; a
   fonte tem capítulos ("primeiro ele apresentou o modelo, depois o problema, depois...").
-- **Exemplo do vault:** [[geoffrey-moore-full]] → `framework-chasm-3-ondas-ia-moore` (o
-  piloto): ① o mapa (curva mini) → ② o abismo (precipício+ponte) → ③ as 3 ondas (vinhetas
-  com pictogramas) → ④ o insight (setas de tensão + citação dourada).
+- **Exemplo:** uma nota sobre como uma tecnologia é adotada vira quatro atos: ① o mapa
+  (curva mini) → ② o abismo (precipício e ponte) → ③ as ondas (vinhetas com pictogramas) →
+  ④ o insight (setas de tensão e citação em destaque).
 
 Os 8 arquétipos abaixo são **single-shot**: uma estrutura só, pra conceito pontual — e
 também são o vocabulário visual dos atos (em versão mini).
@@ -71,9 +71,8 @@ O conhecimento (pontual) da nota é...
   não cruza; a pergunta é *"onde cada coisa está nessa jornada — e onde se morre?"*.
 - **Sinais na nota fonte:** "a maioria trava aqui", "cruzou / não cruzou", estágios de
   adoção ou maturidade, um vale entre early e mainstream.
-- **Exemplo do vault:** o ato ① do piloto `framework-chasm-3-ondas-ia-moore` usa a versão
-  mini desta curva (fonte: [[geoffrey-moore-full]]); a versão single-shot serve quando a
-  curva É a nota inteira.
+- **Exemplo:** a versão mini desta curva aparece como um ato de `historia`; a versão
+  single-shot serve quando a curva É a nota inteira.
 
 ## 3. matriz-2x2 — decisão por 2 critérios
 

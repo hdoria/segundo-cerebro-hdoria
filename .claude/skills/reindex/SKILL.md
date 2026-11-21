@@ -5,14 +5,14 @@ description: O ritual semanal (30-45 min) que mantém o cérebro afiado — tria
 
 # Reindex — a semana vira estrutura (ritual semanal, 30-45 min)
 
-Cérebro sem manutenção apodrece — o Vale chama de **context rot**: com ~30% de notas velhas ou duplicadas, até 80% do contexto que a IA usa fica contaminado — e limpar **dobrou o recall** `[demo Deasy no expo @ 13:24–14:15]`. Noutra base, curadoria levou 7.000→1.000 blocos: 1/7 do contexto, com MAIS precisão. O reindex é a academia semanal — sempre na mesma ordem, sempre com a pessoa no comando.
+Cérebro sem manutenção perde precisão: nota velha e nota duplicada disputam espaço com a que vale, e a resposta piora sem ninguém perceber. O reindex é a manutenção da semana, sempre na mesma ordem e com a pessoa decidindo cada passo.
 
 1. **Triagem da bandeja** (`capturas/`): liste o que entrou na semana e não virou átomo. Pra cada item, UMA pergunta: *"isso vira átomo ou arquiva?"* — destile os que valem (como no `/guardar`), mova o resto pra `capturas/` mesmo, marcada com `_organized: true`. Bandeja termina **zerada**.
 2. **Faxina dos fios** (`fios/`): pra cada fio, *"isso ainda está quente?"*
    - Esfriou → move pra `arquivo/` com `status: Done` no frontmatter (não se deleta — sai do caminho). `Superseded` só se outra nota substitui o fio, sempre com `superseded_by`
    - Virou decisão → extrai o átomo pra `decisoes/` e fecha o fio
    - Segue quente → uma linha de status no topo do fio
-3. **O JORNAL da semana** — nasce **das dailies, nunca das íntegras**: leia `meu-negocio/dailies/` da semana e escreva `dailies/semana-AAAA-WW.md` (`type: Daily`) como um jornal pessoal (*"the daily paper, but your own"* — receita de quem opera isso no Vale): **manchete da semana** (a coisa que mais importou) · o que andou · o que decidiu · o que travou · o padrão que se repetiu · a pergunta aberta pra semana que vem. Apresente o jornal pronto pra pessoa LER — é o entregável visível do ritual, o momento em que ela VÊ o cérebro trabalhando. Se sentir falta de algo que não está nas dailies, avise: *"tua daily de X ficou rasa — semana que vem captura mais"* (conserta-se a fonte, não o resumo).
+3. **O JORNAL da semana** — nasce **das dailies, nunca das íntegras**: leia `meu-negocio/dailies/` da semana e escreva `dailies/semana-AAAA-WW.md` (`type: Daily`) como um jornal pessoal da semana: **manchete da semana** (a coisa que mais importou) · o que andou · o que decidiu · o que travou · o padrão que se repetiu · a pergunta aberta pra semana que vem. Apresente o jornal pronto pra pessoa LER — é o entregável visível do ritual, o momento em que ela VÊ o cérebro trabalhando. Se sentir falta de algo que não está nas dailies, avise: *"tua daily de X ficou rasa — semana que vem captura mais"* (conserta-se a fonte, não o resumo).
 4. **Elos órfãos**: aponte 2-3 átomos da semana que deviam se conectar a coisas antigas — *"isso que tu decidiu terça conversa com [[decisão-de-maio]] — linko?"*. Sugerir conexão é o teu papel de curador.
 5. **Feche com o espelho** (3 linhas): estado do cérebro — quantos átomos novos, o fio mais quente, a pendência mais velha. A pessoa sai sabendo onde o negócio dela está.
 

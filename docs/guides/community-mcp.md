@@ -59,16 +59,23 @@ Um aviso comum: a ativação pode devolver `activation_local_only`. Isso acontec
 
 ### 2. Gere a entrada do servidor
 
-A entrada é um trecho JSON com a chave `mcpServers`, e o servidor se chama `cerebro-comunidade`. O caminho depende de como o Cérebro foi instalado.
-
-**Instalação com vault e motor separados** (o padrão atual). O lançador ainda não tem um comando para gerar a entrada, e o gerador do motor exige uma pasta `scripts/` que o vault não tem. Monte a entrada à mão. Primeiro descubra a pasta do motor, a partir da raiz do vault:
+A entrada é um trecho JSON com a chave `mcpServers`, e o servidor se chama `cerebro-comunidade`. Gere com o lançador, na raiz do vault:
 
 ```bash
-node .cerebro/bin/cerebro.mjs motor-path
-which node
+node .cerebro/bin/cerebro.mjs community-mcp-config
 ```
 
-Com os dois caminhos em mãos (use caminhos absolutos), a entrada fica assim, trocando `MOTOR` pela pasta que o primeiro comando imprimiu, `VAULT` pela pasta do seu vault e `NODE` pelo resultado de `which node`:
+O comando só imprime o JSON e não altera nada. Ele aponta o script para o motor e o `--root` para o vault, que é onde ficam o `.cerebro/id` e a credencial. Funciona igual nas duas formas de instalação. Se o motor que o lançador usa não tiver `scripts/community-mcp.mjs`, o erro é `community-mcp-script-missing`, e rodar `/atualizar` resolve.
+
+**Sem o lançador.** O gerador também aceita a raiz explícita. Rode o script que está no motor e passe o vault:
+
+```bash
+node "$(node .cerebro/bin/cerebro.mjs motor-path)/scripts/community-mcp-config.mjs" --root="$PWD"
+```
+
+Ele aceita um único argumento `--root=`. Se a pasta informada for o motor de uma instalação dividida, ele recusa: apontar o `--root` para o motor é o erro mais comum e faz o servidor não achar o vínculo.
+
+Se preferir montar a entrada à mão, troque `NODE` pelo resultado de `which node`, `MOTOR` pela pasta que `node .cerebro/bin/cerebro.mjs motor-path` imprime e `VAULT` pela pasta do vault, sempre com caminhos absolutos:
 
 ```json
 {
@@ -80,16 +87,6 @@ Com os dois caminhos em mãos (use caminhos absolutos), a entrada fica assim, tr
   }
 }
 ```
-
-Atenção ao `--root`: ele aponta para o vault, onde estão o `.cerebro/id` e a credencial, e não para o motor. Apontar para o motor é o erro mais comum e faz o servidor não achar o vínculo.
-
-**Instalação de pasta única.** Aqui o gerador serve. Rode na raiz do Cérebro:
-
-```bash
-node scripts/community-mcp-config.mjs --root="$PWD"
-```
-
-Ele aceita um único argumento `--root=`, só imprime o JSON e não altera nada. Se a raiz não tiver `scripts/community-mcp.mjs`, o erro é `community-mcp-script-missing`.
 
 ### 3. Coloque a entrada no cliente
 

@@ -37,17 +37,15 @@ Quando algo foge disso, o comando para com um destes códigos: `submission_requi
 
 Sem `--confirm`, o comando só mostra o que aconteceria: versão, hash e a lista completa de arquivos. Não grava, não envia, não publica, não lê credencial e não usa rede.
 
-O lançador `node .cerebro/bin/cerebro.mjs` ainda não expõe este comando, então a forma depende do tipo de instalação.
-
-**Instalação de pasta única.** Na raiz:
+Use o lançador, na raiz do vault. Ele roda o script do motor sobre o seu vault nas duas formas de instalação:
 
 ```bash
-node scripts/stage-community-release.mjs \
+node .cerebro/bin/cerebro.mjs stage-community-release \
   --package=pacotes/meu-sistema.envelope.json \
   --summary="Sistema de triagem de pedidos de orçamento, com perguntas de qualificação e modelo de resposta."
 ```
 
-**Instalação com vault e motor separados.** O script mora no motor, e é preciso dizer onde está o vault, senão a raiz passa a ser a pasta do motor e o seu pacote não é encontrado. Na raiz do vault:
+**Sem o lançador.** Na instalação de pasta única, `node scripts/stage-community-release.mjs` com os mesmos argumentos, na raiz. Na instalação com vault e motor separados, o script mora no motor e é preciso dizer onde está o vault, senão a raiz passa a ser a pasta do motor e o seu pacote não é encontrado:
 
 ```bash
 MOTOR="$(node .cerebro/bin/cerebro.mjs motor-path)"
@@ -72,13 +70,13 @@ Se o pacote falhar em alguma regra, corrija o envelope na origem e gere uma pré
 Estando de acordo com a prévia, repita o mesmo comando acrescentando `--confirm`:
 
 ```bash
-node scripts/stage-community-release.mjs \
+node .cerebro/bin/cerebro.mjs stage-community-release \
   --package=pacotes/meu-sistema.envelope.json \
   --summary="Sistema de triagem de pedidos de orçamento, com perguntas de qualificação e modelo de resposta." \
   --confirm
 ```
 
-(Na instalação dividida, mantenha o `CEREBRO_INSTALL_ROOT` e o caminho do motor do passo anterior.)
+(Sem o lançador, acrescente `--confirm` à forma manual do passo anterior.)
 
 O comando grava duas coisas em `comunidade/minhas-contribuicoes/propostas/<uuid>/`: o `package.json`, em serialização canônica do protocolo, e o `candidate.json`. Você recebe de volta três campos: `candidate_id`, `package_sha256` e `package_ref`. Guarde o `candidate_id` e o `package_sha256`: você vai usá-los nos próximos passos. Se faltarem regras de privacidade no `.gitignore` do vault, o comando as acrescenta.
 

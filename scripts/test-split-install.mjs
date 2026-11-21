@@ -62,6 +62,19 @@ try {
   const launcher = join(vault, '.cerebro/bin/cerebro.mjs');
   assert.equal(execFileSync(process.execPath, [launcher, 'motor-path'], { cwd: vault, encoding: 'utf8', env }).trim(), motor);
 
+  // Comandos da comunidade pelo lançador: script no motor, dado no vault.
+  const mcp = JSON.parse(execFileSync(process.execPath, [launcher, 'community-mcp-config'], { cwd: vault, encoding: 'utf8', env }));
+  assert.deepEqual(mcp.mcpServers['cerebro-comunidade'].args, [join(motor, 'scripts/community-mcp.mjs'), `--root=${vault}`]);
+  const mcpOnMotor = spawnSync(process.execPath, [join(motor, 'scripts/community-mcp-config.mjs'), `--root=${motor}`], { encoding: 'utf8', env });
+  assert.notEqual(mcpOnMotor.status, 0, 'o motor não serve de raiz do MCP');
+  assert.match(mcpOnMotor.stderr, /é o motor/);
+  mkdirSync(join(vault, 'pacotes'));
+  writeFileSync(join(vault, 'pacotes/sintetico.json'), '{');
+  const stage = spawnSync(process.execPath, [launcher, 'stage-community-release', '--package=pacotes/sintetico.json', '--summary=Resumo sintético'], { cwd: vault, encoding: 'utf8', env });
+  assert.notEqual(stage.status, 0);
+  assert.match(stage.stderr, /invalid_release_package_json/, 'o pacote foi lido do vault');
+  rmSync(join(vault, 'pacotes'), { recursive: true });
+
   // Atualização: um plan_hash para as duas pastas.
   const updater = join(motor, 'scripts/update.mjs');
   const uargs = ['--tag', tag, '--vault', vault, '--motor', motor];

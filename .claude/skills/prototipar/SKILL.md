@@ -6,7 +6,7 @@ description: Monta o protótipo comercial e o protótipo de entrega do negócio 
 
 # Prototipar — como o dinheiro entra e como o trabalho sai
 
-> *"a primeira fonte precisa encostar ou numa decisão, ou numa venda, ou numa entrega. Então qual das três hoje paga tempo ou dinheiro mais rápido para você?"* — [[dia1-cerebro-da-empresa-transcricao]] @ 00:37
+> Esta skill responde uma pergunta: entre decisão, venda e entrega, qual frente devolve tempo ou dinheiro primeiro para a pessoa?
 
 Uma rodada, quatro saídas: **protótipo comercial** · **protótipo de entrega** · **diagnóstico da frente** · **o loop**. ~20 min. O cérebro instalado sabe guardar contexto; esta skill responde a pergunta seguinte — *contexto de quê, pra ganhar o quê, medido como*.
 
@@ -56,7 +56,7 @@ Monte e mostre (nada gravado ainda):
 - **As etapas, com dono e gate** — quem faz, quem aprova.
 - **A régua de "bom"** — por entregável, com as palavras da pergunta 4. É o ativo mais caro deste documento: sem régua escrita, a IA gera volume e você vira revisor.
 - **O gargalo** — o passo que só ela consegue fazer, e por quê. Se o motivo for "só eu sei o critério", isso é régua não escrita, não é talento: marque como o primeiro alvo.
-- **O melhor trabalho já feito** — qual entregável tem um exemplar aprovado que pode virar padrão. *"você vai colocar o seu melhor trabalho já feito, e aí você vai criar um próximo rascunho seguindo a tua régua"* ([[dia1-cerebro-da-empresa-transcricao]] @ 00:37). Se ela tem esse exemplar, ele é a primeira fonte — não precisa de mais nada pra começar.
+- **O melhor trabalho já feito** — qual entregável tem um exemplar aprovado que pode virar padrão. Se ela tem esse exemplar, ele é a primeira fonte: o próximo rascunho parte dele e segue a régua dela, sem precisar de mais nada para começar.
 
 ## 4. Diagnóstico — por onde atacar
 
@@ -66,7 +66,7 @@ Escolha **uma** frente (decisão · venda · entrega) e defenda em duas linhas, 
 - **O primeiro trabalho** — o menor entregável dessa frente que já sai melhor com contexto. Menor mesmo: um follow-up, uma proposta, um briefing, uma decisão de reunião.
 - **A menor fonte real que já existe hoje** — a que ela pode apontar em 2 minutos. Nunca a que precisaria existir.
 - **O sistema** — o instalado que serve (`<motor>/sistemas/_CATALOGO.md`, em que <motor> é a pasta impressa por `node .cerebro/bin/cerebro.mjs motor-path`: `/comecar`, `calls-decisoes`, `briefing-comercial`). Se nenhum serve, **diga que ainda não existe** e descreva o pipeline manual mínimo. Nunca prometa sistema que não está instalado.
-- **O não-faça-ainda** — três coisas que ela vai querer fazer hoje e que são cedo, com o motivo. *"vou lá, vou vender um pack de skill aqui com noventa skills… por que isso não adianta?"* ([[dia1-cerebro-da-empresa-transcricao]] @ 00:32). Conectar tudo, automatizar antes de ter régua e tratar o acervo inteiro entram aqui quase sempre.
+- **O não-faça-ainda** — três coisas que ela vai querer fazer hoje e que são cedo, com o motivo. Conectar tudo, automatizar antes de ter régua e tratar o acervo inteiro entram aqui quase sempre.
 
 ## 5. O loop — por que a rodada 3 é melhor que a 1
 
@@ -81,8 +81,6 @@ Instancie o ciclo com os nomes dela, uma linha cada:
 | **o que se mede** | o número dela (fechamento, retrabalho, horas devolvidas, prazo) |
 | **o que volta** | o motivo do aprovado/reprovado vira régua, e o próximo rascunho já nasce com ela |
 | **o relógio** | por evento (cada call, cada entrega) ou cadência (`/daily`, `/reindex`) |
-
-> *"se toda vez que eu aprovo ou reprovo, eu dou um motivo… quando ela for gerar o briefing de novo, ela já vai ter aprendido isso"* — [[dia1-cerebro-da-empresa-transcricao]] @ 00:29
 
 **O primeiro eval:** escreva a pergunta que responde *"melhorou?"* antes de rodar — critério vem antes do dado. O formato que funciona: *"quantas correções o rascunho da rodada 3 precisou, comparado ao da rodada 1?"*. Régua definida depois do resultado é opinião com gráfico.
 

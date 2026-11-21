@@ -1,5 +1,10 @@
 # Mudanças do Cérebro hdoria
 
+## v1.46.0 - 2026-11-21 · comunidade pelo lançador e skills sem citação de palestra
+
+- O lançador do vault ganha `community-mcp-config` e `stage-community-release`. Na instalação com vault e motor separados, os dois comandos agora rodam a partir do vault: o gerador da configuração MCP aponta o servidor para o motor e o `--root` para o vault, e recusa o motor como raiz. Os guias mostram a forma pelo lançador e mantêm a manual como alternativa.
+- As skills `/metodo`, `/reindex` e `/prototipar` deixam de citar palestras, minutagem e números de terceiros. O `/metodo` usa os termos do método atual. Saiu também o exemplo do `/frameworks-visuais` montado a partir de uma palestra.
+
 ## v1.45.0 - 2026-11-21 · método reescrito e daily com agenda
 
 - O método, o glossário, a régua de fontes e os guias da comunidade foram reescritos como texto próprio, em "você", e passam a ser CC BY-NC 4.0 de Hugo Doria. Saem as citações de palestra e os números de terceiros. Os termos que o motor usa continuam iguais, e o glossário ganhou verbetes que faltavam, como Fonte, Bandeja, Horizonte, Console, Canvas e Trace.
